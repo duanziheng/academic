@@ -69,4 +69,4 @@ During my undergrad, I was fortunate to work with Prof. Xiaoqian Wang, Yueyang W
 
 Now, I am interested in Machine Learning and Computational Biology.
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref 'static/media/DZH_CV_English.pdf' "newtab" >}}resumé{{< /staticref >}}.
+{{< icon name="download" pack="fas" >}} Download my {{< staticref 'media/DZH_CV_English.pdf' "newtab" >}}resumé{{< /staticref >}}.
