@@ -23,7 +23,7 @@ twitter: ''
 email: duanziheng1206@gmail.com
 phone: (+86) 13393470805
 address:
-  street: None
+  street: ''
   city: Irvine
   region: CA
   postcode: '92697'
@@ -32,7 +32,7 @@ address:
 coordinates:
   latitude: '33.3844'
   longitude: '-117.5033'
-directions: None
+directions: ''
 office_hours:
   - 'Monday 10:00 to 13:00'
   - 'Wednesday 09:00 to 10:00'
@@ -41,19 +41,19 @@ contact_links:
   - icon: twitter
     icon_pack: fab
     name: DM Me
-    link: 'https://twitter.com/Twitter'
-  - icon: skype
-    icon_pack: fab
-    name: Skype Me
-    link: 'skype:echo123?call'
-  - icon: keybase
-    icon_pack: fab
-    name: Chat on Keybase
-    link: 'https://keybase.io/'
-  - icon: comments
-    icon_pack: fas
-    name: Discuss on Forum
-    link: 'https://discourse.gohugo.io'
+    link: 'https://twitter.com/Ziheng1206'
+  #- icon: skype
+  #  icon_pack: fab
+  #  name: Skype Me
+  #  link: 'skype:echo123?call'
+  #- icon: keybase
+  #  icon_pack: fab
+  #  name: Chat on Keybase
+  #  link: 'https://keybase.io/'
+  #- icon: comments
+  #  icon_pack: fas
+  #  name: Discuss on Forum
+  #  link: 'https://discourse.gohugo.io'
 
 # Site header
 
@@ -156,8 +156,8 @@ cms:
 icon:
   pack:
     ai: true
-search:
-  engine: 1
-  search.wowchemy:
-    min_length: 1 
-    threshold: 0.3
+#search:
+#  engine: 1
+#  search.wowchemy:
+#    min_length: 1 
+#    threshold: 0.3
