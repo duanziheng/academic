@@ -37,10 +37,9 @@ email: ""
 superuser: true
 highlight_name: false
 ---
-
-I am a first-year CS PhD student in University of California, Irvine, advised by Prof. Jing Zhang. 
-Previously, I graduated from Department of Control Science and Technology, Zhejiang University. 
-During my undergrad, I was fortunate to work with Prof. Xiaoqian Wang, Yueyang Wang, Quanzheng Li and Fei Wu. 
+I am a first-year CS Ph.D. student at [the University of California, Irvine](https://uci.edu/), advised by Prof. Jing Zhang. 
+Previously, I graduated from the Department of Control Science and Technology, Zhejiang University. 
+During my undergrad, I was fortunate to work with Prof. Xiaoqian Wang, Yueyang Wang, Quanzheng Li, and Fei Wu. 
 
 Now, I am interested in Machine Learning and Computational Biology.
 
