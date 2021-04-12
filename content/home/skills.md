@@ -42,4 +42,9 @@ feature:
 #  icon_pack: "custom"
 #  name: "Surfing"
 #  description: "90%"
+
+- icon: "icons8-python"
+  icon_pack: "custom"
+  name: "Python"
+  description: "90%"
 ---
