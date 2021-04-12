@@ -28,6 +28,7 @@ abstract: Multivariate time series (MTS) forecasting is an important problem in
   experiments show that the proposed method achieves state-of-the-art results in
   MTS forecasting task.
 draft: false
+url_pdf: publication/multivariate-time-series-forecasting-with-transfer-entropy-graph/2005.01185.pdf
 featured: false
 image:
   filename: featured
