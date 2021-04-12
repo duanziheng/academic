@@ -28,7 +28,7 @@ publication_short: https://doi.org/10.1609/aaai.v33i01.330110061
 url_source: ""
 url_video: ""
 title: Heterogeneous Attributed Network Embedding with Graph Convolutional Networks
-doi: ""
+doi: https://doi.org/10.1609/aaai.v33i01.330110061
 featured: false
 tags: []
 projects: []
