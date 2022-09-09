@@ -30,9 +30,13 @@ organizations:
     url: https://uci.edu/
 education:
   courses:
+    - course: Ph.D. in Computer Science
+      institution: University of California, Irvine
+      year: 2021-Present
+  courses:
     - course: BSc in Automation and Computer Science (Double Degree)
       institution: Zhejiang University
-      year: 2020
+      year: 2016-2020
 email: ""
 superuser: true
 highlight_name: false
