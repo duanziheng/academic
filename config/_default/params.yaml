@@ -141,8 +141,8 @@ search:
     show_logo: false
 map:
   provider: 'Google'
-  api_key: 'AIzaSyDzUWyinwg4XuNwz_81QIeMKALVAaKqmeo'
-  zoom: 15
+  api_key: 'AIzaSyC3zBXKXMBo0832_NP0-n2E3jOGSdx3aGA'
+  zoom: 1
 marketing:
   google_analytics: 'G-XZ9TJ9M2BK'
   google_tag_manager: ''
