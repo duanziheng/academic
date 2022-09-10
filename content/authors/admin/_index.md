@@ -33,7 +33,7 @@ education:
     - course: Ph.D. in Computer Science
       institution: University of California, Irvine
       year: 2021-Present
-    - course: BSc in Automation and Computer Science (Double Degree)
+    - course: B.S. in Automation and Computer Science (Double Degree)
       institution: Zhejiang University
       year: 2016-2020
 email: ""
