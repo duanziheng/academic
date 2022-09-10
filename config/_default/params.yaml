@@ -140,8 +140,8 @@ search:
     index_name: ''
     show_logo: false
 map:
-  provider: ''
-  api_key: ''
+  provider: 'Google'
+  api_key: 'AIzaSyDzUWyinwg4XuNwz_81QIeMKALVAaKqmeo'
   zoom: 15
 marketing:
   google_analytics: 'G-XZ9TJ9M2BK'
