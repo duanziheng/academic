@@ -1,0 +1,12 @@
+# Created by Russell
+title: Repo
+author: Russell
+permalink: '/:year/:month/:day/:title/'
+paginate: 5
+paginate_path: '/page/:num/'
+twitter_username: Russell33706906
+github_username: RRRussell
+gems:
+  - jekyll-paginate
+markdown: kramdown
+baseurl: /blog
