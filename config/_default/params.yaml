@@ -140,8 +140,8 @@ search:
     index_name: ''
     show_logo: false
 map:
-  provider: 'Google'
-  api_key: 'AIzaSyAHJVsUeDvqh9j1bzzZ8X0UFrbNVbN25QY'
+  provider: 'ArcGIS'
+  api_key: 'AAPK2bced7a0f1844cf8a7a35f89cf699f76r0DqdVK1MF2ylkQlEgaSB2uenk2w0wDT1uW46uk7tMoKJcAd23vH-Bj6R5a6Rnyc'
   zoom: 15
 marketing:
   google_analytics: 'G-XZ9TJ9M2BK'
