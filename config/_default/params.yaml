@@ -30,8 +30,8 @@ address:
   country: United States
   country_code: US
 coordinates:
-  latitude: '33.64'
-  longitude: '-117.84'
+  latitude: '33.6432511'
+  longitude: '-117.8420085'
 directions: ''
 office_hours:
   - 'M-F 10:00 to 17:00'
@@ -141,7 +141,7 @@ search:
     show_logo: false
 map:
   provider: 'Google'
-  api_key: 'AIzaSyCeQIZoPHNFMSAab65oKutrQKHKrv5y978'
+  api_key: 'AIzaSyAHJVsUeDvqh9j1bzzZ8X0UFrbNVbN25QY'
   zoom: 15
 marketing:
   google_analytics: 'G-XZ9TJ9M2BK'
