@@ -134,13 +134,13 @@ comments:
     url: ''
 
 search:
-  # provider: wowchemy
-  provider: algolia
-  algolia:
-    app_id: '6LO1K9TATE'
-    api_key: 'da8b38fd527343705be3f13934a483fc'
-    index_name: 'web'
-    show_logo: true
+  provider: wowchemy
+#   provider: algolia
+#   algolia:
+#     app_id: '6LO1K9TATE'
+#     api_key: 'da8b38fd527343705be3f13934a483fc'
+#     index_name: 'web'
+#     show_logo: true
 map:
   provider: ''
   api_key: ''
