@@ -18,10 +18,10 @@ social:
     link: https://scholar.google.com/citations?user=wA93e-kAAAAJ&hl=zh-CN
   - icon: github
     icon_pack: fab
-    link: https://github.com/duanziheng
+    link: https://github.com/duanzihenghttps://github.com/RRRussell
   - icon: linkedin
     icon_pack: fab
-    link: https://www.linkedin.com/in/%E8%87%AA%E6%81%92-%E6%AE%B5-2701a319b/
+    link: https://www.linkedin.com/in/zihengduan
   - icon: cv
     icon_pack: ai
     link: media/DZH_CV_English.pdf
