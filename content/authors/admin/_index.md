@@ -17,7 +17,7 @@ social:
     link: https://scholar.google.com/citations?user=wA93e-kAAAAJ&hl=zh-CN
   - icon: github
     icon_pack: fab
-    link: https://github.com/duanzihenghttps://github.com/RRRussell
+    link: https://github.com/RRRussell
   - icon: linkedin
     icon_pack: fab
     link: https://www.linkedin.com/in/zihengduan
