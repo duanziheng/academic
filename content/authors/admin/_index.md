@@ -3,8 +3,8 @@ title: Ziheng Duan
 role: Ph.D. Student
 bio: My research interests include computational biology and machine learning.
 interests:
-  - Artificial Intelligence
   - Computational Biology
+  - Machine Learning
 social:
   - icon: envelope
     icon_pack: fas
