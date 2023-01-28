@@ -1,8 +1,7 @@
 ---
 title: Ziheng Duan
 role: Ph.D. Student
-bio: My research interests include machine learning, computational biology and
-  graph neural network.
+bio: My research interests include computational biology and machine learning.
 interests:
   - Artificial Intelligence
   - Computational Biology
@@ -41,6 +40,6 @@ I am a second-year CS Ph.D. student at the [University of California, Irvine](ht
 Previously, I graduated from the [College of Control Science and Technology, Zhejiang University](http://www.cse.zju.edu.cn/english/). 
 During my undergrad, I was fortunate to work with Prof. [Xiaoqian Wang](https://engineering.purdue.edu/~joywang/), [Yueyang Wang](http://www.cse.cqu.edu.cn/info/2097/5067.htm), [Quanzheng Li](https://projects.iq.harvard.edu/camca/people/li-quanzheng-phd), and [Fei Wu](https://person.zju.edu.cn/en/wufei). 
 
-Now, I am interested in Machine Learning and Computational Biology.
+Now, I am interested in computational biology and machine learning.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/DZH_CV_English.pdf" "newtab" >}}resumé{{< /staticref >}}.
