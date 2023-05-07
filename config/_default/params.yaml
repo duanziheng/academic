@@ -21,20 +21,20 @@ twitter: ''
 # Contact (edit or remove options as required)
 
 email: duanziheng1206@gmail.com
-phone: (+1) 424-239-4085
-address:
-  street: ''
-  city: Irvine
-  region: CA
-  postcode: '92617'
-  country: United States
-  country_code: US
-coordinates:
-  latitude: '33.6432511'
-  longitude: '-117.8420085'
+# phone: (+1) 424-239-4085
+# address:
+#   street: ''
+#   city: Irvine
+#   region: CA
+#   postcode: '92617'
+#   country: United States
+#   country_code: US
+# coordinates:
+#   latitude: '33.6432511'
+#   longitude: '-117.8420085'
 directions: ''
-office_hours:
-  - 'M-F 10:00 to 17:00'
+# office_hours:
+#   - 'M-F 10:00 to 17:00'
 appointment_url: ''
 contact_links:
   - icon: twitter
