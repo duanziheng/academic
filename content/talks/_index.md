@@ -12,9 +12,8 @@ view: 1
 # Optional header image (relative to `static/media/` folder).
 header:
   caption: "aaa"
-  image: ""
+  image: "scorch-2023-meeting-1.png"
 
 
 ---
 
-Coming soon
