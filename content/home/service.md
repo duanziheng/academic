@@ -25,4 +25,4 @@ Reader in ICS 178 (Fall 2021), ICS 178 (Winter 2021), ICS 6D (Spring 2022)
 AIMHC-2024
 
 ## Journal Reviewer (Selected)
-TPAMI, Information Science, Pattern Recognition, Pattern_Recognition_Letters, Knowledge-Based Systems, Knowledge and Information Systems, Neurocomputing, IEEE Access, Supercomputing, Reliability Engineering & System Safety, Gene, Heliyon
+TPAMI, Information Science, Pattern Recognition, Pattern Recognition Letters, Knowledge-Based Systems, Knowledge and Information Systems, Neurocomputing, IEEE Access, Supercomputing, Reliability Engineering & System Safety, Gene, Heliyon
