@@ -19,10 +19,10 @@ subtitle: ''
 ---
 
 ## Teaching
-Reader in ICS 178 (Fall 2021), ICS 178 (Winter 2021), ICS 6D (Spring 2022) 
+Reader in ICS 178 Machine Learning and Data-Mining (Fall 2021), ICS 178 Machine Learning and Data-Mining (Winter 2021), ICS 6D Discrete Mathematics for Computer Science (Spring 2022) 
 
 ## PC Member/Reviewer
 AIMHC-2024
 
 ## Journal Reviewer (Selected)
-TPAMI, Information Science, Pattern Recognition, Pattern Recognition Letters, Knowledge-Based Systems, Knowledge and Information Systems, Neurocomputing, IEEE Access, Supercomputing, Reliability Engineering & System Safety, Gene, Heliyon
+IEEE Transactions on Pattern Analysis and Machine Intelligence, Information Science, Pattern Recognition, Pattern Recognition Letters, Knowledge-Based Systems, Knowledge and Information Systems, Neurocomputing, IEEE Access, Supercomputing, Reliability Engineering & System Safety, Gene, Heliyon
