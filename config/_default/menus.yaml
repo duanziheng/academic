@@ -19,10 +19,14 @@ main:
   - name: Talks
     url: '#talks'
     weight: 40
+
+  - name: Services
+    url: '#service'
+    weight: 50
     
   - name: Contact
     url: '#contact'
-    weight: 50
+    weight: 60
 
 #   - name: Posts
 #     url: '#posts'
