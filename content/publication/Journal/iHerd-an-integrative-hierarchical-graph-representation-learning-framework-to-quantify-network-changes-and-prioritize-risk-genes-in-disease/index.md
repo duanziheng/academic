@@ -24,4 +24,6 @@ image:
   preview_only: false
 date: 2023-09-11
 url_code: "https://github.com/aicb-ZhangLabs/iHerd"
+tags:
+  - Highlight
 ---
