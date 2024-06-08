@@ -1,7 +1,7 @@
 ---
 title: Ziheng Duan
 role: Ph.D. Student
-bio: My research interests include computational biology and machine learning.
+# bio: My research interests include computational biology and machine learning.
 interests:
   - Computational Biology
   - Spatial Transcriptomics
@@ -45,7 +45,7 @@ I am a third-year CS Ph.D. student at the [University of California, Irvine](htt
 Previously, I graduated from the [College of Control Science and Technology, Zhejiang University](http://www.cse.zju.edu.cn/cseenglish/main.htm). 
 <!-- During my undergrad, I was fortunate to work with Prof. [Xiaoqian Wang](https://engineering.purdue.edu/~joywang/), [Quanzheng Li](https://researchers.mgh.harvard.edu/profile/4211743/Quanzheng-Li), and [Fei Wu](https://person.zju.edu.cn/en/wufei).  -->
 
-My main research goal is to develop trustworthy computational methods to understand cellular gene regulation, especially in spatial contexts, and their contributions to various diseases.
+My main research goal is to develop trustworthy computational methods to understand gene regulation, especially in spatial contexts, and their contributions to various diseases.
 
 Outside my research, I am also a bodybuilder, having competed in [NPC men's physique](https://contests.npcnewsonline.com/contests/2023/npc_southwest_muscle_classic/h3rp/ziheng_duan?page=1) and been certified as a personal trainer by [ACE](https://credentials.acefitness.org/19e0e767-1874-4fd1-a8cf-88cdeece0d59).
 
