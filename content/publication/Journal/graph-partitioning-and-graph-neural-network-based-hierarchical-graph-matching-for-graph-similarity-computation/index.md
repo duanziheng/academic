@@ -5,7 +5,7 @@ publication_types:
   - "2"
 authors:
   - Haoyan Xu
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yueyan Wang
   - Jie Feng
   - Runjian Chen

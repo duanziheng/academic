@@ -3,7 +3,7 @@ title: "Impeller: a path-based heterogeneous graph learning method for spatial t
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Dylan Riffle
   - Ren Li
   - Junhao Liu

@@ -5,7 +5,7 @@ publication_types:
 authors:
   - Li Liu
   - Xianghao Zhan
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yi Wu
   - Rumeng Wu
   - Xiaoqing Guan

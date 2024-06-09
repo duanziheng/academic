@@ -5,7 +5,7 @@ publication_types:
   - "3"
 authors:
   - Yifu Zhou
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Haoyan Xu
   - Jie Feng
   - Anni Ren

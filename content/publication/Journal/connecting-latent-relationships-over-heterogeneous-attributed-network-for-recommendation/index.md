@@ -4,7 +4,7 @@ title: Connecting Latent ReLationships over Heterogeneous Attributed Network for
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yueyang Wang
   - Weihao Ye
   - Qilin Fan

@@ -3,7 +3,7 @@ title: "ExAD-GNN: explainable graph neural network for Alzheimer’s disease sta
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - CheYu Lee
   - Jing Zhang
 doi: http://dx.doi.org/10.1561/116.00000239

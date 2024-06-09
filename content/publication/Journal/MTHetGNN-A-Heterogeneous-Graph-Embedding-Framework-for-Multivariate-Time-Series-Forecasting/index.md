@@ -4,7 +4,7 @@ publication_types:
   - "2"
 authors:
   - Yueyang Wang
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yida Huang
   - Haoyan Xu
   - Jie Feng

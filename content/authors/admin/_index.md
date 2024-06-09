@@ -39,7 +39,7 @@ education:
       year: 2016-2020
 email: ""
 superuser: true
-highlight_name: false
+highlight_name: true
 ---
 I am a third-year CS Ph.D. student at the [University of California, Irvine](https://uci.edu/), advised by Prof. [Jing Zhang](https://www.ics.uci.edu/~jingz31/). 
 Previously, I graduated from the [College of Control Science and Technology, Zhejiang University](http://www.cse.zju.edu.cn/cseenglish/main.htm). 

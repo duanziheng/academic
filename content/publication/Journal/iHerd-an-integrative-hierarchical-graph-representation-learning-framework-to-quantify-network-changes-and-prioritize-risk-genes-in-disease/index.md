@@ -3,7 +3,7 @@ title: "iHerd: an integrative hierarchical graph representation learning framewo
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yi Dai
   - Ahyeon Hwang
   - Cheyu Lee

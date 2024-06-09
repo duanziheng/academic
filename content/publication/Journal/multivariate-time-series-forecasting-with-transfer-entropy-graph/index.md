@@ -3,7 +3,7 @@ title: Multivariate Time Series Forecasting with Transfer Entropy Graph
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Haoyan Xu
   - Yida Huang
   - Jie Feng

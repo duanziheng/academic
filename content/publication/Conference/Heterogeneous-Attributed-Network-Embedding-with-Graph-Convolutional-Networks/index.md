@@ -6,7 +6,7 @@ publication_types:
   - "1"
 authors:
   - Yueyang Wang
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Binbing Liao
   - Fei Wu
   - Yueting Zhuang

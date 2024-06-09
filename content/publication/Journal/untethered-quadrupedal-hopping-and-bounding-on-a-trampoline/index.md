@@ -5,7 +5,7 @@ publication_types:
 authors:
   - Boxing Wang
   - Chunlin Zhou
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Qichao Zhu
   - Jun Wu
   - Rong Xiong

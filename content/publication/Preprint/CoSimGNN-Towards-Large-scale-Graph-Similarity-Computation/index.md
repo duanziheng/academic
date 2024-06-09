@@ -6,7 +6,7 @@ authors:
   - Haoyan Xu
   - Runjian Chen
   - Yunsheng Bai
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Jie Feng
   - Ke Luo
   - Yizhou Sun

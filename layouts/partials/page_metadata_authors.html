@@ -1,0 +1,6 @@
+{{/* Display author list. */}}
+
+{{ $length := len .Params.authors }}
+{{ range $index, $author := .Params.authors }}
+  <span>{{ $author | markdownify }}</span>{{ if lt (add $index 1) $length }}, {{ end }}
+{{ end }}

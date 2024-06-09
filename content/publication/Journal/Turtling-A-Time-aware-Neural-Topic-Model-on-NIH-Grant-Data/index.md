@@ -4,7 +4,7 @@ publication_types:
   - "2"
 authors:
   - Ruiyi Zhang
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - CheYu Lee
   - Dylan Riffle
   - Martin Renqiang Min

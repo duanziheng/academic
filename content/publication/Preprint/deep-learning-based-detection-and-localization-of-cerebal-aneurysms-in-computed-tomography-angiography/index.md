@@ -6,7 +6,7 @@ publication_types:
 authors:
   - Dufan Wu
   - Daniel Montes
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yangsibo Huang
   - Javier M. Romero
   - Ramon Gilberto Gonzalez

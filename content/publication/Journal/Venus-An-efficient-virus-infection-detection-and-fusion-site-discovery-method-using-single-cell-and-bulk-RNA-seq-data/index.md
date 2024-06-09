@@ -5,7 +5,7 @@ publication_types:
 authors:
   - Che Yu Lee
   - Yuhang Chen
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Min Xu
   - Matthew J. Girgenti
   - Ke Xu

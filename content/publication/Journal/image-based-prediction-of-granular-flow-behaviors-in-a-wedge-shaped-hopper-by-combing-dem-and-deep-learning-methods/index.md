@@ -8,7 +8,7 @@ authors:
   - Yizhang Yang
   - Chengfeng Sun
   - Ruiqi Wu
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Yueyang Wang
   - Xipeng Li
   - Jian Xu

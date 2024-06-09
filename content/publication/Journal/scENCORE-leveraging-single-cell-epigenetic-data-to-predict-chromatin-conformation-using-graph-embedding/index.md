@@ -3,7 +3,7 @@ title: "scENCORE: leveraging single-cell epigenetic data to predict chromatin co
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Siwei Xu
   - Shushrruth Sai Srinivasan
   - Ahyeon Hwang

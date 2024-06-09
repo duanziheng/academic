@@ -4,7 +4,7 @@ title: Multivariate Time Series Classification with Hierarchical Variational
 publication_types:
   - "2"
 authors:
-  - Ziheng Duan
+  - "**Ziheng Duan**"
   - Haoyan Xu
   - Yueyang Wang
   - Yida Huang
