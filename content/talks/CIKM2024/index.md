@@ -1,5 +1,6 @@
 ---
-title: CIKM 2024
+title: 33rd ACM International Conference on Information and Knowledge Management (CIKM-2024)
+
 active: true
 
 event: CIKM 2024
