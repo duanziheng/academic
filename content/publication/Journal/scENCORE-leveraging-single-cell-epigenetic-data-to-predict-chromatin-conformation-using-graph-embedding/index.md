@@ -25,6 +25,6 @@ image:
   preview_only: false
 date: 2024-03-16
 url_code: "https://github.com/aicb-ZhangLabs/scENCORE"
-tags:
-  - Highlight
+# tags:
+#   - Highlight
 ---
