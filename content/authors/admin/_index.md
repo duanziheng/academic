@@ -6,9 +6,9 @@ interests:
   - Single-Cell Genomics
   - Spatial Transcriptomics
   - Drug Discovery
-  - Machine Learning
+  <!-- - Machine Learning -->
   - Graph Learning
-  - Large Language Models
+  <!-- - Large Language Models -->
 social:
   - icon: envelope
     icon_pack: fas
@@ -25,9 +25,9 @@ social:
   - icon: linkedin
     icon_pack: fab
     link: https://www.linkedin.com/in/zihengduan
-  - icon: cv
+  <!-- - - icon: cv
     icon_pack: ai
-    link: media/DZH_CV_English.pdf
+    link: media/DZH_CV_English.pdf -->
 organizations:
   - name: University of California, Irvine
     url: https://uci.edu/
