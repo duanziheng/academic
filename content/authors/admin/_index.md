@@ -25,9 +25,9 @@ social:
   - icon: linkedin
     icon_pack: fab
     link: https://www.linkedin.com/in/zihengduan
-  <!-- - - icon: cv
-    icon_pack: ai
-    link: media/DZH_CV_English.pdf -->
+  # - icon: cv
+  #   icon_pack: ai
+  #   link: media/DZH_CV_English.pdf
 organizations:
   - name: University of California, Irvine
     url: https://uci.edu/
