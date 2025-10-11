@@ -6,9 +6,9 @@ interests:
   - Single-Cell Genomics
   - Spatial Transcriptomics
   - Drug Discovery
-  <!-- - Machine Learning -->
+  # - Machine Learning
   - Graph Learning
-  <!-- - Large Language Models -->
+  # - Large Language Models
 social:
   - icon: envelope
     icon_pack: fas
