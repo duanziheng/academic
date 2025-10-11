@@ -36,9 +36,9 @@ education:
     - course: Ph.D. in Computer Science
       institution: University of California, Irvine
       year: 2021-2025
-    - course: M.S. in Computer Science
-      institution: University of California, Irvine
-      year: 2021-2024
+    # - course: M.S. in Computer Science
+    # institution: University of California, Irvine
+    # year: 2021-2024
     - course: B.S. in Automation and Computer Science (Double Degree)
       institution: Zhejiang University
       year: 2016-2020
