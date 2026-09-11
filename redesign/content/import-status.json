@@ -1,0 +1,13 @@
+{
+  "documents": 58,
+  "failures": [
+    [
+      "/publication/Journal/Cross-ancestry-atlas-of-gene-isoform-and-splicing-regulation-in-the-developing-human-brainscENCORE-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/science.adh0829.pdf",
+      "HTTP Error 404: Not Found"
+    ],
+    [
+      "/publication/Journal/Characterizing-dysregulations-via-cell-cell-communications-in-Alzheimer%e2%80%99s-brains-using-single-cell-transcriptomes/s12868-024-00867-y.pdf",
+      "HTTP Error 404: Not Found"
+    ]
+  ]
+}
