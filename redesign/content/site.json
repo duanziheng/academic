@@ -1344,13 +1344,13 @@
         "name": "RAG-ST",
         "year": 2025,
         "description": "Retrieval-Augmented Generation for Spatial Transcriptomics",
-        "url": "https://ucsc-ospo.github.io/project/osre25/uci/rag-st/"
+        "url": "https://summerofcode.withgoogle.com/archive/2025/projects/m3s8fWxd"
       },
       {
         "name": "BenchmarkST",
         "year": 2024,
         "description": "Spatial Transcriptomics Gene Imputation Benchmarking",
-        "url": "https://ucsc-ospo.github.io/project/osre24/uci/benchmarkst/"
+        "url": "https://summerofcode.withgoogle.com/archive/2024/projects/WHnUWgTG"
       }
     ]
   }
