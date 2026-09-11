@@ -1,0 +1,1354 @@
+{
+  "publications": [
+    {
+      "title": "Single-cell transcriptomic and chromatin dynamics of the human brain in PTSD",
+      "path": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/",
+      "year": 2025,
+      "type": "Journal article",
+      "venue": "Nature",
+      "authors": [
+        "Zhang Lab"
+      ],
+      "abstract": "Post-traumatic stress disorder (PTSD) is a polygenic disorder occurring after extreme trauma exposure. Recent studies have begun to detail the molecular biology of PTSD. However, given the array of PTSD-perturbed molecular pathways identifed so far, it is implausible that a single cell type is responsible. Here we profle the molecular responses in over two million nuclei from the dorsolateral prefrontal cortex of 111 human brains, collected post-mortem from individuals with and without PTSD and major depressive disorder. We identify neuronal and non-neuronal cell-type clusters, gene expression changes and transcriptional regulators, and map the epigenomic regulome of PTSD in a cell-type-specifc manner. Our analysis revealed PTSD-associated gene alterations in inhibitory neurons, endothelial cells and microglia and uncovered genes and pathways associated with glucocorticoid signalling, GABAergic transmission and neuroinfammation. We further validated these fndings using cell-type-specifc spatial transcriptomics, confrming disruption of key genes such as SST and FKBP5. By integrating genetic, transcriptomic and epigenetic data, we uncovered the regulatory mechanisms of credible variants that disrupt PTSD genes, including ELFN1, MAD1L1 and KCNIP4, in a cell-type-specifc context. Together, these fndings provide a comprehensive characterization of the cell-specifc molecular regulatory mechanisms that underlie the persisting efects of traumatic stress response on the human prefrontal cortex.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://zihengduan.cn/publication/Journal/Single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-PTSD/s41586-025-09083-y.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/mjgirgenti/PTSDsnDLPFC"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1038/s41586-025-09083-y"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "MUSE: A Multi-slice Joint Analysis Method for Spatial Transcriptomics Experiments",
+      "path": "/publication/conference/muse/",
+      "year": 2025,
+      "type": "Conference paper",
+      "venue": "CIKM-2025",
+      "authors": [
+        "Ziheng Duan",
+        "Xi Li",
+        "Zhiqing Xiao",
+        "Rex Ying",
+        "Jing Zhang"
+      ],
+      "abstract": "",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://dl.acm.org/doi/pdf/10.1145/3746252.3761240"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/muse/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1145/3746252.3761240"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/MUSE"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "iMIRACLE: an Iterative Multi-View Graph Neural Network to Model Intercellular Gene Regulation from Spatial Transcriptomic Data",
+      "path": "/publication/conference/imiracle-an-iterative-multi-view-graph-neural-network-to-model-intercellular-gene-regulation-from-spatial-transcriptomic-data/",
+      "year": 2024,
+      "type": "Conference paper",
+      "venue": "CIKM-2024",
+      "authors": [
+        "**Ziheng Duan**",
+        "Siwei Xu",
+        "Cheyu Lee",
+        "Dylan Riffle",
+        "Jing Zhang"
+      ],
+      "abstract": "Spatial transcriptomics has transformed genomic research by measuring spatially resolved gene expressions, allowing us to investigate how cells adapt to their microenvironment via modulating their expressed genes. This essential process usually starts from cell-cell communication (CCC) via ligand-receptor (LR) interaction, leading to regulatory changes within the receiver cell. However, few methods were developed to connect them to provide biological insights into intercellular regulation. To fill this gap, we propose iMiracle, an iterative multi-view graph neural network that models each cell’s intercellular regulation with three key features. Firstly, iMiracle integrates inter- and intra-cellular networks to jointly estimate cell-type- and micro-environment-driven gene expressions. Optionally, it allows prior knowledge of intra-cellular networks as pre-structured masks to maintain biological relevance. Secondly, iMiracle employs iterative learning to overcome the sparsity of spatial transcriptomic data and gradually fill in the missing edges in the CCC network. Thirdly, iMiracle infers a cell-specific ligand-gene regulatory score based on the contributions of different LR pairs to interpret inter-cellular regulation. We applied iMiracle to nine simulated and eight real datasets from three sequencing platforms and demonstrated that iMiracle consistently outperformed ten methods in gene expression imputation and four methods in regulatory score inference. Lastly, we developed iMiracle as an open-source software and anticipate that it can be a powerful tool in decoding the complexities of inter-cellular transcriptional regulation.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Conference/iMIRACLE-an-Iterative-Multi-View-Graph-Neural-Network-to-Model-Intercellular-Gene-Regulation-from-Spatial-Transcriptomic-Data/iMiracle.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/imiracle-an-iterative-multi-view-graph-neural-network-to-model-intercellular-gene-regulation-from-spatial-transcriptomic-data/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/iMiracle"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1145/3627673.3679574"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "Impeller: a path-based heterogeneous graph learning method for spatial transcriptomic data imputation",
+      "path": "/publication/journal/impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Bioinformatics",
+      "authors": [
+        "**Ziheng Duan**",
+        "Dylan Riffle",
+        "Ren Li",
+        "Junhao Liu",
+        "Martin Renqiang Min",
+        "Jing Zhang"
+      ],
+      "abstract": "Recent advances in spatial transcriptomics allow spatially resolved gene expression measurements with cellular or even sub-cellular resolution, directly characterizing the complex spatiotemporal gene expression landscape and cell-to-cell interactions in their native microenvironments. Due to technology limitations, most spatial transcriptomic technologies still yield incomplete expression measurements with excessive missing values. Therefore, gene imputation is critical to filling in missing data, enhancing resolution, and improving overall interpretability. However, existing methods either require additional matched single-cell RNA-seq data, which is rarely available, or ignore spatial proximity or expression similarity information. To address these issues, we introduce Impeller, a path-based heterogeneous graph learning method for spatial transcriptomic data imputation. Impeller has two unique characteristics distinct from existing approaches. First, it builds a heterogeneous graph with two types of edges representing spatial proximity and expression similarity. Therefore, Impeller can simultaneously model smooth gene expression changes across spatial dimensions and capture similar gene expression signatures of faraway cells from the same type. Moreover, Impeller incorporates both short- and long-range cell-to-cell interactions (e.g., via paracrine and endocrine) by stacking multiple GNN layers. We use a learnable path operator in Impeller to avoid the over-smoothing issue of the traditional Laplacian matrices. Extensive experiments on diverse datasets from three popular platforms and two species demonstrate the superiority of Impeller over various state-of-the-art imputation methods.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/btae339.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/Impeller"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1093/bioinformatics/btae339"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "Single-cell multi-cohort dissection of the schizophrenia transcriptome",
+      "path": "/publication/journal/single-cell-multi-cohort-dissection-of-the-schizophrenia-transcriptome/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science",
+      "authors": [
+        "W Brad Ruzicka",
+        "Shahin Mohammadi",
+        "John F Fullard",
+        "Jose Davila-Velderrain",
+        "Sivan Subburaju",
+        "Daniel Reed Tso",
+        "Makayla Hourihan",
+        "Shan Jiang",
+        "Hao-Chih Lee",
+        "Jaroslav Bendl",
+        "**PsychENCODE Consortium**",
+        "Georgios Voloudakis",
+        "Vahram Haroutunian",
+        "Gabriel E Hoffman",
+        "Panos Roussos",
+        "Manolis Kellis"
+      ],
+      "abstract": "The complexity and heterogeneity of schizophrenia have hindered mechanistic elucidation and the development of more effective therapies. Here, we performed single-cell dissection of schizophrenia-associated transcriptomic changes in the human prefrontal cortex across 140 individuals in two independent cohorts. Excitatory neurons were the most affected cell group, with transcriptional changes converging on neurodevelopment and synapse-related molecular pathways. Transcriptional alterations included known genetic risk factors, suggesting convergence of rare and common genomic variants on neuronal population-specific alterations in schizophrenia. Based on the magnitude of schizophrenia-associated transcriptional change, we identified two populations of individuals with schizophrenia marked by expression of specific excitatory and inhibitory neuronal cell states. This single-cell atlas links transcriptomic changes to etiological genetic risk factors, contextualizing established knowledge within the human cortical cytoarchitecture and facilitating mechanistic understanding of schizophrenia pathophysiology and heterogeneity.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Single-cell-multi-cohort-dissection-of-the-schizophrenia-transcriptome/science.adg5136.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/single-cell-multi-cohort-dissection-of-the-schizophrenia-transcriptome/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/science.adg5136"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Single-cell genomics and regulatory networks for 388 human brains",
+      "path": "/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science",
+      "authors": [
+        "PsychENCODE Consortium"
+      ],
+      "abstract": "Single-cell genomics is a powerful tool for studying heterogeneous tissues such as the brain. Yet little is understood about how genetic variants influence cell-level gene expression. Addressing this, we uniformly processed single-nuclei, multiomics datasets into a resource comprising 2.8 million nuclei from the prefrontal cortex across 388 individuals. For 28 cell types, we assessed population-level variation in expression and chromatin across gene families and drug targets. We identified 550,000 cell type–specific regulatory elements and 1.4 million single-cell expression quantitative trait loci, which we used to build cell-type regulatory and cell-to-cell communication networks. These networks manifest cellular changes in aging and neuropsychiatric disorders. We further constructed an integrative model accurately imputing single-cell expression and simulating perturbations; the model prioritized ~250 disease-risk genes and drug targets with associated cell types.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://zihengduan.cn/publication/Journal/Single-cell-genomics-and-regulatory-networks-for-388-human-brains/science.adi5199.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/science.adi5199"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "Massively parallel characterization of regulatory elements in the developing human cortex",
+      "path": "/publication/journal/massively-parallel-characterization-of-regulatory-elements-in-the-developing-human-cortex/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science",
+      "authors": [
+        "Chengyu Deng",
+        "Sean Whalen",
+        "Marilyn Steyert",
+        "Ryan Ziffra",
+        "Pawel F Przytycki",
+        "Fumitaka Inoue",
+        "Daniela A Pereira",
+        "Davide Capauto",
+        "Scott Norton",
+        "Flora M Vaccarino",
+        "**PsychENCODE Consortium**",
+        "Alex A Pollen",
+        "Tomasz J Nowakowski",
+        "Nadav Ahituv",
+        "Katherine S Pollard"
+      ],
+      "abstract": "Nucleotide changes in gene regulatory elements are important determinants of neuronal development and diseases. Using massively parallel reporter assays in primary human cells from mid-gestation cortex and cerebral organoids, we interrogated the cis-regulatory activity of 102,767 open chromatin regions, including thousands of sequences with cell type–specific accessibility and variants associated with brain gene regulation. In primary cells, we identified 46,802 active enhancer sequences and 164 variants that alter enhancer activity. Activity was comparable in organoids and primary cells, suggesting that organoids provide an adequate model for the developing cortex. Using deep learning we decoded the sequence basis and upstream regulators of enhancer activity. This work establishes a comprehensive catalog of functional gene regulatory elements and variants in human neuronal development.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Massively-parallel-characterization-of-regulatory-elements-in-the-developing-human-cortex/science.adh0559.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/massively-parallel-characterization-of-regulatory-elements-in-the-developing-human-cortex/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/science.adh0559"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Cross-ancestry atlas of gene, isoform, and splicing regulation in the developing human brain",
+      "path": "/publication/journal/cross-ancestry-atlas-of-gene-isoform-and-splicing-regulation-in-the-developing-human-brain/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science",
+      "authors": [
+        "Cindy Wen",
+        "Michael Margolis",
+        "Rujia Dai",
+        "Pan Zhang",
+        "Pawel F. Przytycki",
+        "Daniel D. Vo",
+        "Arjun Bhattacharya",
+        "Nana Matoba",
+        "Miao Tang",
+        "Chuan Jiao",
+        "Minsoo Kim",
+        "Ellen Tsai",
+        "Celine Hoh",
+        "Nil Aygün",
+        "Rebecca L. Walker",
+        "Christos Chatzinakos",
+        "Declan Clarke",
+        "Henry Pratt",
+        "**PsychENCODE Consortium**",
+        "Mette A. Peters",
+        "Mark Gerstein",
+        "Nikolaos P. Daskalakis",
+        "Zhiping Weng",
+        "Andrew E. Jaffe",
+        "Joel E. Kleinman",
+        "Thomas M. Hyde",
+        "Daniel R. Weinberger",
+        "Nicholas J. Bray",
+        "Nenad Sestan",
+        "Daniel H. Geschwind",
+        "Kathryn Roeder",
+        "Alexander Gusev",
+        "Bogdan Pasaniuc",
+        "Jason L. Stein",
+        "Michael I. Love",
+        "Katherine S. Pollard",
+        "Chunyu Liu",
+        "Michael J. Gandal"
+      ],
+      "abstract": "Neuropsychiatric genome-wide association studies (GWASs), including those for autism spectrum disorder and schizophrenia, show strong enrichment for regulatory elements in the developing brain. However, prioritizing risk genes and mechanisms is challenging without a unified regulatory atlas. Across 672 diverse developing human brains, we identified 15,752 genes harboring gene, isoform, and/or splicing quantitative trait loci, mapping 3739 to cellular contexts. Gene expression heritability drops during development, likely reflecting both increasing cellular heterogeneity and the intrinsic properties of neuronal maturation. Isoform-level regulation, particularly in the second trimester, mediated the largest proportion of GWAS heritability. Through colocalization, we prioritized mechanisms for about 60% of GWAS loci across five disorders, exceeding adult brain findings. Finally, we contextualized results within gene and isoform coexpression networks, revealing the comprehensive landscape of transcriptome regulation in development and disease.",
+      "links": [
+        {
+          "label": "Cite",
+          "url": "/publication/journal/cross-ancestry-atlas-of-gene-isoform-and-splicing-regulation-in-the-developing-human-brain/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/science.adh0829"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "A data-driven single-cell and spatial transcriptomic map of the human prefrontal cortex",
+      "path": "/publication/journal/a-data-driven-single-cell-and-spatial-transcriptomic-map-of-the-human-prefrontal-cortex/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science",
+      "authors": [
+        "Prashant S Emani",
+        "Louise A Huuki-Myers",
+        "Abby Spangler",
+        "Nicholas J Eagles",
+        "Kelsey D Montgomery",
+        "Sang Ho Kwon",
+        "Boyi Guo",
+        "Melissa Grant-Peters",
+        "Heena R Divecha",
+        "Madhavi Tippani",
+        "Chaichontat Sriworarat",
+        "Annie B Nguyen",
+        "Prashanthi Ravichandran",
+        "Matthew N Tran",
+        "Arta Seyedian",
+        "**PsychENCODE Consortium**",
+        "Thomas M Hyde",
+        "Joel E Kleinman",
+        "Alexis Battle",
+        "Stephanie C Page",
+        "Mina Ryten",
+        "Stephanie C Hicks",
+        "Keri Martinowich",
+        "Leonardo Collado-Torres",
+        "Kristen R Maynard"
+      ],
+      "abstract": "The molecular organization of the human neocortex historically has been studied in the context of its histological layers. However, emerging spatial transcriptomic technologies have enabled unbiased identification of transcriptionally defined spatial domains that move beyond classic cytoarchitecture. We used the Visium spatial gene expression platform to generate a data-driven molecular neuroanatomical atlas across the anterior-posterior axis of the human dorsolateral prefrontal cortex. Integration with paired single-nucleus RNA-sequencing data revealed distinct cell type compositions and cell-cell interactions across spatial domains. Using PsychENCODE and publicly available data, we mapped the enrichment of cell types and genes associated with neuropsychiatric disorders to discrete spatial domains.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/A-data-driven-single-cell-and-spatial-transcriptomic-map-of-the-human-prefrontal-cortex/science.adh1938.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/a-data-driven-single-cell-and-spatial-transcriptomic-map-of-the-human-prefrontal-cortex/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/science.adh1938"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Using a comprehensive atlas and predictive models to reveal the complexity and evolution of brain-active regulatory elements",
+      "path": "/publication/journal/using-a-comprehensive-atlas-and-predictive-models-to-reveal-the-complexity-and-evolution-of-brain-active-regulatory-elements/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science Advances",
+      "authors": [
+        "Henry E Pratt",
+        "Gregory Andrews",
+        "Nicole Shedd",
+        "Nishigandha Phalke",
+        "Tongxin Li",
+        "Anusri Pampari",
+        "Matthew Jensen",
+        "Cindy Wen",
+        "**PsychENCODE Consortium**",
+        "Michael J Gandal",
+        "Daniel H Geschwind",
+        "Mark Gerstein",
+        "Jill Moore",
+        "Anshul Kundaje",
+        "Andrés Colubri",
+        "Zhiping Weng"
+      ],
+      "abstract": "Most genetic variants associated with psychiatric disorders are located in noncoding regions of the genome. To investigate their functional implications, we integrate epigenetic data from the PsychENCODE Consortium and other published sources to construct a comprehensive atlas of candidate brain cis-regulatory elements. Using deep learning, we model these elements’ sequence syntax and predict how binding sites for lineage-specific transcription factors contribute to cell type–specific gene regulation in various types of glia and neurons. The elements’ evolutionary history suggests that new regulatory information in the brain emerges primarily via smaller sequence mutations within conserved mammalian elements rather than entirely new human- or primate-specific sequences. However, primate-specific candidate elements, particularly those active during fetal brain development and in excitatory neurons and astrocytes, are implicated in the heritability of brain-related human traits. Additionally, we introduce PsychSCREEN, a web-based platform offering interactive visualization of PsychENCODE-generated genetic and epigenetic data from diverse brain cell types in individuals with psychiatric disorders and healthy controls.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Using-a-comprehensive-atlas-and-predictive-models-to-reveal-the-complexity-and-evolution-of-brain-active-regulatory-elements/sciadv.adj4452.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/using-a-comprehensive-atlas-and-predictive-models-to-reveal-the-complexity-and-evolution-of-brain-active-regulatory-elements/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/sciadv.adj4452"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Transcriptomic sex differences in postmortem brain samples from patients with psychiatric disorders",
+      "path": "/publication/journal/transcriptomic-sex-differences-in-postmortem-brain-samples-from-patients-with-psychiatric-disorders/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science Translational Medicine",
+      "authors": [
+        "Yan Xia",
+        "Cuihua Xia",
+        "Yi Jiang",
+        "Yu Chen",
+        "Jiaqi Zhou",
+        "Rujia Dai",
+        "Cong Han",
+        "Zhongzheng Mao",
+        "**PsychENCODE Consortium**",
+        "Chunyu Liu",
+        "Chao Chen"
+      ],
+      "abstract": "Many psychiatric disorders exhibit sex differences, but the underlying mechanisms remain poorly understood. We analyzed transcriptomics data from 2160 postmortem adult prefrontal cortex brain samples from the PsychENCODE consortium in a sex-stratified study design. We compared transcriptomics data of postmortem brain samples from patients with schizophrenia (SCZ), bipolar disorder (BD), and autism spectrum disorder (ASD) with transcriptomics data of postmortem control brains from individuals without a known history of psychiatric disease. We found that brain samples from females with SCZ, BD, and ASD showed a higher burden of transcriptomic dysfunction than did brain samples from males with these disorders. This observation was supported by the larger number of differentially expressed genes (DEGs) and a greater magnitude of gene expression changes observed in female versus male brain specimens. In addition, female patient brain samples showed greater overall connectivity dysfunction, defined by a higher proportion of gene coexpression modules with connectivity changes and higher connectivity burden, indicating a greater degree of gene coexpression variability. We identified several gene coexpression modules enriched in sex-biased DEGs and identified genes from a genome-wide association study that were involved in immune and synaptic functions across different brain cell types. We found a number of genes as hubs within these modules, including those encoding SCN2A, FGF14, and C3. Our results suggest that in the context of psychiatric diseases, males and females exhibit different degrees of transcriptomic dysfunction and implicate immune and synaptic-related pathways in these sex differences.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Transcriptomic-sex-differences-in-postmortem-brain-samples-from-patients-with-psychiatric-disorders/scitranslmed.adh9974.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/transcriptomic-sex-differences-in-postmortem-brain-samples-from-patients-with-psychiatric-disorders/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/scitranslmed.adh9974"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Evaluating performance and applications of sample-wise cell deconvolution methods on human brain transcriptomic data",
+      "path": "/publication/journal/evaluating-performance-and-applications-of-sample-wise-cell-deconvolution-methods-on-human-brain-transcriptomic-data/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Science Advances",
+      "authors": [
+        "Rujia Dai",
+        "Tianyao Chu",
+        "Ming Zhang",
+        "Xuan Wang",
+        "Alexandre Jourdon",
+        "Feinan Wu",
+        "Jessica Mariani",
+        "Flora M Vaccarino",
+        "Donghoon Lee",
+        "John F Fullard",
+        "Gabriel E Hoffman",
+        "Panos Roussos",
+        "Yue Wang",
+        "Xusheng Wang",
+        "Dalila Pinto",
+        "Sidney H Wang",
+        "Chunling Zhang",
+        "**PsychENCODE consortium**",
+        "Chao Chen",
+        "Chunyu Liu"
+      ],
+      "abstract": "Sample-wise deconvolution methods estimate cell-type proportions and gene expressions in bulk tissue samples, yet their performance and biological applications remain unexplored, particularly in human brain transcriptomic data. Here, nine deconvolution methods were evaluated with sample-matched data from bulk tissue RNA sequencing (RNA-seq), single-cell/nuclei (sc/sn) RNA-seq, and immunohistochemistry. A total of 1,130,767 nuclei per cells from 149 adult postmortem brains and 72 organoid samples were used. The results showed the best performance of dtangle for estimating cell proportions and bMIND for estimating sample-wise cell-type gene expressions. For eight brain cell types, 25,273 cell-type eQTLs were identified with deconvoluted expressions (decon-eQTLs). The results showed that decon-eQTLs explained more schizophrenia GWAS heritability than bulk tissue or single-cell eQTLs did alone. Differential gene expressions associated with Alzheimer’s disease, schizophrenia, and brain development were also examined using the deconvoluted data. Our findings, which were replicated in bulk tissue and single-cell data, provided insights into the biological applications of deconvoluted data in multiple brain disorders.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Evaluating-performance-and-applications-of-sample-wise-cell-deconvolution-methods-on-human-brain-transcriptomic-data/sciadv.adh2588.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/evaluating-performance-and-applications-of-sample-wise-cell-deconvolution-methods-on-human-brain-transcriptomic-data/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1126/sciadv.adh2588"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Characterizing dysregulations via cell-cell communications in Alzheimer’s brains using single-cell transcriptomes",
+      "path": "/publication/journal/characterizing-dysregulations-via-cell-cell-communications-in-alzheimers-brains-using-single-cell-transcriptomes/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "BMC Neuroscience",
+      "authors": [
+        "Che Yu Lee",
+        "Dylan Riffle",
+        "Yifeng Xiong",
+        "Nadia Momtaz",
+        "Yutong Lei",
+        "Joseph M Pariser",
+        "Diptanshu Sikdar",
+        "Ahyeon Hwang",
+        "**Ziheng Duan**",
+        "Jing Zhang"
+      ],
+      "abstract": "Background: Alzheimer’s disease (AD) is a devastating neurodegenerative disorder affecting 44 million people worldwide, leading to cognitive decline, memory loss, and significant impairment in daily functioning. The recent single-cell sequencing technology has revolutionized genetic and genomic resolution by enabling scientists to explore the diversity of gene expression patterns at the finest resolution. Most existing studies have solely focused on molecular perturbations within each cell, but cells live in microenvironments rather than in isolated entities. Here, we leveraged the large-scale and publicly available single-nucleus RNA sequencing in the human prefrontal cortex to investigate cell-to-cell communication in healthy brains and their perturbations in AD. We uniformly processed the snRNA-seq with strict QCs and labeled canonical cell types consistent with the definitions from the BRAIN Initiative Cell Census Network. From ligand and receptor gene expression, we built a high-confidence cell-to-cell communication network to investigate signaling differences between AD and healthy brains. Results: Specifically, we first performed broad communication pattern analyses to highlight that biologically related cell types in normal brains rely on largely overlapping signaling networks and that the AD brain exhibits the irregular inter-mixing of cell types and signaling pathways. Secondly, we performed a more focused cell-type-centric analysis and found that excitatory neurons in AD have significantly increased their communications to inhibitory neurons, while inhibitory neurons and other non-neuronal cells globally decreased theirs to all cells. Then, we delved deeper with a signaling-centric view, showing that canonical signaling pathways CSF, TGFβ, and CX3C are significantly dysregulated in their signaling to the cell type microglia/PVM and from endothelial to neuronal cells for the WNT pathway. Finally, after extracting 23 known AD risk genes, our intracellular communication analysis revealed a strong connection of extracellular ligand genes APP, APOE, and PSEN1 to intracellular AD risk genes TREM2, ABCA1, and APP in the communication from astrocytes and microglia to neurons. Conclusions: In summary, with the novel advances in single-cell sequencing technologies, we show that cellular signaling is regulated in a cell-type-specific manner and that improper regulation of extracellular signaling genes is linked to intracellular risk genes, giving the mechanistic intra- and inter-cellular picture of AD.",
+      "links": [
+        {
+          "label": "Cite",
+          "url": "/publication/journal/characterizing-dysregulations-via-cell-cell-communications-in-alzheimers-brains-using-single-cell-transcriptomes/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1186/s12868-024-00867-y"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "scENCORE: leveraging single-cell epigenetic data to predict chromatin conformation using graph embedding",
+      "path": "/publication/journal/scencore-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/",
+      "year": 2024,
+      "type": "Journal article",
+      "venue": "Briefings in Bioinformatics",
+      "authors": [
+        "**Ziheng Duan**",
+        "Siwei Xu",
+        "Shushrruth Sai Srinivasan",
+        "Ahyeon Hwang",
+        "Che Yu Lee",
+        "Feng Yue",
+        "Mark Gerstein",
+        "Yu Luan",
+        "Matthew Girgenti",
+        "Jing Zhang"
+      ],
+      "abstract": "Dynamic compartmentalization of eukaryotic DNA into active and repressed states enables diverse transcriptional programs to arise from a single genetic blueprint, whereas its dysregulation can be strongly linked to a broad spectrum of diseases. While single-cell Hi-C experiments allow for chromosome conformation profiling across many cells, they are still expensive and not widely available for most labs. Here, we propose an alternate approach, scENCORE, to computationally reconstruct chromatin compartments from the more affordable and widely accessible single-cell epigenetic data. First, scENCORE constructs a long-range epigenetic correlation graph to mimic chromatin interaction frequencies, where nodes and edges represent genome bins and their correlations. Then, it learns the node embeddings to cluster genome regions into A/B compartments and aligns different graphs to quantify chromatin conformation changes across conditions. Benchmarking using cell-type-matched Hi-C experiments demonstrates that scENCORE can robustly reconstruct A/B compartments in a cell-type-specific manner. Furthermore, our chromatin confirmation switching studies highlight substantial compartment-switching events that may introduce substantial regulatory and transcriptional changes in psychiatric disease. In summary, scENCORE allows accurate and cost-effective A/B compartment reconstruction to delineate higher-order chromatin structure heterogeneity in complex tissues.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/scENCORE-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/bbae096.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/scencore-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/scENCORE"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1093/bib/bbae096"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "ExAD-GNN: explainable graph neural network for Alzheimer’s disease state prediction from single-cell data",
+      "path": "/publication/journal/exad-gnn-explainable-graph-neural-network-for-alzheimers-disease-state-prediction-from-single-cell-data/",
+      "year": 2023,
+      "type": "Journal article",
+      "venue": "APSIPA Transactions on Signal and Information Processing",
+      "authors": [
+        "**Ziheng Duan**",
+        "CheYu Lee",
+        "Jing Zhang"
+      ],
+      "abstract": "Alzheimer’s disease (AD) is a prevalent neurodegenerative disorder with significant impacts on patients and their families. Therefore, accurate and early diagnosis of AD is crucial for improving patient outcomes and developing effective treatments. However, despite advancements in machine learning for AD diagnosis, current methods lack molecular-level insights and completely ignore the heterogeneity in complex human brains, thus potentially masking crucial disease mechanisms. Here, we present ExAD-GNN, an Explainable Graph Neural Network for predicting AD status from single-cell sequencing data. Leveraging K Nearest Neighbours (KNN) graphs derived from the expression profiles of individual cells, ExAD-GNN achieves two primary goals: predicting AD pathology at a cellular level and identifying cell-type-specific marker genes for AD diagnosis through a unique learnable gene importance metric. Extensive benchmarking on large-scale scRNA-seq data with state-of-the-art methods demonstrates ExAD-GNN’s noticeably improved AD prediction accuracy and robustness across various cell types and samples. Furthermore, an extensive ablation study and literature search confirm the majority of top AD risk genes highlighted by our method, demonstrating the effectiveness of ExAD-GNN’s model interpretation scheme. In summary, we develop ExAD-GNN as a publicly.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/ExAD-GNN-Explainable-Graph-Neural-Network-for-Alzheimers-Disease-State-Prediction-from-Single-cell-Data/116.00000239.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/exad-gnn-explainable-graph-neural-network-for-alzheimers-disease-state-prediction-from-single-cell-data/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/ExADGNN"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1561/116.00000239"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "iHerd: an integrative hierarchical graph representation learning framework to quantify network changes and prioritize risk genes in disease",
+      "path": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/",
+      "year": 2023,
+      "type": "Journal article",
+      "venue": "Plos Computational Biology",
+      "authors": [
+        "**Ziheng Duan**",
+        "Yi Dai",
+        "Ahyeon Hwang",
+        "Cheyu Lee",
+        "Kaichi Xie",
+        "Chutong Xiao",
+        "Min Xu",
+        "Matthew J. Girgenti",
+        "Jing Zhang"
+      ],
+      "abstract": "Different genes form complex networks within cells to carry out critical cellular functions, while network alterations in this process can potentially introduce downstream transcriptome perturbations and phenotypic variations. Therefore, developing efficient and interpretable methods to quantify network changes and pinpoint driver genes across conditions is crucial. We propose a hierarchical graph representation learning method, called iHerd. Given a set of networks, iHerd first hierarchically generates a series of coarsened sub-graphs in a data-driven manner, representing network modules at different resolutions (e.g., the level of signaling pathways). Then, it sequentially learns low-dimensional node representations at all hierarchical levels via efficient graph embedding. Lastly, iHerd projects separate gene embeddings onto the same latent space in its graph alignment module to calculate a rewiring index for driver gene prioritization. To demonstrate its effectiveness, we applied iHerd on a tumor-to-normal GRN rewiring analysis and cell-type-specific GCN analysis using single-cell multiome data of the brain. We showed that iHerd can effectively pinpoint novel and well-known risk genes in different diseases. Distinct from existing models, iHerd’s graph coarsening for hierarchical learning allows us to successfully classify network driver genes into early and late divergent genes (EDGs and LDGs), emphasizing genes with extensive network changes across and within signaling pathway levels. This unique approach for driver gene classification can provide us with deeper molecular insights. The code is freely available at https://github.com/aicb-ZhangLabs/iHerd. All other relevant data are within the manuscript and supporting information files.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/iHerd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/journal.pcbi.1011444.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/iHerd"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1371/journal.pcbi.1011444"
+        }
+      ],
+      "selected": true
+    },
+    {
+      "title": "Turtling: A Time-aware Neural Topic Model on NIH Grant Data",
+      "path": "/publication/journal/turtling-a-time-aware-neural-topic-model-on-nih-grant-data/",
+      "year": 2023,
+      "type": "Journal article",
+      "venue": "Bioinformatics Advances",
+      "authors": [
+        "Ruiyi Zhang",
+        "**Ziheng Duan**",
+        "CheYu Lee",
+        "Dylan Riffle",
+        "Martin Renqiang Min",
+        "Jing Zhang"
+      ],
+      "abstract": "Motivation: Recent initiatives for federal grant transparency allow direct knowledge extraction from large volumes of grant texts, serving as a powerful alternative to traditional surveys. However, its computational modeling is challenging as grants are usually multifaceted with constantly-evolving topics. Methods: We propose Turtling, a time-aware neural topic model with three unique characteristics. Firstly, Turtling employs pre-trained biomedical word embedding to extract research topics. Secondly, it leverages a probabilistic time-series model to allow smooth and coherent topic evolution. Lastly, Turtling leverages additional topic diversity loss and funding institute classification loss to improve topic quality and facilitate funding institute prediction. Results: We apply Turtling on publicly available NIH grant text and show that it significantly outperforms other methods on topic quality metrics. We also demonstrate that Turtling can provide insights into research topic evolution by detecting topic trends across decades. In summary, Turtling may be a valuable tool for grant text analysis. Availability: Turtling is freely available as an open-source software at https://github.com/aicb-ZhangLabs/Turtling Supplementary information: Supplementary data are available at Bioinformatics Advances online.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Turtling-A-Time-aware-Neural-Topic-Model-on-NIH-Grant-Data/vbad096.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/turtling-a-time-aware-neural-topic-model-on-nih-grant-data/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/Turtling"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1093/bioadv/vbad096"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Venus: An efficient virus infection detection and fusion site discovery method using single-cell and bulk RNA-seq data",
+      "path": "/publication/journal/venus-an-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-rna-seq-data/",
+      "year": 2022,
+      "type": "Journal article",
+      "venue": "Plos Computational Biology",
+      "authors": [
+        "Che Yu Lee",
+        "Yuhang Chen",
+        "**Ziheng Duan**",
+        "Min Xu",
+        "Matthew J. Girgenti",
+        "Ke Xu",
+        "Mark Gerstein",
+        "Jing Zhang"
+      ],
+      "abstract": "Early and accurate detection of viruses in clinical and environmental samples is essential for effective public healthcare, treatment, and therapeutics. While PCR detects potential pathogens with high sensitivity, it is difficult to scale and requires knowledge of the exact sequence of the pathogen. With the advent of next-gen single-cell sequencing, it is now possible to scrutinize viral transcriptomics at the finest possible resolution–cells. This newfound ability to investigate individual cells opens new avenues to understand viral pathophysiology with unprecedented resolution. To leverage this ability, we propose an efficient and accurate computational pipeline, named Venus, for virus detection and integration site discovery in both single-cell and bulk-tissue RNA-seq data. Specifically, Venus addresses two main questions: whether a tissue/cell type is infected by viruses or a virus of interest? And if infected, whether and where has the virus inserted itself into the human genome? Our analysis can be broken into two parts–validation and discovery. Firstly, for validation, we applied Venus on well-studied viral datasets, such as HBV- hepatocellular carcinoma and HIV-infection treated with antiretroviral therapy. Secondly, for discovery, we analyzed datasets such as HIV-infected neurological patients and deeply sequenced T-cells. We detected viral transcripts in the novel target of the brain and high-confidence integration sites in immune cells. In conclusion, here we describe Venus, a publicly available software which we believe will be a valuable virus investigation tool for the scientific community at large.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/Venus-An-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-RNA-seq-data/journal.pcbi.1010636.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/venus-an-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-rna-seq-data/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/Venus"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1371/journal.pcbi.1010636"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Multivariate Time Series Classification with Hierarchical Variational Graph Pooling",
+      "path": "/publication/journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/",
+      "year": 2022,
+      "type": "Journal article",
+      "venue": "Neural Networks",
+      "authors": [
+        "**Ziheng Duan**",
+        "Haoyan Xu",
+        "Yueyang Wang",
+        "Yida Huang",
+        "Anni Ren",
+        "Yizhou Sun",
+        "Wei Wang"
+      ],
+      "abstract": "Over the past decade, multivariate time series classification (MTSC) has received great attention with the advance of sensing techniques. Current deep learning methods for MTSC are based on convolutional and recurrent neural network, with the assumption that time series variables have the same effect to each other. Thus they cannot model the pairwise dependencies among variables explicitly. What's more, current spatial-temporal modeling methods based on GNNs are inherently flat and lack the capability of aggregating node information in a hierarchical manner. To address this limitation and attain expressive global representation of MTS, we propose a graph pooling based framework MTPool and view MTSC task as graph classification task. With graph structure learning and temporal convolution, MTS slices are converted to graphs and spatial-temporal features are extracted. Then, we propose a novel graph pooling method, which uses an encoder-decoder mechanism to generate adaptive centroids for cluster assignments. GNNs and graph pooling layers are used for joint graph representation learning and graph coarsening. With multiple graph pooling layers, the input graphs are hierachically coarsened to one node. Finally, differentiable classifier takes this coarsened one-node graph as input to get the final predicted class. Experiments on 10 benchmark datasets demonstrate MTPool outperforms state-of-the-art methods in MTSC tasks.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/1-s2.0-S0893608022002970-main.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/MTPool"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1016/j.neunet.2022.07.032"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Multivariate Time Series Forecasting with Transfer Entropy Graph",
+      "path": "/publication/journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/",
+      "year": 2022,
+      "type": "Journal article",
+      "venue": "Tsinghua Science and Technology",
+      "authors": [
+        "**Ziheng Duan**",
+        "Haoyan Xu",
+        "Yida Huang",
+        "Jie Feng",
+        "Yueyang Wang"
+      ],
+      "abstract": "Multivariate time series (MTS) forecasting is an important problem in many fields. Accurate forecasting results can effectively help decision-making. To date, many MTS forecasting methods have been proposed and widely applied. However, these methods assume that the predicted value of a single variable is affected by all other variables, which ignores the causal relationship among variables. To address the above issue, a novel end-to-end deep learning model, termed graph neural network with transfer entropy (TEGNN) is proposed in this paper. To characterize the causal information among variables, the transfer entropy (TE) graph is introduced in our model, where each variable is regarded as a graph node and each edge represents the casual relationship between variables. In addition, convolutional neural network (CNN) filters with different perception scales are used for time series feature extraction, which is used to generate the feature of each node. Finally, graph neural network (GNN) is adopted to tackle the forecasting problem of graph structure generated by MTS. Three benchmark datasets from the real world are used to evaluate the proposed TEGNN and the comprehensive experiments show that the proposed method achieves state-of-the-art results in MTS forecasting task.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/Multivariate_Time_Series_Forecasting_with_Transfer_Entropy_Graph.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/CauGNN"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.26599/tst.2021.9010081"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Connecting Latent ReLationships over Heterogeneous Attributed Network for Recommendation",
+      "path": "/publication/journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/",
+      "year": 2022,
+      "type": "Journal article",
+      "venue": "Applied Intelligence",
+      "authors": [
+        "**Ziheng Duan**",
+        "Yueyang Wang",
+        "Weihao Ye",
+        "Qilin Fan",
+        "Xiuhua Li"
+      ],
+      "abstract": "Recently, deep neural network models for graph-structured data have been demonstrating to be influential in recommendation systems. Graph Neural Network (GNN), which can generate high-quality embeddings by capturing graph-structured information, is convenient for the recommendation. However, most existing GNN models mainly focus on the homogeneous graph. They cannot characterize heterogeneous and complex data in the recommendation system. Meanwhile, it is challenging to develop effective methods to mine the heterogeneity and latent correlations in the graph. In this paper, we adopt Heterogeneous Attributed Network (HAN), which involves different node types as well as rich node attributes, to model data in the recommendation system. Furthermore, we propose a novel graph neural network-based model to deal with HAN for Recommendation, called HANRec. In particular, we design a component connecting potential neighbors to explore the influence between neighbors and provide two different strategies with the attention mechanism to aggregate neighbors' information. The experimental results on two real-world datasets prove that HANRec outperforms other state-of-the-art methods.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/Duan2022_Article_ConnectingLatentRelationshipsO.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/HANRec"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1007/s10489-022-03340-7"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "MTHetGNN: a heterogeneous graph embedding framework for multivariate time series forecasting",
+      "path": "/publication/journal/mthetgnn-a-heterogeneous-graph-embedding-framework-for-multivariate-time-series-forecasting/",
+      "year": 2021,
+      "type": "Journal article",
+      "venue": "Pattern Recognition Letter",
+      "authors": [
+        "Yueyang Wang",
+        "**Ziheng Duan**",
+        "Yida Huang",
+        "Haoyan Xu",
+        "Jie Feng",
+        "Anni Ren"
+      ],
+      "abstract": "Multivariate time series forecasting, which analyzes historical time series to predict future trends, can effectively help decision-making. Complex relations among variables in MTS, including static, dynamic, predictable, and latent relations, have made it possible to mining more features of MTS. Modeling complex relations are not only essential in characterizing latent dependency as well as modeling temporal dependence, but also brings great challenges in the MTS forecasting task. However, existing methods mainly focus on modeling certain relations among MTS variables. In this paper, we propose a novel end-to-end deep learning model, termed Multivariate Time Series Forecasting via Heterogeneous Graph Neural Networks (MTHetGNN). To characterize complex relations among variables, a relation embedding module is designed in MTHetGNN, where each variable is regarded as a graph node, and each type of edge represents a specific static or dynamic relationship. Meanwhile, a temporal embedding module is introduced for time series features extraction, where involving convolutional neural network (CNN) filters with different perception scales. Finally, a heterogeneous graph embedding module is adopted to handle the complex structural information generated by the two modules. Three benchmark datasets from the real world are used to evaluate the proposed MTHetGNN. The comprehensive experiments show that MTHetGNN achieves state-of-the-art results in the MTS forecasting task.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/MTHetGNN-A-Heterogeneous-Graph-Embedding-Framework-for-Multivariate-Time-Series-Forecasting/MTHetGNN.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/mthetgnn-a-heterogeneous-graph-embedding-framework-for-multivariate-time-series-forecasting/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/MTHetGNN"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1016/j.patrec.2021.12.008"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Graph Partitioning and Graph Neural Network based Hierarchical Graph Matching for Graph Similarity Computation",
+      "path": "/publication/journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/",
+      "year": 2021,
+      "type": "Journal article",
+      "venue": "Neurocomputing",
+      "authors": [
+        "Haoyan Xu",
+        "**Ziheng Duan**",
+        "Yueyan Wang",
+        "Jie Feng",
+        "Runjian Chen",
+        "Qianru Zhang",
+        "Zhongbin Xu"
+      ],
+      "abstract": "Graph similarity computation aims to predict a similarity score between one pair of graphs to facilitate downstream applications, such as finding the most similar chemical compounds similar to a query compound or Fewshot 3D Action Recognition. Recently, some graph similarity computation models based on neural networks have been proposed, which are either based on graph-level interaction or node-level comparison. However, when the number of nodes in the graph increases, it will inevitably bring about reduced representation ability or high computation cost. Motivated by this observation, we propose a graph partitioning and graph neural network-based model, called PSimGNN, to effectively resolve this issue. Specifically, each of the input graphs is partitioned into a set of subgraphs to extract the local structural features directly. Next, a novel graph neural network with an attention mechanism is designed to map each subgraph into an embedding vector. Some of these subgraph pairs are automatically selected for node-level comparison to supplement the subgraph-level embedding with fine-grained information. Finally, coarse-grained interaction information among subgraphs and fine-grained comparison information among nodes in different subgraphs are integrated to predict the final similarity score. Experimental results on graph datasets with different graph sizes demonstrate that PSimGNN outperforms state-of-the-art methods in graph similarity computation tasks using approximate Graph Edit Distance (GED) as the graph similarity metric.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/1-s2.0-S0925231221001351-main.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/PSimGNN"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1016/j.neucom.2021.01.068"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Image-based prediction of granular flow behaviors in a wedge-shaped hopper by combing DEM and deep learning methods",
+      "path": "/publication/journal/image-based-prediction-of-granular-flow-behaviors-in-a-wedge-shaped-hopper-by-combing-dem-and-deep-learning-methods/",
+      "year": 2021,
+      "type": "Journal article",
+      "venue": "Powder Technology",
+      "authors": [
+        "Zhehan Liao",
+        "Yizhang Yang",
+        "Chengfeng Sun",
+        "Ruiqi Wu",
+        "**Ziheng Duan**",
+        "Yueyang Wang",
+        "Xipeng Li",
+        "Jian Xu"
+      ],
+      "abstract": "Granular flow has solid-, liquid-, or even gas-like behaviors, which can be described through discrete element method (DEM)-based simulations. Although the DEM simulation has advantages in studying particle-scale information, it is computationally intensive. Alternatively, this work proposes to combine the DEM and deep learning methods to predict granular flow behaviors in a wedge-shaped hopper. As the image-based labels are extracted from the DEM simulation, an Alexnet-fully connection (FC) model can make point-to-point predictions about the discharge time. Furthermore, when the first 20% of image-based datasets in the timing sequence are used to train a convolutional neural network (CNN)-long short-term memory (LSTM) network, it can make process predictions about the number ratio of remaining particles (NRRP) in the hopper vs. the discharge time. Although these attempts have some shortcomings at the present stage, more efforts are encouraged to stimulate the future potential of image-based prediction through the combined methods.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/image-based-prediction-of-granular-flow-behaviors-in-a-wedge-shaped-hopper-by-combing-dem-and-deep-learning-methods/1-s2.0-S0032591021000577-main.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/image-based-prediction-of-granular-flow-behaviors-in-a-wedge-shaped-hopper-by-combing-dem-and-deep-learning-methods/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1016/j.powtec.2021.01.041"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Deep Learning Based Detection and Localization of Cerebal Aneurysms in Computed Tomography Angiography",
+      "path": "/publication/preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/",
+      "year": 2021,
+      "type": "Preprint",
+      "venue": "",
+      "authors": [
+        "Dufan Wu",
+        "Daniel Montes",
+        "**Ziheng Duan**",
+        "Yangsibo Huang",
+        "Javier M. Romero",
+        "Ramon Gilberto Gonzalez",
+        "Quanzheng Li"
+      ],
+      "abstract": "Detecting cerebral aneurysms is an important clinical task of brain computed tomography angiography (CTA). However, human interpretation could be time consuming due to the small size of some aneurysms. In this work, we proposed DeepBrain, a deep learning based cerebral aneurysm detection and localization algorithm. The algorithm consisted of a 3D faster region-proposal convolution neural network for aneurysm detection and localization, and a 3D multi-scale fully convolutional neural network for false positive reduction. Furthermore, a novel hierarchical non-maximum suppression algorithm was proposed to process the detection results in 3D, which greatly reduced the time complexity by eliminating unnecessary comparisons. DeepBrain was trained and tested on 550 brain CTA scans and achieved sensitivity of 93.3% with 0.3 false positives per patient on average.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/2005.11098.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/wudufan/deep_brain"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Classifying herbal medicine origins by temporal and spectral data mining of electronic nose",
+      "path": "/publication/preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/",
+      "year": 2021,
+      "type": "Preprint",
+      "venue": "",
+      "authors": [
+        "Li Liu",
+        "Xianghao Zhan",
+        "**Ziheng Duan**",
+        "Yi Wu",
+        "Rumeng Wu",
+        "Xiaoqing Guan",
+        "Zhan Wang",
+        "You Wang",
+        "Guang Li"
+      ],
+      "abstract": "The origins of herbal medicines are important for their treatment effect, which could be potentially distinguished by electronic nose system. Because the difference in the odor fingerprint of herbal medicines from different origins can be tiny, the discrimination of origins can be much harder than that of different categories. Therefore, better feature extraction methods are significant for this task to be more accurately done, but there lacks systematic studies on different feature extraction methods and a standardized manner to extract features from e-nose signals upon which most researchers agree. To investigate the effectiveness of multiple feature engineering approaches, we classified different origins of three categories of herbal medicines with different feature extraction methods, manual feature extraction, mathematical transformation, deep learning. With 50 repetitive experiments with bootstrapping, we compared the effectiveness of the extractions with a two-layer neural network w/o dimensionality reduction methods (principal component analysis, linear discriminant analysis) as the three base classifiers. Compared with the conventional aggregated features, the Fast Fourier Transform (FFT) method and our novel approach (longitudinal-information-in-a-line) showed an significant accuracy improvement(p ",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/2104.06640.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/cite.bib"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Parallel Extraction of Long-term Trends and Short-term Fluctuation Framework for Multivariate Time Series Forecasting",
+      "path": "/publication/preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/",
+      "year": 2020,
+      "type": "Preprint",
+      "venue": "",
+      "authors": [
+        "Yifu Zhou",
+        "**Ziheng Duan**",
+        "Haoyan Xu",
+        "Jie Feng",
+        "Anni Ren",
+        "Yueyang Wang",
+        "Xiaoqian Wang"
+      ],
+      "abstract": "Multivariate time series forecasting is widely used in various fields. Reasonable prediction results can assist people in planning and decision-making, generate benefits and avoid risks. Normally, there are two characteristics of time series, that is, long-term trend and short-term fluctuation. For example, stock prices will have a long-term upward trend with the market, but there may be a small decline in the short term. These two characteristics are often relatively independent of each other. However, the existing prediction methods often do not distinguish between them, which reduces the accuracy of the prediction model. In this paper, a MTS forecasting framework that can capture the long-term trends and short-term fluctuations of time series in parallel is proposed. This method uses the original time series and its first difference to characterize long-term trends and short-term fluctuations. Three prediction sub-networks are constructed to predict long-term trends, short-term fluctuations and the final value to be predicted. In the overall optimization goal, the idea of multi-task learning is used for reference, which is to make the prediction results of long-term trends and short-term fluctuations as close to the real values as possible while requiring to approximate the values to be predicted. In this way, the proposed method uses more supervision information and can more accurately capture the changing trend of the time series, thereby improving the forecasting performance.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/2008.07730.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/PFNet"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "CoSimGNN: Towards Large-scale Graph Similarity Computation",
+      "path": "/publication/preprint/cosimgnn-towards-large-scale-graph-similarity-computation/",
+      "year": 2020,
+      "type": "Preprint",
+      "venue": "",
+      "authors": [
+        "Haoyan Xu",
+        "Runjian Chen",
+        "Yunsheng Bai",
+        "**Ziheng Duan**",
+        "Jie Feng",
+        "Ke Luo",
+        "Yizhou Sun",
+        "Wei Wang"
+      ],
+      "abstract": "In this work, we focus on large graph similarity computation problem and propose a novel \"embedding-coarsening-matching\" learning framework, which outperforms state-of-the-art methods in this task and has significant improvement in time efficiency. Graph similarity computation for metrics such as Graph Edit Distance (GED) is typically NP-hard, and existing heuristics-based algorithms usually achieves a unsatisfactory trade-off between accuracy and efficiency. Recently the development of deep learning techniques provides a promising solution for this problem by a data-driven approach which trains a network to encode graphs to their own feature vectors and computes similarity based on feature vectors. These deep-learning methods can be classified to two categories, embedding models and matching models. Embedding models such as GCN-Mean and GCN-Max, which directly map graphs to respective feature vectors, run faster but the performance is usually poor due to the lack of interactions across graphs. Matching models such as GMN, whose encoding process involves interaction across the two graphs, are more accurate but interaction between whole graphs brings a significant increase in time consumption (at least quadratic time complexity over number of nodes). Inspired by large biological molecular identification where the whole molecular is first mapped to functional groups and then identified based on these functional groups, our \"embedding-coarsening-matching\" learning framework first embeds and coarsens large graphs to coarsened graphs with denser local topology and then matching mechanism is deployed on the coarsened graphs for the final similarity scores. Detailed experiments have been conducted and the results demonstrate the efficiency and effectiveness of our proposed framework.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Preprint/CoSimGNN-Towards-Large-scale-Graph-Similarity-Computation/2005.07115.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/preprint/cosimgnn-towards-large-scale-graph-similarity-computation/cite.bib"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/CoSimGNN"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Untethered quadrupedal hopping and bounding on a trampoline",
+      "path": "/publication/journal/untethered-quadrupedal-hopping-and-bounding-on-a-trampoline/",
+      "year": 2019,
+      "type": "Journal article",
+      "venue": "Frontiers of Mechanical Engineering",
+      "authors": [
+        "Boxing Wang",
+        "Chunlin Zhou",
+        "**Ziheng Duan**",
+        "Qichao Zhu",
+        "Jun Wu",
+        "Rong Xiong"
+      ],
+      "abstract": "For quadruped robots with springy legs, a successful jump usually requires both suitable elastic parts and well-designed control algorithms. However, these two problems are mutually restricted and hard to solve at the same time. In this study, we attempt to solve the problem of controller design with the help of a robot without any elastic mounted parts, in which the untethered robot is made to jump on a trampoline. The differences between jumping on hard surfaces with springy legs and jumping on springy surfaces with rigid legs are briefly discussed. An intuitive control law is proposed to balance foot contact forces; in this manner, excessive pitch oscillation during hopping or bounding can be avoided. Hopping height is controlled by tuning the time delay of the leg stretch. Together with other motion generators based on kinematic law, the robot can perform translational and rotational movements while hopping or bounding on the trampoline. Experiments are conducted to validate the effectiveness of the proposed control framework.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Journal/untethered-quadrupedal-hopping-and-bounding-on-a-trampoline/Wang2020_Article_UntetheredQuadrupedalHoppingAn.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/untethered-quadrupedal-hopping-and-bounding-on-a-trampoline/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1007/s11465-019-0559-5"
+        }
+      ],
+      "selected": false
+    },
+    {
+      "title": "Heterogeneous Attributed Network Embedding with Graph Convolutional Networks",
+      "path": "/publication/conference/heterogeneous-attributed-network-embedding-with-graph-convolutional-networks/",
+      "year": 2019,
+      "type": "Conference paper",
+      "venue": "AAAI-2019",
+      "authors": [
+        "Yueyang Wang",
+        "**Ziheng Duan**",
+        "Binbing Liao",
+        "Fei Wu",
+        "Yueting Zhuang"
+      ],
+      "abstract": "Network embedding which assigns nodes in networks to low-dimensional representations has received increasing attention in recent years. However, most existing approaches, especially the spectral-based methods, only consider the attributes in homogeneous networks. They are weak for heterogeneous attributed networks that involve different node types, as well as rich node attributes and, are common in real-world scenarios. In this paper, we propose HANE, a novel network embedding method based on Graph Convolutional Networks, that leverages both the heterogeneity and the node attributes to generate high-quality embeddings. The experiments on the real-world dataset show the effectiveness of our method.",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "/publication/Conference/Heterogeneous-Attributed-Network-Embedding-with-Graph-Convolutional-Networks/5167-Article%20Text-8230-1-10-20190710.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/heterogeneous-attributed-network-embedding-with-graph-convolutional-networks/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1609/aaai.v33i01.330110061"
+        }
+      ],
+      "selected": false
+    }
+  ],
+  "talks": [
+    {
+      "title": "AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming",
+      "event": "SCORCH 2026 Fall Meeting",
+      "path": "/talks/scorch-2026-fall/",
+      "summary": "Therapeutic target discovery and cell-state reprogramming with artificial intelligence.",
+      "year": 2026,
+      "date": "2026-09-15",
+      "date_label": "September 15, 2026",
+      "location": "San Diego, California",
+      "upcoming": true,
+      "links": []
+    },
+    {
+      "title": "13th Annual Symposium, Southern California Systems Biology",
+      "path": "/talks/13thannualsymposiumsoutherncaliforniasystemsbiology/",
+      "summary": "Present scENCORE, a computationally method to reconstruct chromatin compartments from the more affordable and widely accessible single-cell epigenetic data.",
+      "year": 2024,
+      "links": [
+        {
+          "label": "Poster",
+          "url": "https://ccbs.uci.edu/wp-content/uploads/sites/3/securepdfs/2024/03/All-abstracts-2.pdf"
+        },
+        {
+          "label": "Slides",
+          "url": "https://docs.google.com/presentation/d/11Qh1H7bsVgTCUXFDKcs_hQtshxu2vcln/edit?usp=sharing&ouid=109346123234240074188&rtpof=true&sd=true"
+        }
+      ]
+    },
+    {
+      "title": "Fall 2023 SCORCH Consortium Meeting",
+      "path": "/talks/fall2023scorchconsortiummeeting/",
+      "summary": "Present iHerd, a hierarchical graph representation learning method for identifying key driver genes by analyzing gene network changes across different conditions.",
+      "year": 2023,
+      "links": [
+        {
+          "label": "Poster",
+          "url": "https://scorch.igs.umaryland.edu/meetings.php"
+        },
+        {
+          "label": "Slides",
+          "url": "https://docs.google.com/presentation/d/1Zy4AsgGpuQoaho9Ue0Ezg38ULilhSOtjLM5yeaFnFWQ/edit?usp=sharing"
+        },
+        {
+          "label": "Video",
+          "url": "https://www.youtube.com/watch?v=tMzGw4efwpg"
+        }
+      ]
+    }
+  ],
+  "blogs": [
+    {
+      "authors": null,
+      "categories": "essay",
+      "content": "　“你真的要这样做吗？”\n“嗯，我想再试一次。”\n“好吧，我得提醒你，你的家人在这场劫难中幸免，你已经很幸运了，重来一次我可不能保证还会这样。”\n“嗯，知道了，但我还是想试试。”\n“那你加油。”\n时间回到两天前。\n下木市的市长竞选正进行的如火如荼，安对一天后的演讲十分看重，这次发挥的好坏将直接影响到他能否连任。如果连任成功的话，下一届的副省长他就能得到提名，那时便可用自己的财力收买大部分委员会的人，当上副省长只是时间问题。安为了保证在演讲前下木市不出任何乱子，反复对他的部下说，不管这几天发生任何事情，一切都要以zz安全为首位。有问题要当作没问题，大问题要当作小问题。总之在这期间绝对不能爆出负面新闻，影响民众对市长的支持率。\n　王睁开了眼睛，看了看时间，2084年4月4日早上6点03分。他昨天晚上做了个奇怪的梦，有个人一直在他身后用低沉的嗓音反复提醒他，声音有些模糊也听不清在说什么，当他转过身去却什么都没有。他咽了一口唾沫，总有一种不太对劲的感觉，却也讲不出怎么回事。王也没多想，穿上衣服快快出门了。\n他和往常一样，每日早起晨练，吃完早饭后去海边进行地质勘测，然后回研究所记录数据，接着工作到深夜回家。虽然每天的任务十分单调，但王还是挺乐在其中的，毕竟他从小就独来独往，经常沉浸在自己的世界中，他的同学们都叫他怪胎。王和他妻子是在研究所认识的，两个人都是地质学的博士。二人目前有两个小孩，一男一女，都住在爷爷家。虽然住的很近，仅相距几个街区，他们也只是研究所放假的时候才去看看孩子。\n虽说地质勘测这个任务王这辈子做了成千上万次，但今天的勘测却给王一种似曾相识的感觉，好像在梦里见过，又好像重复过好多次，甚至连路上看见松鼠的时间地点都是相似的。王心想，下木市这个岛可真小，自己都要记清勘测路上每一只松鼠，每一颗石子了。\n王到了海边观测台，摆好了仪器，刚准备进行勘测，心里突然有一股强烈的感觉驱使他下去转转。也是，他勘测了这么多次，还没有那一次好好欣赏过这海滩美景呢。他走到浅水区，发现脚下有几条奇怪的鱼的尸体，拿起一看，应该是沙丁鱼。辨识鱼的种类对王来说还是很简单的，他从小就有过目不忘的本领，博士期间面对成千上万的岩石也是如数家珍，这些鱼的种类便是他小时候看百科全书记住的。在海边发现沙丁鱼让王感到有点意外，这种鱼不应该是深海鱼吗，为什么会在这里出现。不过王也没在意，记录好数据后就回研究所了。晚上王和往常一样，一边吃饭一边看报纸，这种东西在2084年算得上老古董了，毕竟70年前就没什么人看了。报纸上报道近期下木市的渔民每天打鱼的数量激增，每天挣的钱是上个月的好几倍，市民们对目前的生活很满意，下木市的幸福指数不断上升，这样下去，下个月市长的演讲就是走个形式罢了，连任指日可待。\n看到这王的脑子好像被电了一下，他突然想到早上看到的沙丁鱼，再看看报纸上渔民们一片丰收的报道，不禁感到一丝寒意。他马上冲了出去，跑到早上做勘测的地方。果不其然，海滩上还有不少少见的鱼类的尸体，从远海处还时不时传来轰鸣。糟了，一场大劫难在所难免，王心里想到。\n他马上回到研究所，调取了近几日全部的地下水流动数据以及地磁场数据，经过简要分析后他发现在距离海岸线2000km深海处有异常活动，大概率发生了海底火山爆发，引发的特大海啸很可能在一天内到达下木市，如果不及时撤离当地居民，恐怕下木市的市民没有人能看见第二天的太阳了。王马上与研究所的所长联系，将自己的发现上报，所长不慌不忙地说道，“地震局的人都不急你急什么，他们都没有汇报什么异常数据你就不要瞎操心了。”王失望的回家了。原来地震局的人正在排练节目，为明天市长的演讲成功做准备。在他们看来，地震局的工作无聊至极，如果有机会讨好市长，当个什么一官半职的，后半辈子也算衣食无忧了。所以在这个特殊的日子自然没有人守在检测设备前，即使设备正报出检测到了有史以来最大的地震波。\n　下木市市长一派的人已经准备好明天的庆功宴了，当然研究所所长也是其中之一。他跟周围的人开玩笑道，他们所竟然有人在今天这个日子说将会有什么大海啸来临，像痴人说梦，下木市已经几十年都没有过自然灾害了，真是读书读傻了。说者无意听者有心，保安处处长可不想在这个日子有这种事情影响市长的心情，更不想影响民众的恐慌情绪，便问是谁这么说的，今天先把他抓起来，等市长连任顺利后再处理。所长告诉他名字后就继续和别人敬酒了。\n王回家后赶紧跟妻子说清事实，并要马上告诉孩子他们。谁曾想，王和他妻子刚打算通知他们，保安队的人便破门而入，将他们绑走，拉到审讯室中。\n　在审讯室内王和他妻子被分别绑到两个房间，由不同的人对他们进行审问。讽刺的是，幸好他们还没来得及告诉孩子们，要不然孩子们也要遭受这些审讯。\n“你听明白了吗？现在是特别时期，你散布这种消息的居心何在？是不是反对市长那派的？我告诉你，市长明天就要连任了，你们做的一切都是徒劳。”\n“我对谁当市长不感兴趣，我是真的发现了异常，很有可能海啸几个小时后就到了，你们再不把我放出去，组织疏散的话就真来不及了。”\n“现在还嘴硬。我不管你造谣的是海啸还是什么，你要知道在我们市长的领导下，下木市是出了名的安全，地震局对这种事情怎么可能没有预警，你一个普通研究员瞎参活什么。在我看来，你就是居心叵测。”\n“快放我出去，真来不及了。”\n“真是个固执的人。你要知道，必要的时候我说１＋１＝３，他就等于３；我说没有异常，就没有异常。来人，给他上电刑。”\n五分钟后。\n“我们希望你冷静下来后好好反思，并郑重告诉你自己：如果你继续散播这种谣言，影响市长明天的演讲的话，你会被判以危害公共安全罪遭处罚。你听明白了吗？”\n王靠在椅子上，奄奄一息的点了点头。\n“我们走，先把他关着，等市长连任成功后再放出去。”\n　权力就在于给人带来痛苦和耻辱。权力就在于把人类思想撕得粉碎，然后按你自己所选择的样子把它再粘合起来。\n　这些残暴的欢愉，终将以残暴结局。市长将演讲地点选在了下木市最漂亮的海滩边，崭新的西装配着金丝边的眼睛更显出了市长的英俊。“各位亲爱的市民们！大家好！”话音未落，远端传来巨响，人们纷纷向海边望去。沙滩边上的海水开始冒泡，并开始急速倒退，露出了从未见过天日的海底。阳光刺眼，海滩边一片寂静，只剩下鱼虾蟹贝海中万物在海滩上挣扎着的声音。离海岸不远的浅海区，海面突然变成白色，其前方出现一道长长的明亮的水墙。顷刻间，巨浪呼啸，以摧枯拉朽之势，越过海岸线，疯狂地袭击着下木市，瞬时海滩上的人们都消失在巨浪之中。\n　审讯室内，响起了红色灾难预警信号，王身后传来一个声音。\n“哎，真不知道你怎么想的，这次我是真的救不了你了。”\n“你知道吗，其实我想再试一次。”说罢王合上了眼睛。\n",
+      "date": 1581120000.0,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "9da2e4f7b931887ec296ef5a8c233294",
+      "permalink": "https://zihengduan.cn/blogs/essay/madman/",
+      "publishdate": "2020-02-08T00:00:00Z",
+      "relpermalink": "/blogs/essay/madman/",
+      "section": "blogs",
+      "summary": "　“你真的要这样做吗？”\n“嗯，我想再试一次。”\n“好吧，我得提醒你，你的家人在这场劫难中幸免，你已经很幸运了，重来一次我可不能保证还会这样。”\n“嗯，知道了，但我还是想试试。”\n“那你加油。”\n",
+      "tags": "short",
+      "title": "2084",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "利用汇编语言显示字符的ascii码\n编译步骤:\n把此文件复制到dosbox86\\tc中,\n运行dosbox86\nFile-&gt;DOS Shell\ncd \\tc\ntc\nAlt+F选择File-&gt;Load-&gt;ascii.c\nAlt+C选择Compile-&gt;Compile to OBJ 编译\nAlt+C选择Compile-&gt;Line EXE file 连接\nAlt+R选择Run-&gt;Run 运行\nAlt+R选择Run-&gt;User Screen 查看结果\nC语言程序如下：\n#include &lt;dos.h&gt; #include &lt;bios.h&gt; main() { unsigned char a=0, hex[3]; char far *p = (char far *)0xB8000000; int i, j, k; _AX = 0x0003; geninterrupt(0x10); /* 设置视频模式为80*25文本模式, 同时起到清屏效果 */ for(j=0; j&lt;11; j++) /* 共11列 */ { p = (char far *)0xB8000000; p += j*7*2; /* 计算第j列第0行的地址, 注意各列之间相距7个字符(含空格) */ /* 汇编中可以根据前后两列首地址相差14字节的规律,用加法计算 出下一列的地址 */ for(i=0; i&lt;25; i++) /* 每列输出25个ASCII码, 即每列有25行 */ { *p = a; /* 输出当前ASCII字符 */ *(p+1) = 0x0C; /* 背景为黑色, 前景为高亮度红色 */ sprintf(hex, &quot;%02X&quot;, a); /* 汇编中可以利用上课讲过的循环左移4位的方法把a的值转化 成2位十六进制并保存到数组hex中 */ for(k=0; k&lt;2; k++)/* 输出2位十六进制数 */ { *(p+2+k*2) = hex[k]; *(p+2+k*2+1) = 0x0A; /* 背景为黑色, 前景为高亮度绿色 */ } a++; if(a==0) /* 若a从0xFF变成0x00, 表示256个ASCII码已穷尽 */ goto done; p += 160; /* p指向第j列的第i+1行 */ } } done: bioskey(0); /* 汇编中可以用mov ah,0; int 16h;代替此函数调用 */ }  对应的汇编代码如下：\nassume cs:code,ds:data,ss:stack data segment a db 0h; color_ascii db 0Ch ;背景黑色，前景高亮度红色 00001100 color_num db 0Ah ;背景黑色，前景高亮度绿色 00001010 data ends stack segment db 16 dup (0) stack ends code segment start: cls: mov ax,0B800H ;显存地址 mov es,ax mov bx,0 mov cx,4000 ;文本模式显示25行，80字 s: mov dx,0 mov es:[bx],dx add bx,2 loop s ;实现清屏 mov ax,data mov ds,ax mov ax,stack mov ss,ax mov sp,16 mov ax,0B800H ;第1行起始位置 mov es,ax mov dl,0 ;从第0个字符开始 mov bx,0 mov cx,11 mov di,0 loop_x: push cx mov cx,25 loop_y: push cx mov al,dl mov es:[bx][di],al ;写ASCII码 mov ah,ds:[1] mov es:[bx][di+1],ah ;写ASCII码的属性 add di,2 ;写完一个，移动两个字节 mov al,dl mov ah,0 mov cl,4 rol ax,cl cmp ah,0Ah jb num1 jnb character1 num1: add ah,30h character1: cmp ah,10h jnb write1 add ah,37h write1: mov es:[bx][di],ah ;写ASCII码对应的数 mov ah,ds:[2] mov es:[bx][di+1],ah ;写数的属性 add di,2 ;写完一个，移动两个字节 mov al,dl mov ah,0 mov cl,4 rol ax,cl ror al,cl cmp al,0Ah jb num2 jnb character2 num2: add al,30h character2: cmp al,10h jnb write2 add al,37h write2: mov es:[bx][di],al ;写ASCII码对应的数 mov ah,ds:[2] mov es:[bx][di+1],ah ;写数的属性 add di,2 ;写完一个，移动两个字节 inc dl ;显示的ascii码加1 cmp dl,0 ;ascii码为0则跳转至exit je exit add bx,160 sub di,6 pop cx loop loop_y pop cx mov al,12 sub al,cl mov bl,14 mul bl mov di,0 add di,ax ;切换到下一列 mov bx,0 loop again again: jmp loop_x exit: mov ah,0 int 16h code ends end start  结果如下：\nDosBox下载的链接在下面给出 编译运行的方法如下： 运行DosBox86 把.asm文件放到masm文件夹中 命令行输入masm xxx(xxx是你的asm文件名) 紧跟着按三下回车 接着输入link xxx 继续按三下回车 生成可执行文件xxx.exe 输入xxx来运行\n",
+      "date": 1528156800,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "a64b1301a5299cdadee8f85c5fccb919",
+      "permalink": "https://zihengduan.cn/blogs/code/assemble/ascii/",
+      "publishdate": "2018-06-05T00:00:00Z",
+      "relpermalink": "/blogs/code/assemble/ascii/",
+      "section": "blogs",
+      "summary": "利用汇编语言显示字符的ascii码\n",
+      "tags": "assemble",
+      "title": "显示ascii码",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "利用汇编语言写一个乘法器\n.386 assume cs:code,ds:data,ss:stack data segment use16 dec_mul dw 10 num1 db 6 db ? db 6 dup(?) num2 db 6 db ? db 6 dup(?) data ends stack segment stack db 100h dup (?) stack ends code segment use16 main: mov ax,data mov ds,ax mov dx,offset num1 mov ah,0Ah int 21h ;读入第一个数据 mov dl,0Dh mov ah,2 int 21h mov dl,0Ah mov ah,2 int 21h ;移动光标至下一行行首 mov dx,offset num2 mov ah,0Ah int 21h ;读入第二个数据 mov dl,0Dh mov ah,2 int 21h mov dl,0Ah mov ah,2 int 21h ;移动光标至下一行行首 xor cx,cx mov cl,num1[1] jcxz done mov bx,offset num1+2 jmp again1 done: mov ah,4Ch int 21h again1: mov dl,[bx] mov ah,2 int 21h mov dh,30h sub dl,dh mov [bx],dl inc bx loop again1 ;显示第一个乘数 mov dl,'*' mov ah,02h int 21h ;显示乘号 xor cx,cx mov cl,num2[1] jcxz done mov bx,offset num2+2 again2: mov dl,[bx] mov ah,2 int 21h mov dh,30h sub dl,dh mov [bx],dl inc bx loop again2 ;显示第二个乘数 mov dl,'=' mov ah,02h int 21h ;显示等于号 mov dl,0Dh mov ah,2 int 21h mov dl,0Ah mov ah,2 int 21h ;移动光标至下一行行首 xor cx,cx mov cl,num1[1] mov bx,offset num1+2 xor dx,dx xor ax,ax mov al,[bx] dec cx inc bx jcxz out_1 again_1: mul dec_mul add al,[bx] inc bx loop again_1 out_1: push ax xor cx,cx mov cl,num2[1] mov bx,offset num2+2 xor dx,dx xor ax,ax mov al,[bx] dec cx inc bx jcxz out_2 again_2: mul dec_mul add al,[bx] inc bx loop again_2 out_2: mov bx,ax pop ax mov dx,0 mul bx ;dx:ax存放乘积的高、低16位 push ax push dx push ax mov ax,dx mov cl,16 shl eax,cl pop ax ;eax存放乘积 mov cl,0 dec_: xor edx,edx mov ebx,10 div ebx push edx inc cl cmp eax,0 jne dec_ dec_show: pop edx add dl,30h mov ah,02h int 21h loop dec_show mov dl,0Dh mov ah,2 int 21h mov dl,0Ah mov ah,2 int 21h ;移动光标至下一行行首 pop dx pop ax ;dx:ax存放乘积的高、低16位 push ax push dx push ax mov ax,dx ;mov ax,6 ;显示十六进制 mov cl,0 hex_dx: mov dx,ax mov bx,ax and bx,0fff0h sub dx,bx push dx inc cl push cx xor cx,cx mov cl,4 shr ax,cl pop cx test ax,ax jnz hex_dx hex_no_show_dx: cmp cx,0 je hex_out_dx dec cl pop dx mov dh,0 cmp dl,dh je hex_no_show_dx inc cl mov dh,0 cmp cl,dh je hex_out_dx xor ax,ax mov ah,02h jmp hex_compare_dx hex_show_dx: pop dx hex_compare_dx: mov dh,9 cmp dl,dh ja hex_show_char_dx hex_show_num_dx: add dl,30h int 21h loop hex_show_dx jmp hex_out_no_dx hex_show_char_dx: add dl,55 int 21h loop hex_show_dx hex_out_no_dx: jmp hex_ax_has_zero hex_out_dx: pop ax mov cl,0 hex_ax: mov dx,ax mov bx,ax and bx,0fff0h sub dx,bx push dx push cx xor cx,cx mov cl,4 shr ax,cl pop cx inc cl test ax,ax jnz hex_ax xor ax,ax mov ah,02h hex_show_ax: pop dx mov dh,9 cmp dl,dh ja hex_show_char_ax hex_show_num_ax: add dl,30h int 21h loop hex_show_ax jmp hex_out_ax hex_show_char_ax: add dl,55 int 21h loop hex_show_ax hex_out_ax: mov dl,'h' mov ah,2 int 21h jmp hex_out_zero hex_ax_has_zero: pop ax mov cl,0 hex_ax_zero: mov dx,ax mov bx,ax and bx,0fff0h sub dx,bx push dx push cx xor cx,cx mov cl,4 shr ax,cl pop cx inc cl test ax,ax jnz hex_ax_zero push cx mov dx,4 sub dx,cx mov cx,dx cmp cx,0 je hex_no_zero hex_show_zero: mov dl,'0' mov ah,02h int 21h loop hex_show_zero hex_no_zero: pop cx xor ax,ax mov ah,02h hex_show_ax_zero: pop dx mov dh,9 cmp dl,dh ja hex_show_char_ax_zero hex_show_num_ax_zero: add dl,30h int 21h loop hex_show_ax_zero jmp hex_out_ax hex_show_char_ax_zero: add dl,55 int 21h loop hex_show_ax_zero hex_out_ax_zero: mov dl,'h' mov ah,2 int 21h hex_out_zero: mov dl,0Dh mov ah,2 int 21h mov dl,0Ah mov ah,2 int 21h ;移动光标至下一行行首 pop dx ;pop ax ;dx:ax存放乘积的高、低16位 ;目前ax还在栈中 mov ax,dx mov cl,16 bin_show_dx: mov dx,ax mov bx,ax and bx,07fffh sub dx,bx push ax xor ax,ax mov ah,02h push cx mov cx,15 shr dx,cl add dl,30h int 21h pop cx cmp cx,16 je bin_dx mov ax,cx mov dl,4 div dl cmp ah,1 jnz bin_dx mov dl,' ' mov ah,02h int 21h bin_dx: pop ax shl ax,1 loop bin_show_dx pop ax mov cl,16 bin_show_ax: mov dx,ax mov bx,ax and bx,07fffh sub dx,bx push ax xor ax,ax mov ah,02h push cx mov cx,15 shr dx,cl pop cx add dl,30h int 21h mov ax,cx mov dl,4 div dl cmp ah,1 jnz bin_ax cmp al,0 jz bin_ax mov ah,02h mov dl,' ' int 21h bin_ax: pop ax shl ax,1 loop bin_show_ax mov dl,'B' mov ah,02h int 21h mov ah,4Ch int 21h code ends end main  结果如下： ",
+      "date": 1528156800,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "5fe0f27f284e73941cad6853ead27bb6",
+      "permalink": "https://zihengduan.cn/blogs/code/assemble/multiply/",
+      "publishdate": "2018-06-05T00:00:00Z",
+      "relpermalink": "/blogs/code/assemble/multiply/",
+      "section": "blogs",
+      "summary": "利用汇编语言写一个乘法器\n",
+      "tags": "assemble",
+      "title": "简单的乘法器",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "python有一个专门用来绘图的库turtle，最近用它画了个小猪佩奇，代码如下：\nfrom turtle import * screensize(800,600,'lemonchiffon') setup(startx=100,starty=100) p = Turtle() p.speed(11) p.pensize(3) #画躯干 p.penup() p.goto(-200,-15) p.pendown() p.pencolor('blue') p.fillcolor('skyblue') p.begin_fill() p.right(95) p.circle(1000,8) p.circle(100,90) p.circle(1000,12) p.circle(100,100) p.circle(1000,7) p.end_fill() #画头 p.pencolor('hotpink') p.fillcolor('pink') p.penup() p.goto(-180,110) p.pendown() p.begin_fill() p.left(70) p.forward(100) p.circle(-120,190) p.circle(-3000,5) p.circle(-300,30) p.circle(-150,135) p.circle(-3000,4) p.circle(-50,90) p.circle(-3000,3) p.end_fill() #画四肢 #画手臂 p.penup() p.goto(-200,-60) p.left(100) p.pendown() p.forward(200) #画手指 p.penup() p.goto(-360,-100) p.right(40) p.pendown() p.forward(50) p.penup() p.goto(-360,-100) p.left(80) p.pendown() p.forward(40) #画手臂 p.penup() p.goto(150,-60) p.left(120) p.pendown() p.forward(200) #画手指 p.penup() p.goto(320,-75) p.left(50) p.pendown() p.forward(40) p.penup() p.goto(320,-75) p.right(100) p.pendown() p.forward(40) #画腿 p.penup() p.goto(-80,-230) p.right(35) p.pendown() p.forward(85) p.penup() p.goto(80,-200) p.pendown() p.forward(115) #画鞋 p.pencolor('black') p.fillcolor('black') p.begin_fill() p.penup() p.goto(-100,-315) p.right(90) p.pendown() p.circle(1000,2) p.circle(30,180) p.circle(1000,2) p.circle(30,180) p.penup() p.goto(60,-315) p.pendown() p.circle(1000,2) p.circle(30,180) p.circle(1000,2) p.circle(30,180) p.end_fill() #画眼睛 p.pencolor('hotpink') p.fillcolor('white') p.begin_fill() p.penup() p.goto(-100,270) p.pendown() p.circle(40,360) p.end_fill() p.begin_fill() p.penup() p.goto(20,240) p.pendown() p.circle(40,360) p.end_fill() #画眼珠 p.pencolor('black') p.fillcolor('black') p.begin_fill() p.penup() p.goto(-80,240) p.pendown() p.circle(15,360) p.end_fill() p.begin_fill() p.penup() p.goto(40,210) p.pendown() p.circle(15,360) p.end_fill() #画嘴巴 p.penup() p.pencolor(&quot;hotpink&quot;) p.goto(-160,60) p.left(110) p.pendown() p.circle(60,130) #画斑 p.penup() p.pencolor(&quot;hotpink&quot;) p.fillcolor(&quot;lightpink&quot;) p.begin_fill() p.goto(140,90) p.pendown() p.circle(50,360) p.end_fill() #画耳朵 p.penup() p.goto(0,295) p.pendown() p.begin_fill() p.circle(1000,4) p.circle(30,200) p.circle(1000,4) p.end_fill() p.penup() p.goto(70,280) p.left(140) p.pendown() p.begin_fill() p.circle(1000,5) p.circle(30,195) p.circle(1000,5) p.end_fill() #画鼻子 p.penup() p.goto(-350,100) p.left(140) p.pendown() p.circle(400,5) p.circle(200,63) p.fillcolor(&quot;palevioletred&quot;) p.penup() p.goto(-350,240) p.pendown() p.begin_fill() p.circle(17,360) p.end_fill() p.penup() p.goto(-285,235) p.pendown() p.begin_fill() p.circle(17,360) p.end_fill() done()  结果如下：\n还不错hhh\n",
+      "date": 1527465600,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "15f30e09e5d7a02dab317c2ba855b7fb",
+      "permalink": "https://zihengduan.cn/blogs/code/python/turtle/",
+      "publishdate": "2018-05-28T00:00:00Z",
+      "relpermalink": "/blogs/code/python/turtle/",
+      "section": "blogs",
+      "summary": "python有一个专门用来绘图的库turtle，最近用它画了个小猪佩奇，代码如下：\n",
+      "tags": "python",
+      "title": "Turtle",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "详解VGG模型如何进行图像风格的转换\n在正式地给出VGG模型前先介绍导入python模块几种方法：\n①import A as B:给A起一个别名B，便于使用\n②import A:使得模块A中的函数可以使用（使用方式：A.B）\n③from A import B:接下来直接使用B即可，不用再写A.B\n接下来介绍几个将要用到的python模块：\n①os模块：是一个对操作系统进行操作的模块，用来在代码中判断是否正确将VGG模型放到当前目录下。\nos.path.isfile(path) #判断路径是否为文件\n②numpy模块：是一个用来进行科学计算的模块，能够进行多维数组的操作。\n③scipy模块：scipy是一个高级的科学计算库，它和numpy联系很密切，scipy一般都是操控numpy数组来进行科学计算，所以可以说是基于numpy之上了。scipy有很多子模块可以应对不同的应用，例如插值运算，优化算法、图像处理、数学统计等。这里我们使用的是scipy.misc和scipy.io子模块，用来进行图像的读写与数据的输入输出等操作。\n④PIL模块:PIL全称是Python Imaging Library，是一个图像处理标准库。\n这里要注意的是，由于PIL仅支持到Python 2.7，加上年久失修，于是一群志愿者在PIL的基础上创建了兼容的版本，名字叫Pillow，支持最新Python 3.x，又加入了许多新特性，因此，我们可以直接安装使用Pillow。（命令行：pip install pillow)\n⑤argparse模块：argparse 是 Python 内置的一个用于命令项选项与参数解析的模块，通过在程序中定义好我们需要的参数，argparse 将会从 sys.argv 中解析出这些参数，并自动生成帮助和使用信息。\n主要使用以下三个函数：\n创建 ArgumentParser() 对象\n调用 add_argument() 方法添加参数\n使用 parse_args() 解析添加的参数\n详细的资料可以从以下文档中查看：\nhttps://docs.python.org/3/library/argparse.html\n⑥sys模块：sys模块提供了一系列有关Python运行环境的变量和函数。\n这里使用的是stderr，包含与标准I/O 流对应的流对象。\n⑦math模块：提供一些数学运算。\n⑧tensorflow模块：这是最主要的模块，用与提取图像特征与生成新的图像。\ntensorflow.nn子模块更是包含许多与神经网络有关的函数，如激活函数，卷积函数，池化函数等。\n掌握了这些模块之后看代码就容易一点了：\nneural_style.py:（定义一些命令行参数和入口函数）\nimport os import numpy as np import scipy.misc from stylize import stylize import math from argparse import ArgumentParser from PIL import Image # default arguments CONTENT_WEIGHT = 5e0 CONTENT_WEIGHT_BLEND = 1 STYLE_WEIGHT = 5e1 TV_WEIGHT = 1e2 STYLE_LAYER_WEIGHT_EXP = 1 LEARNING_RATE = 1e1 BETA1 = 0.9 BETA2 = 0.999 EPSILON = 1e-08 STYLE_SCALE = 1.0 ITERATIONS = 10000 VGG_PATH = 'imagenet-vgg-verydeep-19.mat' POOLING = 'max' def build_parser(): parser = ArgumentParser() parser.add_argument('--content', dest='content', help='content image', metavar='CONTENT', required=True) parser.add_argument('--styles', dest='styles', nargs='+', help='one or more style images', metavar='STYLE', required=True) parser.add_argument('--output', dest='output', help='output path', metavar='OUTPUT', required=True) parser.add_argument('--iterations', type=int, dest='iterations', help='iterations (default %(default)s)', metavar='ITERATIONS', default=ITERATIONS) parser.add_argument('--print-iterations', type=int, dest='print_iterations', help='statistics printing frequency', metavar='PRINT_ITERATIONS') parser.add_argument('--checkpoint-output', dest='checkpoint_output', help='checkpoint output format, e.g. output%%s.jpg', metavar='OUTPUT') parser.add_argument('--checkpoint-iterations', type=int, dest='checkpoint_iterations', help='checkpoint frequency', metavar='CHECKPOINT_ITERATIONS') parser.add_argument('--width', type=int, dest='width', help='output width', metavar='WIDTH') parser.add_argument('--style-scales', type=float, dest='style_scales', nargs='+', help='one or more style scales', metavar='STYLE_SCALE') parser.add_argument('--network', dest='network', help='path to network parameters (default %(default)s)', metavar='VGG_PATH', default=VGG_PATH) parser.add_argument('--content-weight-blend', type=float, dest='content_weight_blend', help='content weight blend, conv4_2 * blend + conv5_2 * (1-blend) (default %(default)s)', metavar='CONTENT_WEIGHT_BLEND', default=CONTENT_WEIGHT_BLEND) parser.add_argument('--content-weight', type=float, dest='content_weight', help='content weight (default %(default)s)', metavar='CONTENT_WEIGHT', default=CONTENT_WEIGHT) parser.add_argument('--style-weight', type=float, dest='style_weight', help='style weight (default %(default)s)', metavar='STYLE_WEIGHT', default=STYLE_WEIGHT) parser.add_argument('--style-layer-weight-exp', type=float, dest='style_layer_weight_exp', help='style layer weight exponentional increase - weight(layer&lt;n+1&gt;) = weight_exp*weight(layer&lt;n&gt;) (default %(default)s)', metavar='STYLE_LAYER_WEIGHT_EXP', default=STYLE_LAYER_WEIGHT_EXP) parser.add_argument('--style-blend-weights', type=float, dest='style_blend_weights', help='style blending weights', nargs='+', metavar='STYLE_BLEND_WEIGHT') parser.add_argument('--tv-weight', type=float, dest='tv_weight', help='total variation regularization weight (default %(default)s)', metavar='TV_WEIGHT', default=TV_WEIGHT) parser.add_argument('--learning-rate', type=float, dest='learning_rate', help='learning rate (default %(default)s)', metavar='LEARNING_RATE', default=LEARNING_RATE) parser.add_argument('--beta1', type=float, dest='beta1', help='Adam: beta1 parameter (default %(default)s)', metavar='BETA1', default=BETA1) parser.add_argument('--beta2', type=float, dest='beta2', help='Adam: beta2 parameter (default %(default)s)', metavar='BETA2', default=BETA2) parser.add_argument('--eps', type=float, dest='epsilon', help='Adam: epsilon parameter (default %(default)s)', metavar='EPSILON', default=EPSILON) parser.add_argument('--initial', dest='initial', help='initial image', metavar='INITIAL') parser.add_argument('--initial-noiseblend', type=float, dest='initial_noiseblend', help='ratio of blending initial image with normalized noise (if no initial image specified, content image is used) (default %(default)s)', metavar='INITIAL_NOISEBLEND') parser.add_argument('--preserve-colors', action='store_true', dest='preserve_colors', help='style-only transfer (preserving colors) - if color transfer is not needed') parser.add_argument('--pooling', dest='pooling', help='pooling layer configuration: max or avg (default %(default)s)', metavar='POOLING', default=POOLING) return parser def main(): parser = build_parser() options = parser.parse_args() if not os.path.isfile(options.network): parser.error(&quot;Network %s does not exist. (Did you forget to download it?)&quot; % options.network) content_image = imread(options.content) style_images = [imread(style) for style in options.styles] width = options.width if width is not None: new_shape = (int(math.floor(float(content_image.shape[0]) / content_image.shape[1] * width)), width) content_image = scipy.misc.imresize(content_image, new_shape) target_shape = content_image.shape for i in range(len(style_images)): style_scale = STYLE_SCALE if options.style_scales is not None: style_scale = options.style_scales[i] style_images[i] = scipy.misc.imresize(style_images[i], style_scale * target_shape[1] / style_images[i].shape[1]) style_blend_weights = options.style_blend_weights if style_blend_weights is None: # default is equal weights style_blend_weights = [1.0/len(style_images) for _ in style_images] else: total_blend_weight = sum(style_blend_weights) style_blend_weights = [weight/total_blend_weight for weight in style_blend_weights] initial = options.initial if initial is not None: initial = scipy.misc.imresize(imread(initial), content_image.shape[:2]) # Initial guess is specified, but not noiseblend - no noise should be blended if options.initial_noiseblend is None: options.initial_noiseblend = 0.0 else: # Neither inital, nor noiseblend is provided, falling back to random generated initial guess if options.initial_noiseblend is None: options.initial_noiseblend = 1.0 if options.initial_noiseblend &lt; 1.0: initial = content_image if options.checkpoint_output and &quot;%s&quot; not in options.checkpoint_output: parser.error(&quot;To save intermediate images, the checkpoint output &quot; &quot;parameter must contain `%s` (e.g. `foo%s.jpg`)&quot;) # try saving a dummy image to the output path to make sure that it's writable try: imsave(options.output, np.zeros((500, 500, 3))) except: raise IOError('%s is not writable or does not have a valid file extension for an image file' % options.output) for iteration, image in stylize( network=options.network, initial=initial, initial_noiseblend=options.initial_noiseblend, content=content_image, styles=style_images, preserve_colors=options.preserve_colors, iterations=options.iterations, content_weight=options.content_weight, content_weight_blend=options.content_weight_blend, style_weight=options.style_weight, style_layer_weight_exp=options.style_layer_weight_exp, style_blend_weights=style_blend_weights, tv_weight=options.tv_weight, learning_rate=options.learning_rate, beta1=options.beta1, beta2=options.beta2, epsilon=options.epsilon, pooling=options.pooling, print_iterations=options.print_iterations, checkpoint_iterations=options.checkpoint_iterations ): output_file = None combined_rgb = image if iteration is not None: if options.checkpoint_output: output_file = options.checkpoint_output % iteration else: output_file = options.output if output_file: imsave(output_file, combined_rgb) def imread(path): img = scipy.misc.imread(path).astype(np.float) if len(img.shape) == 2: # grayscale img = np.dstack((img,img,img)) elif img.shape[2] == 4: # PNG with alpha channel img = img[:,:,:3] return img def imsave(path, img): img = np.clip(img, 0, 255).astype(np.uint8) Image.fromarray(img).save(path, quality=95) if __name__ == '__main__': main()  stylize.py: （核心部分，利用VGG19提取图像的特征并合并的过程包含在stylize函数中）\nimport vgg import tensorflow as tf import numpy as np from sys import stderr import time from PIL import Image CONTENT_LAYERS = ('relu4_2', 'relu5_2') STYLE_LAYERS = ('relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1') try: reduce except NameError: from functools import reduce def stylize(network, initial, initial_noiseblend, content, styles, preserve_colors, iterations, content_weight, content_weight_blend, style_weight, style_layer_weight_exp, style_blend_weights, tv_weight, learning_rate, beta1, beta2, epsilon, pooling, print_iterations=None, checkpoint_iterations=None): &quot;&quot;&quot; Stylize images. This function yields tuples (iteration, image); `iteration` is None if this is the final image (the last iteration). Other tuples are yielded every `checkpoint_iterations` iterations. :rtype: iterator[tuple[int|None,image]] &quot;&quot;&quot; shape = (1,) + content.shape style_shapes = [(1,) + style.shape for style in styles] content_features = {} style_features = [{} for _ in styles] vgg_weights, vgg_mean_pixel = vgg.load_net(network) layer_weight = 1.0 style_layers_weights = {} for style_layer in STYLE_LAYERS: style_layers_weights[style_layer] = layer_weight layer_weight *= style_layer_weight_exp # normalize style layer weights layer_weights_sum = 0 for style_layer in STYLE_LAYERS: layer_weights_sum += style_layers_weights[style_layer] for style_layer in STYLE_LAYERS: style_layers_weights[style_layer] /= layer_weights_sum # compute content features in feedforward mode g = tf.Graph() with g.as_default(), g.device('/cpu:0'), tf.Session() as sess: image = tf.placeholder('float', shape=shape) net = vgg.net_preloaded(vgg_weights, image, pooling) content_pre = np.array([vgg.preprocess(content, vgg_mean_pixel)]) for layer in CONTENT_LAYERS: content_features[layer] = net[layer].eval(feed_dict={image: content_pre}) # compute style features in feedforward mode for i in range(len(styles)): g = tf.Graph() with g.as_default(), g.device('/cpu:0'), tf.Session() as sess: image = tf.placeholder('float', shape=style_shapes[i]) net = vgg.net_preloaded(vgg_weights, image, pooling) style_pre = np.array([vgg.preprocess(styles[i], vgg_mean_pixel)]) for layer in STYLE_LAYERS: features = net[layer].eval(feed_dict={image: style_pre}) features = np.reshape(features, (-1, features.shape[3])) gram = np.matmul(features.T, features) / features.size style_features[i][layer] = gram initial_content_noise_coeff = 1.0 - initial_noiseblend # make stylized image using backpropogation with tf.Graph().as_default(): if initial is None: noise = np.random.normal(size=shape, scale=np.std(content) * 0.1) initial = tf.random_normal(shape) * 0.256 else: initial = np.array([vgg.preprocess(initial, vgg_mean_pixel)]) initial = initial.astype('float32') noise = np.random.normal(size=shape, scale=np.std(content) * 0.1) initial = (initial) * initial_content_noise_coeff + (tf.random_normal(shape) * 0.256) * (1.0 - initial_content_noise_coeff) image = tf.Variable(initial) net = vgg.net_preloaded(vgg_weights, image, pooling) # content loss content_layers_weights = {} content_layers_weights['relu4_2'] = content_weight_blend content_layers_weights['relu5_2'] = 1.0 - content_weight_blend content_loss = 0 content_losses = [] for content_layer in CONTENT_LAYERS: content_losses.append(content_layers_weights[content_layer] * content_weight * (2 * tf.nn.l2_loss( net[content_layer] - content_features[content_layer]) / content_features[content_layer].size)) content_loss += reduce(tf.add, content_losses) # style loss style_loss = 0 for i in range(len(styles)): style_losses = [] for style_layer in STYLE_LAYERS: layer = net[style_layer] _, height, width, number = map(lambda i: i.value, layer.get_shape()) size = height * width * number feats = tf.reshape(layer, (-1, number)) gram = tf.matmul(tf.transpose(feats), feats) / size style_gram = style_features[i][style_layer] style_losses.append(style_layers_weights[style_layer] * 2 * tf.nn.l2_loss(gram - style_gram) / style_gram.size) style_loss += style_weight * style_blend_weights[i] * reduce(tf.add, style_losses) # total variation denoising tv_y_size = _tensor_size(image[:,1:,:,:]) tv_x_size = _tensor_size(image[:,:,1:,:]) tv_loss = tv_weight * 2 * ( (tf.nn.l2_loss(image[:,1:,:,:] - image[:,:shape[1]-1,:,:]) / tv_y_size) + (tf.nn.l2_loss(image[:,:,1:,:] - image[:,:,:shape[2]-1,:]) / tv_x_size)) # overall loss loss = content_loss + style_loss + tv_loss # optimizer setup train_step = tf.train.AdamOptimizer(learning_rate, beta1, beta2, epsilon).minimize(loss) def print_progress(): stderr.write(' content loss: %g\\n' % content_loss.eval()) stderr.write(' style loss: %g\\n' % style_loss.eval()) stderr.write(' tv loss: %g\\n' % tv_loss.eval()) stderr.write(' total loss: %g\\n' % loss.eval()) # optimization best_loss = float('inf') best = None with tf.Session() as sess: sess.run(tf.global_variables_initializer()) stderr.write('Optimization started...\\n') if (print_iterations and print_iterations != 0): print_progress() iteration_times = [] start = time.time() for i in range(iterations): iteration_start = time.time() if i &gt; 0: elapsed = time.time() - start # take average of last couple steps to get time per iteration remaining = np.mean(iteration_times[-10:]) * (iterations - i) stderr.write('Iteration %4d/%4d (%s elapsed, %s remaining)\\n' % ( i + 1, iterations, hms(elapsed), hms(remaining) )) else: stderr.write('Iteration %4d/%4d\\n' % (i + 1, iterations)) train_step.run() last_step = (i == iterations - 1) if last_step or (print_iterations and i % print_iterations == 0): print_progress() if (checkpoint_iterations and i % checkpoint_iterations == 0) or last_step: this_loss = loss.eval() if this_loss &lt; best_loss: best_loss = this_loss best = image.eval() img_out = vgg.unprocess(best.reshape(shape[1:]), vgg_mean_pixel) if preserve_colors and preserve_colors == True: original_image = np.clip(content, 0, 255) styled_image = np.clip(img_out, 0, 255) # Luminosity transfer steps: # 1. Convert stylized RGB-&gt;grayscale accoriding to Rec.601 luma (0.299, 0.587, 0.114) # 2. Convert stylized grayscale into YUV (YCbCr) # 3. Convert original image into YUV (YCbCr) # 4. Recombine (stylizedYUV.Y, originalYUV.U, originalYUV.V) # 5. Convert recombined image from YUV back to RGB # 1 styled_grayscale = rgb2gray(styled_image) styled_grayscale_rgb = gray2rgb(styled_grayscale) # 2 styled_grayscale_yuv = np.array(Image.fromarray(styled_grayscale_rgb.astype(np.uint8)).convert('YCbCr')) # 3 original_yuv = np.array(Image.fromarray(original_image.astype(np.uint8)).convert('YCbCr')) # 4 w, h, _ = original_image.shape combined_yuv = np.empty((w, h, 3), dtype=np.uint8) combined_yuv[..., 0] = styled_grayscale_yuv[..., 0] combined_yuv[..., 1] = original_yuv[..., 1] combined_yuv[..., 2] = original_yuv[..., 2] # 5 img_out = np.array(Image.fromarray(combined_yuv, 'YCbCr').convert('RGB')) yield ( (None if last_step else i), img_out ) iteration_end = time.time() iteration_times.append(iteration_end - iteration_start) def _tensor_size(tensor): from operator import mul return reduce(mul, (d.value for d in tensor.get_shape()), 1) def rgb2gray(rgb): return np.dot(rgb[...,:3], [0.299, 0.587, 0.114]) def gray2rgb(gray): w, h = gray.shape rgb = np.empty((w, h, 3), dtype=np.float32) rgb[:, :, 2] = rgb[:, :, 1] = rgb[:, :, 0] = gray return rgb def hms(seconds): seconds = int(seconds) hours = (seconds // (60 * 60)) minutes = (seconds // 60) % 60 seconds = seconds % 60 if hours &gt; 0: return '%d hr %d min' % (hours, minutes) elif minutes &gt; 0: return '%d min %d sec' % (minutes, seconds) else: return '%d sec' % seconds  vgg.py:\n（利用tensorflow.nn定义了卷积、池化等函数，并提供了的方法）\nimport tensorflow as tf import numpy as np import scipy.io VGG19_LAYERS = ( 'conv1_1', 'relu1_1', 'conv1_2', 'relu1_2', 'pool1', 'conv2_1', 'relu2_1', 'conv2_2', 'relu2_2', 'pool2', 'conv3_1', 'relu3_1', 'conv3_2', 'relu3_2', 'conv3_3', 'relu3_3', 'conv3_4', 'relu3_4', 'pool3', 'conv4_1', 'relu4_1', 'conv4_2', 'relu4_2', 'conv4_3', 'relu4_3', 'conv4_4', 'relu4_4', 'pool4', 'conv5_1', 'relu5_1', 'conv5_2', 'relu5_2', 'conv5_3', 'relu5_3', 'conv5_4', 'relu5_4' ) def load_net(data_path): data = scipy.io.loadmat(data_path) if not all(i in data for i in ('layers', 'classes', 'normalization')): raise ValueError(&quot;You're using the wrong VGG19 data. Please follow the instructions in the README to download the correct data.&quot;) mean = data['normalization'][0][0][0] mean_pixel = np.mean(mean, axis=(0, 1)) weights = data['layers'][0] return weights, mean_pixel def net_preloaded(weights, input_image, pooling): net = {} current = input_image for i, name in enumerate(VGG19_LAYERS): kind = name[:4] if kind == 'conv': kernels, bias = weights[i][0][0][0][0] # matconvnet: weights are [width, height, in_channels, out_channels] # tensorflow: weights are [height, width, in_channels, out_channels] kernels = np.transpose(kernels, (1, 0, 2, 3)) bias = bias.reshape(-1) current = _conv_layer(current, kernels, bias) elif kind == 'relu': current = tf.nn.relu(current) elif kind == 'pool': current = _pool_layer(current, pooling) net[name] = current assert len(net) == len(VGG19_LAYERS) return net def _conv_layer(input, weights, bias): conv = tf.nn.conv2d(input, tf.constant(weights), strides=(1, 1, 1, 1), padding='SAME') return tf.nn.bias_add(conv, bias) def _pool_layer(input, pooling): if pooling == 'avg': return tf.nn.avg_pool(input, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1), padding='SAME') else: return tf.nn.max_pool(input, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1), padding='SAME') def preprocess(image, mean_pixel): return image - mean_pixel def unprocess(image, mean_pixel): return image + meaixel  使用方法如下：\n命令行进入py文件的目录，并将训练好的VGG19模型放在该目录下，安装好python和相关的包，输入以下命令：\npython neural_style.py &ndash;content a.jpg &ndash;styles b.jpg &ndash;output c.jpg\na.jpg是你想要转换的图片，b.jpg是风格图片，可以有多张，c.jpg是生成图片，也可以用命令行指定迭代次数，就不细说了。\n",
+      "date": 1527465600,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "c61437979e6771b12ed9bea1d1925312",
+      "permalink": "https://zihengduan.cn/blogs/code/deeplearning/vgg/",
+      "publishdate": "2018-05-28T00:00:00Z",
+      "relpermalink": "/blogs/code/deeplearning/vgg/",
+      "section": "blogs",
+      "summary": "详解VGG模型如何进行图像风格的转换\n",
+      "tags": "CV",
+      "title": "利用VGG模型进行图像风格转换",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "八皇后问题，是一个古老而著名的问题，是回溯算法的典型案例。 该问题是国际西洋棋棋手马克斯·贝瑟尔于1848年提出：在8×8格的国际象棋上摆放八个皇后，使其不能互相攻击，即任意两个皇后都不能处于同一行、同一列或同一斜线上，问有多少种摆法。 高斯认为有76种方案。 1854年在柏林的象棋杂志上不同的作者发表了40种不同的解。 后来有人用图论的方法解出92种结果。 现在给出n皇后问题的代码\n#include&lt;iostream&gt; using namespace std; int total = 0; int n; int* n_queens; void print() { for(int i=0;i&lt;n;i++) { for(int j=0;j&lt;n_queens[i];j++) { cout&lt;&lt;&quot;0&quot;; } cout&lt;&lt;&quot;1&quot;; for(int j=n_queens[i]+1;j&lt;n;j++) { cout&lt;&lt;&quot;0&quot;; } cout&lt;&lt;endl; } cout&lt;&lt;&quot;****************************&quot;&lt;&lt;endl; } bool check(int queen_i, int pos_i)//第queen_i个皇后，在第pos_i列 { int i, pos; for(i=0;i&lt;queen_i;i++)//只需要查看前面的皇后 { pos = n_queens[i];//在同一列 if(pos_i==pos) return false; if((queen_i+pos_i)==(i+pos))//在右下角 return false; if((queen_i-pos_i)==(i-pos))//在左下角 return false; } return true; } void my_queens(int i)//第i个皇后 { for(int pos=0;pos&lt;n;pos++)//在第pos列 { if(check(i,pos)) { n_queens[i] = pos; if(i == n-1) { total++; print(); n_queens[i] = 0; return; } my_queens(i+1);//找下一个皇后的位置 n_queens[i] = 0;//回溯，这个皇后继续寻找新位置 } } } int main() { cout&lt;&lt;&quot;Please enter the number of queens.&quot;&lt;&lt;endl; cin&gt;&gt;n; n_queens = new int[n]; my_queens(0); if(total==0) cout&lt;&lt;&quot;There is no way.&quot;&lt;&lt;endl; else if(total==1) cout&lt;&lt;&quot;There is only one way.&quot;&lt;&lt;endl; else cout&lt;&lt;&quot;There are &quot;&lt;&lt;total&lt;&lt;&quot; ways.&quot;&lt;&lt;endl; return 0; }  运行后可以发现当n为1或大于3的时候才有解。\n",
+      "date": 1527379200,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "a7215680017b625d1ba9a69e2ff3c39d",
+      "permalink": "https://zihengduan.cn/blogs/code/leetcode/nqueen/",
+      "publishdate": "2018-05-27T00:00:00Z",
+      "relpermalink": "/blogs/code/leetcode/nqueen/",
+      "section": "blogs",
+      "summary": "八皇后问题，是一个古老而著名的问题，是回溯算法的典型案例。 该问题是国际西洋棋棋手马克斯·贝瑟尔于1848年提出：在8×8格的国际象棋上摆放八个皇后，使其不能互相攻击，即任意两个皇后都不能处于同一行、同一列或同一斜线上，问有多少种摆法。 高斯认为有76种方案。 1854年在柏林的象棋杂志上不同的作者发表了40种不同的解。 后来有人用图论的方法解出92种结果。 现在给出n皇后问题的代码\n",
+      "tags": "leetcode",
+      "title": "八皇后问题",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "code",
+      "content": "汉诺塔（Tower of Hanoi）是根据一个传说形成的数学问题：\n有三根杆子A，B，C。 A杆上有 N 个 (N&gt;1) 穿孔圆盘，盘的尺寸由下到上依次变小。要求按下列规则将所有圆盘移至 C 杆：\n每次只能移动一个圆盘； 大盘不能叠在小盘上面。 提示：可将圆盘临时置于 B 杆，也可将从 A 杆移出的圆盘重新移回 A 杆，但都必须遵循上述两条规则。\n问：如何移？最少要移动多少次？\n递归版本：\n#include &lt;iostream&gt; #include &lt;time.h&gt; int count = 0; using namespace std; void hanio(int n, char a, char c, char b) { if(n == 1) { cout&lt;&lt;a&lt;&lt;&quot; -&gt; &quot;&lt;&lt;b&lt;&lt;endl; count++; } else { hanio(n - 1, a, b, c); cout&lt;&lt;a&lt;&lt;&quot; -&gt; &quot;&lt;&lt;b&lt;&lt;endl; count++; hanio(n - 1, c, a, b); } } int main() { int n; cin&gt;&gt;n; clock_t time_start = clock(); hanio(n, 'a', 'b', 'c'); clock_t time_end = clock(); cout&lt;&lt;&quot;The program takes &quot;&lt;&lt;(time_end - time_start)/1.0/1000&lt;&lt;&quot; milliseconds&quot;&lt;&lt;endl; return 0; }  非递归版本：\n#include &lt;iostream&gt; #include &lt;memory.h&gt; #include &lt;math.h&gt; #include &lt;time.h&gt; using namespace std; int max_k(int i) { if(i==0) return 0; int k = 0; while(i%2==0) { i/=2; k++; } return k; } int main() { int n, k; cin&gt;&gt;n; clock_t time_start = clock(); char* a = new char[n]; memset(a, 'a', n); if(n%2==0) { for(int i=1;i&lt;=pow(2,n)-1;i++) { k = max_k(i); if((k+1)%2) { char now = a[k];//k+1号盘子现在在哪根柱子上 char next = (a[k]=='c')?'a':(a[k]+1);//k+1号盘子要移动到哪根柱子上 cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl; a[k] = next; } else { char now = a[k];//k+1号盘子现在在哪根柱子上 char next = (a[k]=='a')?'c':(a[k]-1);//k+1号盘子要移动到哪根柱子上 cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl; a[k] = next; } } } else { for(int i=1;i&lt;=pow(2,n)-1;i++) { k = max_k(i); if((k+1)%2) { char now = a[k];//k+1号盘子现在在哪根柱子上 char next = (a[k]=='a')?'c':(a[k]-1);//k+1号盘子要移动到哪根柱子上 cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl; a[k] = next; } else { char now = a[k];//k+1号盘子现在在哪根柱子上 char next = (a[k]=='c')?'a':(a[k]+1);//k+1号盘子要移动到哪根柱子上 cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl; a[k] = next; } } } clock_t time_end = clock(); cout&lt;&lt;&quot;The program takes &quot;&lt;&lt;(time_end - time_start)/1.0/1000&lt;&lt;&quot; seconds&quot;&lt;&lt;endl; return 0; }  最后还输出计算时间，n较小时两者差不多，n大了之后明显非递归更快\n",
+      "date": 1527379200,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1662849395,
+      "objectID": "41a7c0da0be316474d6b3477d82ad8ca",
+      "permalink": "https://zihengduan.cn/blogs/code/leetcode/hanoi/",
+      "publishdate": "2018-05-27T00:00:00Z",
+      "relpermalink": "/blogs/code/leetcode/hanoi/",
+      "section": "blogs",
+      "summary": "汉诺塔（Tower of Hanoi）是根据一个传说形成的数学问题：\n有三根杆子A，B，C。 A杆上有 N 个 (N&gt;1) 穿孔圆盘，盘的尺寸由下到上依次变小。要求按下列规则将所有圆盘移至 C 杆：\n每次只能移动一个圆盘； 大盘不能叠在小盘上面。 提示：可将圆盘临时置于 B 杆，也可将从 A 杆移出的圆盘重新移回 A 杆，但都必须遵循上述两条规则。\n问：如何移？最少要移动多少次？\n",
+      "tags": "leetcode",
+      "title": "汉诺塔的递归与非递归实现",
+      "type": "blogs"
+    },
+    {
+      "authors": null,
+      "categories": "essay",
+      "content": "超人与引力\n问一个四岁的小孩，引力强还是超人强，他或许会毫无不犹豫地说超人强，因为他在得到通知的一瞬间就能脱离地球引力的范围。这是一个小孩的回答，如果问我的同龄人这个问题，你们会回答什么？在正式回答这个问题之前，让我们先看个玩笑。\n愚人节刚刚过去不久 ，我也见到了不少令人捧腹的恶作剧，现在让我们从物理的角度，看看能做出什么更加有趣的恶作剧。假设条件允许，把你最想恶搞的人施一片安眠药然后把她放在一个大盒子中，盒子中摆好家具，看起来和他的起居室一模一样。然后从一个高飞的飞机中将盒子投下。当他起来时，他会觉得自己在漂浮。从一个地面上的观测者来看，他和他的起居室正去和地面赴一个死亡约会。假设这个盒子不能往外看，他自己会丝毫察觉不到自己在下落，他踩了地板一下，只会发现自己飘向天花板。但地面上的观测者却给出了完全不同的解释，他踏了一下地板，稍微减少了他的速度，同时增加了盒子的下落速度。他只会感到自己在漂浮，却不知道他的下冲加速度还和原来一样。\n你可能表示怀疑，一个下落的人怎么会不知道自己在下落？！如果我从飞机上掉下来，即使我是在一个盒子里，我也会感到重力再把我往下拉。我会很容易消除你的怀疑：这个看似夸张的恶作剧已经被实践过了，而且就在电视上。没错，你一定在电视上看过宇航员在他们绕地飞行的飞船中的姿态吧。\n有人还会反对，飞船是绕地飞行，而不是在自由下落。好吧，如果你这样想，今天我有可能改变了你的世界观：绕行的飞船之所以能留在空中，就是因为它在下落。\n这里有个很大的，经常遇到的错误概念，正如有的电视播音员所说：因为太空中没有引力所以宇航员能够漂浮。对么？这纯属胡扯。众所周知，引力与距离的二次方成反比，地球半径约为4000英里，假设一般飞船离地100英里，这时距地心的距离离增加了2.5%，所以他的引力为（4000/4100）^2，约为95%。这也就是说，作用在飞船上的力几乎和他们停在地面上一样强。所以宇航员在下落，他们感受不到下落是因为他们周围所以物体同样在下落。换句话说，飞船没下落一个距离，地面就配合地逃开一个距离，即它通过自由下落来达到留在空中的目的。同理，那个被恶搞的人也在下落，他感受不到下落是因为他起居室中的物品一起在下落。因为他彻彻底底会上当。\n引力的普适性\n为了更详尽的了解引力，我们重新回到那个愚人节的玩笑。要想恶作剧得以实现，必须所有物体以同样的速度下落。与此相反，盒子落得快，他会在天花板上，他将感到有力在把他往上拉；盒子下落得慢，他则贴在地板上，他将感到有力再把他拉倒。极端情况是盒子根本不落，这就是我们所在的房屋的情况。幸好有引力，我们的恶作剧才得以成功。物理学家就把不同物体对引力的同样响应叫做引力的普适性。\n于此形成鲜明对比的是电磁力，它就不具有普适性。关于其他力的描述就此打住，让我们追踪那个愚人节玩笑，一个人下落但他不知道自己在下落是因为周围物体以同样的速度下落，换句话说是因为普适性。嘿等一下，我们能反过来说么，因为下落的人感受不到下落，所以引力必须是普适的。一定意义上，下落抵消了引力；如果我反过来往上冲，我能产生引力，对么？不知不觉，我们已经和爱因斯坦的思维接近了。\n为了理解爱因斯坦想什么，我们需要假想一个更夸张的玩笑，把我们的一个朋友麻醉并放入盒子中，将他带入星际空间，远离任何引力场。现在给机器加油，是装置得到常数的加速度。当他醒来时，根本不会感到不平常。这次没有漂浮的感觉，他扔下的东西也会掉落，但对外观测者来说，扔下的东西并没有动，只是盒子的地面冲了上来。可是我们在盒子中的朋友却认为他在引力场中。这就是说，引力和加速度等价。OK，我们已经掌握了爱因斯坦的等价理论。\n等价原理\n等价原理是这样叙述的；在空间中一个足够小的区域内，一个观测者所感到的引力场的物理效应和另一个观测者在无引力条件下做匀加速运动时的报告没有区别。至于为什么是足够小的区域，这涉及幻象与现实的对比以及微积分的基本知识，我个人也基本不会，所以这里不做详细解释。下面来说等价原理的重要推论：\n一.引力使光线弯曲：光会下落么？至少牛顿不这么认为，他认为光是由粒子组成的，这显然是片面的。爱因斯坦决定性地解决了问题，从而展示了等价原理的威力。想懂得这一点，还要麻烦我们的朋友（如果他还认为是我朋友），他丝毫没意识到他在深度空间做加速运动。他在玩一个激光游戏，一打开激光器，发现光束竟越来越接近地板！他很吃惊，得出结论：光会下落。但实际上他又被骗了。光并没有下落，只是地板在往上冲。但根据等价原理，在深度空间做加速运动的盒子和引力场中的盒子是一样的，所以我们可以得出结论：引力使光线弯曲。\n二.引力使时间弯曲：设想引力场中有两个不同位置的观测者，一个在地面，一个在塔顶。地面的观测者每秒向塔顶的观测者发射一个光脉冲信号，塔顶观测者测量两个信号的时间间隔——他们在比较时间流逝的快慢。把这个情景移入深度空间，我们很容易能判断出发生了什么。一个光脉冲在冲向塔顶时，塔顶却快速地原理，这造成观测的时间不同。等价原理告诉我们，虽然他们距离相同，都坐着不动，但他们看到时间的不同流逝。这就是引力使时间弯曲的内容，虽然使人惊讶，但却不像科幻小说中所述的那样神奇。\n三.引力使空间弯曲：要理解什么是空间弯曲，先想想什么是二维平面的弯曲。很显然，画一个三角形，如果内角和不等于180度，那这就是个弯曲的平面。同理，我们只需要在空间中画个三角形，观测内角和是否等于180度就OK了。如下图所示，选择两个星体，光线从他们发出，经过太阳时发生弯曲，进入人眼，显然内角和不为180度。等等，你会说，这不是三角形啊，三条边并不是直线。可惜的是，我们仅仅知道一个定义直线的方法：一束光的明亮径迹。如此定义的直线是两点间的最短距离。所以我们又得出一个结论：我们所处的空间是弯曲的。\n空间和时间的曲率是爱因斯坦引力理论的核心，引力场弯曲了时间和空间。从真正的意义上说，空间和时间的曲率就是引力场。再把我们的朋友请出来，把他放在高塔上，让他观测下面两个孩子在玩弹球。奇怪的是，他发现小球在一点周围移动，接近它加速，远离它减速，于是他得出结论：这一点有奇特的力，拽住小球在其周围做椭圆运动。可把他放下来，他会发现，其实那个神秘的中心有一个凹陷，好吧，一切得以解决。突然间我们明白了，我们感受到引力是因为有质量的物体使它周围空间和时间弯曲，临近的物体感受到了曲率，就趋近这个物体。再深奥的东西我也不懂，所以就此打住了。\n牛顿与爱因斯坦\n在理解引力牛顿理论与爱因斯坦理论最大的不同前，我们还要讨论爱因斯坦的另一大发现，质量和能量实际上是一回事，即E=mc^2，他证明质量可以转换为能量，反之亦可。所以能量和质量都可以产生引力场，这是两种理论的重要区别。牛顿认为有质量的物体在其周围产生引力场，而爱因斯坦理论要复杂的多，简言之就是质量产生引力场，引力场具有能量，继续产生附加引力场，接着继续产生附加的附加引力场，知道正无穷。因为平常物体所产生的引力场能量比较低，所以这两种理论就没什么区别。但在黑洞中就不一样了。\n引力与超人\n回到最初的那个话题，引力强还是超人强？在黑洞周围，附加引力场叠加起来，使时间空间极度弯曲，粗略地说，它把空间与时间的织构的网撕得粉碎，坍塌的星体被挤压到不再作为一个星体而存在。一旦落入黑洞，即使超人也无法逃出。现在经过对爱因斯坦引力论的诸多介绍，你该知道谁更强了吧？\n后话\n我没打算让每个打开这篇日志的人耐着性子看到最后，如果我的赘述使你有一点启发，那我就知足了。有人说研究这些有什么用呢，我借用法拉第的话回答，刚出生的婴儿又有什么用呢？\n",
+      "date": 1428710400,
+      "expirydate": -62135596800,
+      "kind": "page",
+      "lang": "en",
+      "lastmod": 1428710400,
+      "objectID": "7b64ca3d0fa39e362bfb91c258d72ed1",
+      "permalink": "https://zihengduan.cn/blogs/essay/%E5%BC%95%E5%8A%9B%E4%B8%8E%E8%B6%85%E4%BA%BA/",
+      "publishdate": "2015-04-11T00:00:00Z",
+      "relpermalink": "/blogs/essay/%E5%BC%95%E5%8A%9B%E4%B8%8E%E8%B6%85%E4%BA%BA/",
+      "section": "blogs",
+      "summary": "超人与引力\n问一个四岁的小孩，引力强还是超人强，他或许会毫无不犹豫地说超人强，因为他在得到通知的一瞬间就能脱离地球引力的范围。这是一个小孩的回答，如果问我的同龄人这个问题，你们会回答什么？在正式回答这个问题之前，让我们先看个玩笑。\n",
+      "tags": "short",
+      "title": "引力与超人",
+      "type": "blogs"
+    }
+  ],
+  "news": [
+    {
+      "date": "2026-11",
+      "label": "Nov 2026",
+      "text": "Joining Prof. Mark Gerstein’s lab at Yale University as a postdoctoral researcher in November 2026.",
+      "url": "",
+      "link_text": ""
+    },
+    {
+      "date": "2026-09-15",
+      "label": "Sep 15, 2026",
+      "text": "Upcoming talk: AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming, SCORCH 2026 Fall Meeting, San Diego.",
+      "url": "/talks/scorch-2026-fall/",
+      "link_text": "Talk details"
+    },
+    {
+      "date": "2025-08",
+      "label": "Aug 2025",
+      "text": "Earned my Ph.D. in Computer Science from UC Irvine.",
+      "url": "",
+      "link_text": ""
+    },
+    {
+      "date": "2025-06",
+      "label": "Jun 2025",
+      "text": "Our collaborative study of single-cell transcriptomic and chromatin dynamics in PTSD was published in Nature.",
+      "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/",
+      "link_text": "Read the paper"
+    }
+  ],
+  "industry": [
+    {
+      "company": "Genesis Molecular AI",
+      "role": "Consultant",
+      "team": "Computational Biology",
+      "dates": "Apr 2026 – present",
+      "company_url": "https://genesis.ml/"
+    },
+    {
+      "company": "Genesis Molecular AI",
+      "role": "Machine Learning Research Intern",
+      "team": "Computational Biology",
+      "dates": "Jun – Sep 2025",
+      "company_url": "https://genesis.ml/"
+    }
+  ],
+  "mentoring": {
+    "program": "Google Summer of Code",
+    "role": "Mentor",
+    "projects": [
+      {
+        "name": "StaR",
+        "year": 2026,
+        "description": "A Stability-Aware Representation Learning Framework for Spatial Domain Identification"
+      },
+      {
+        "name": "RAG-ST",
+        "year": 2025,
+        "description": "Retrieval-Augmented Generation for Spatial Transcriptomics"
+      },
+      {
+        "name": "BenchmarkST",
+        "year": 2024,
+        "description": "Spatial Transcriptomics Gene Imputation Benchmarking"
+      }
+    ]
+  }
+}
