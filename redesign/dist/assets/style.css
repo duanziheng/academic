@@ -24,3 +24,22 @@
 #publication .resource-links>a,#publication .resource-links>button{min-height:24px;display:inline-flex;align-items:center;gap:4px}
 @media(max-width:760px){#publication .paper{grid-template-columns:42px minmax(0,1fr);gap:14px;padding:18px 0}#publication .paper h3{font-size:1.2rem}}
 @media(max-width:490px){#publication .paper{grid-template-columns:1fr;gap:4px;padding:16px 0}#publication .paper h3{font-size:1.16rem}#publication .paper-year{padding-top:0}#publication .resource-links{column-gap:18px}}
+
+/* Quiet section navigation with room reserved outside the reading column. */
+.section-nav{display:none}
+@media(min-width:1440px){.section-nav{display:block;position:fixed;left:max(16px,calc(50% - 720px));top:50%;transform:translateY(-50%);width:124px;max-height:calc(100dvh - 160px);overflow-y:auto;z-index:5}.section-nav-title{font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px 13px}.section-nav a{display:block;border-left:1px solid var(--line);padding:8px 8px 8px 13px;font-size:.75rem;line-height:1.5;color:var(--muted);transition:color .16s,border-color .16s,background .16s}.section-nav a:hover{color:var(--blue);background:var(--soft)}.section-nav a[aria-current="location"]{color:var(--blue);border-left:2px solid var(--blue);padding-left:12px;font-weight:600;background:var(--soft)}}
+.header-inner nav a[aria-current="location"],#mobile-nav a[aria-current="location"]{color:var(--blue);text-decoration:underline;text-underline-offset:7px;text-decoration-thickness:1px}
+.resource-links>a,.resource-links>button,.social-links a,.underlined{transition:color .16s,border-color .16s}
+.resource-links>a:hover,.resource-links>button:hover{text-decoration:underline;text-underline-offset:4px}
+.social-links a:hover,.underlined:hover{border-color:var(--blue)}
+#publication .paper h3 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+#experience .industry-roles h3{font-family:var(--serif);font-size:1.35rem;font-weight:500;line-height:1.35}
+#service .service-grid>article{min-width:0}
+#service .mentoring-service ul{list-style:none;padding-left:0;margin-bottom:0}
+#service .mentoring-service li{padding:12px 0;margin:0;border-bottom:1px solid var(--line);line-height:1.65}
+#service .mentoring-service li:last-child{border-bottom:0}
+::selection{background:#204ed825;color:var(--ink)}
+@media(max-width:1100px){#mobile-nav{max-height:calc(100dvh - 72px);overflow:auto}#mobile-nav a{min-height:44px;padding:10px 8px;border-radius:3px}#mobile-nav a:hover,#mobile-nav a[aria-current="location"]{background:var(--soft)}}
+@media(prefers-reduced-motion:reduce){.section-nav a,.resource-links>a,.resource-links>button,.social-links a,.underlined{transition:none}}
+
+@media(min-width:1440px){.section-nav{background:var(--bg);border-radius:4px;padding-block:12px}}
