@@ -1337,17 +1337,20 @@
       {
         "name": "StaR",
         "year": 2026,
-        "description": "A Stability-Aware Representation Learning Framework for Spatial Domain Identification"
+        "description": "A Stability-Aware Representation Learning Framework for Spatial Domain Identification",
+        "url": "https://ucsc-ospo.github.io/project/osre26/uci/star/"
       },
       {
         "name": "RAG-ST",
         "year": 2025,
-        "description": "Retrieval-Augmented Generation for Spatial Transcriptomics"
+        "description": "Retrieval-Augmented Generation for Spatial Transcriptomics",
+        "url": "https://ucsc-ospo.github.io/project/osre25/uci/rag-st/"
       },
       {
         "name": "BenchmarkST",
         "year": 2024,
-        "description": "Spatial Transcriptomics Gene Imputation Benchmarking"
+        "description": "Spatial Transcriptomics Gene Imputation Benchmarking",
+        "url": "https://ucsc-ospo.github.io/project/osre24/uci/benchmarkst/"
       }
     ]
   }
