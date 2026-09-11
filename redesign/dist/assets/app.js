@@ -15,9 +15,11 @@ async function openSearch(){$('#search-dialog').showModal();$('#site-search').fo
 function renderSearch(){if(!searchData)return;const q=$('#site-search').value.trim().toLowerCase();const results=searchData.filter(x=>(x.title+' '+(x.authors||[]).join(' ')+' '+(x.venue||'')+' '+(x.event||'')+' '+(x.location||'')).toLowerCase().includes(q)).slice(0,15);const box=$('#search-results');box.replaceChildren();if(!q){const p=document.createElement('p');p.textContent='Search by title, author, or research topic.';box.append(p);return}if(!results.length){const p=document.createElement('p');p.textContent='No results. Try a different keyword.';box.append(p)}results.forEach(x=>{const a=document.createElement('a');a.href=x.path;const small=document.createElement('small');small.textContent=x.type;a.append(small,document.createTextNode(x.title));a.addEventListener('click',()=>$('#search-dialog').close());box.append(a)})}
 $('#search-open')?.addEventListener('click',openSearch);$('#site-search')?.addEventListener('input',renderSearch);
 let citeRequest=0;
-$$('[data-cite]').forEach(b=>b.addEventListener('click',async()=>{const request=++citeRequest;$('#cite-dialog').showModal();$('#citation-text').textContent='Loading citation…';$('#cite-status').textContent='';$('#copy-citation').disabled=true;$('#download-citation').href=b.dataset.cite;try{const r=await fetch(b.dataset.cite);if(!r.ok)throw Error();const text=await r.text();if(request!==citeRequest)return;$('#citation-text').textContent=text;$('#copy-citation').disabled=false}catch{if(request===citeRequest)$('#citation-text').textContent='Citation could not load. You can try the download link.'}}));
+$$('[data-cite]').forEach(b=>b.addEventListener('click',async()=>{const request=++citeRequest;if(!$('#cite-dialog').open)$('#cite-dialog').showModal();$('#citation-work').textContent=b.dataset.citeTitle||'';$('#citation-text').textContent='Loading citation…';$('#cite-status').textContent='';$('#copy-citation').disabled=true;$('#download-citation').href=b.dataset.cite;$('#download-citation').download=b.dataset.citeFilename||'citation.bib';$('#download-citation').hidden=true;try{const r=await fetch(b.dataset.cite);if(!r.ok)throw Error();const text=await r.text();if(!/^\s*@(?:article|inproceedings|misc|book|incollection|proceedings|techreport)\s*[{(]/i.test(text))throw Error('Invalid citation');if(request!==citeRequest)return;$('#citation-text').textContent=text;$('#copy-citation').disabled=false;$('#download-citation').hidden=false}catch{if(request===citeRequest)$('#citation-text').textContent='Citation could not load. You can try the download link.'}}));
 $('#copy-citation')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#citation-text').textContent);$('#cite-status').textContent='Citation copied.'}catch{$('#cite-status').textContent='Please select and copy the citation above, or download it.'}});
 $('#contact-form')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget);const subject=encodeURIComponent(`Website message from ${f.get('name')}`);const body=encodeURIComponent(`${f.get('message')}\n\n${f.get('name')}\n${f.get('email')}`);location.href=`mailto:duanziheng1206@gmail.com?subject=${subject}&body=${body}`});
+
+$('#cite-dialog')?.addEventListener('close',()=>{citeRequest++});
 
 // Retire the upcoming badge after the scheduled presentation date.
 $$('[data-event-date]').forEach(el=>{if(new Date()>new Date(el.dataset.eventDate+'T23:59:59-07:00'))el.hidden=true});
@@ -49,3 +51,9 @@ function closeMobileMenu(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#mobile-nav')?.hidden){closeMobileMenu();$('.menu-toggle')?.focus()}});
 document.addEventListener('click',e=>{if(!e.target.closest('.site-header'))closeMobileMenu()});
 matchMedia('(min-width:1101px)').addEventListener('change',e=>{if(e.matches)closeMobileMenu()});
+
+
+// Follow the system theme until a visitor explicitly chooses a theme.
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{try{if(!localStorage.getItem('theme')){document.documentElement.dataset.theme=e.matches?'dark':'light';themeLabel()}}catch{}});
+
+$$('[data-news-event-date]').forEach(el=>{if(new Date()>new Date(el.dataset.newsEventDate+'T23:59:59-07:00')){const p=el.querySelector('p');const first=p?.firstChild;if(first?.nodeType===Node.TEXT_NODE)first.textContent=first.textContent.replace(/^Upcoming talk:/,'Talk:')}});

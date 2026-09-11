@@ -43,3 +43,7 @@
 @media(prefers-reduced-motion:reduce){.section-nav a,.resource-links>a,.resource-links>button,.social-links a,.underlined{transition:none}}
 
 @media(min-width:1440px){.section-nav{background:var(--bg);border-radius:4px;padding-block:12px}}
+
+
+/* Accessible resource controls and compact authorship details. */
+.author-note{font-size:.75rem;color:var(--muted);line-height:1.5;margin:0 0 8px}.authors sup,.detail-authors sup{font-size:.75em;margin-left:2px}.file-format{font-size:.65rem;font-weight:600;color:var(--muted);margin-left:5px}.resource-links>a,.resource-links>button{min-height:28px;display:inline-flex;align-items:center;gap:4px}#publication .resource-links>a,#publication .resource-links>button{min-height:28px}#citation-work{line-height:1.5;font-size:.9375rem;margin-bottom:16px}#citation-text:focus-visible{outline:3px solid #5b87ff;outline-offset:3px}.detail-authors{overflow-wrap:normal;word-break:normal}@media(pointer:coarse){.resource-links>a,.resource-links>button,#publication .resource-links>a,#publication .resource-links>button{min-height:44px}.resource-links{row-gap:0}}[data-theme=dark] .button.secondary{background:transparent;color:var(--ink);border-color:var(--line)}

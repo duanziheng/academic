@@ -1,41 +1,80 @@
 {
   "publications": [
     {
-      "title": "Single-cell transcriptomic and chromatin dynamics of the human brain in PTSD",
+      "title": "Single-cell transcriptomic and chromatin dynamics of the human brain in PTSD",
       "path": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/",
       "year": 2025,
       "type": "Journal article",
       "venue": "Nature",
       "authors": [
-        "Zhang Lab"
+        "Ahyeon Hwang",
+        "Mario Skarica",
+        "Siwei Xu",
+        "Jensine Coudriet",
+        "Che Yu Lee",
+        "Lin Lin",
+        "Rosemarie Terwilliger",
+        "Alexa-Nicole Sliby",
+        "Jiawei Wang",
+        "Tuan Nguyen",
+        "Hongyu Li",
+        "Min Wu",
+        "Yi Dai",
+        "Ziheng Duan",
+        "Shushrruth Sai Srinivasan",
+        "Xiangyu Zhang",
+        "Yingxin Lin",
+        "Dianne Cruz",
+        "P. J. Michael Deans",
+        "Traumatic Stress Brain Research Group",
+        "Bertrand R. Huber",
+        "Daniel Levey",
+        "Jill R. Glausier",
+        "David A. Lewis",
+        "Joel Gelernter",
+        "Paul E. Holtzheimer",
+        "Matthew J. Friedman",
+        "Mark Gerstein",
+        "Nenad Sestan",
+        "Kristen J. Brennand",
+        "Ke Xu",
+        "Hongyu Zhao",
+        "John H. Krystal",
+        "Keith A. Young",
+        "Douglas E. Williamson",
+        "Alicia Che",
+        "Jing Zhang",
+        "Matthew J. Girgenti"
       ],
-      "abstract": "Post-traumatic stress disorder (PTSD) is a polygenic disorder occurring after extreme trauma exposure. Recent studies have begun to detail the molecular biology of PTSD. However, given the array of PTSD-perturbed molecular pathways identifed so far, it is implausible that a single cell type is responsible. Here we profle the molecular responses in over two million nuclei from the dorsolateral prefrontal cortex of 111 human brains, collected post-mortem from individuals with and without PTSD and major depressive disorder. We identify neuronal and non-neuronal cell-type clusters, gene expression changes and transcriptional regulators, and map the epigenomic regulome of PTSD in a cell-type-specifc manner. Our analysis revealed PTSD-associated gene alterations in inhibitory neurons, endothelial cells and microglia and uncovered genes and pathways associated with glucocorticoid signalling, GABAergic transmission and neuroinfammation. We further validated these fndings using cell-type-specifc spatial transcriptomics, confrming disruption of key genes such as SST and FKBP5. By integrating genetic, transcriptomic and epigenetic data, we uncovered the regulatory mechanisms of credible variants that disrupt PTSD genes, including ELFN1, MAD1L1 and KCNIP4, in a cell-type-specifc context. Together, these fndings provide a comprehensive characterization of the cell-specifc molecular regulatory mechanisms that underlie the persisting efects of traumatic stress response on the human prefrontal cortex.",
+      "abstract": "Post-traumatic stress disorder (PTSD) is a polygenic disorder occurring after extreme trauma exposure. Recent studies have begun to detail the molecular biology of PTSD. However, given the array of PTSD-perturbed molecular pathways identified so far, it is implausible that a single cell type is responsible. Here we profile the molecular responses in over two million nuclei from the dorsolateral prefrontal cortex of 111 human brains, collected post-mortem from individuals with and without PTSD and major depressive disorder. We identify neuronal and non-neuronal cell-type clusters, gene expression changes and transcriptional regulators, and map the epigenomic regulome of PTSD in a cell-type-specific manner. Our analysis revealed PTSD-associated gene alterations in inhibitory neurons, endothelial cells and microglia and uncovered genes and pathways associated with glucocorticoid signalling, GABAergic transmission and neuroinflammation. We further validated these findings using cell-type-specific spatial transcriptomics, confirming disruption of key genes such as SST and FKBP5. By integrating genetic, transcriptomic and epigenetic data, we uncovered the regulatory mechanisms of credible variants that disrupt PTSD genes, including ELFN1, MAD1L1 and KCNIP4, in a cell-type-specific context. Together, these findings provide a comprehensive characterization of the cell-specific molecular regulatory mechanisms that underlie the persisting effects of traumatic stress response on the human prefrontal cortex.",
       "links": [
         {
           "label": "PDF",
           "url": "https://zihengduan.cn/publication/Journal/Single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-PTSD/s41586-025-09083-y.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/mjgirgenti/PTSDsnDLPFC"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1038/s41586-025-09083-y"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1038/s41586-025-09083-y",
+      "citation_filename": "single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd-2025.bib"
     },
     {
       "title": "MUSE: A Multi-slice Joint Analysis Method for Spatial Transcriptomics Experiments",
       "path": "/publication/conference/muse/",
       "year": 2025,
       "type": "Conference paper",
-      "venue": "CIKM-2025",
+      "venue": "CIKM 2025",
       "authors": [
         "Ziheng Duan",
         "Xi Li",
@@ -50,28 +89,30 @@
           "url": "https://dl.acm.org/doi/pdf/10.1145/3746252.3761240"
         },
         {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/MUSE"
+        },
+        {
           "label": "Cite",
           "url": "/publication/conference/muse/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1145/3746252.3761240"
-        },
-        {
-          "label": "Code",
-          "url": "https://github.com/RRRussell/MUSE"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1145/3746252.3761240",
+      "citation_filename": "MUSE-2025.bib"
     },
     {
-      "title": "iMIRACLE: an Iterative Multi-View Graph Neural Network to Model Intercellular Gene Regulation from Spatial Transcriptomic Data",
+      "title": "iMIRACLE: An Iterative Multi-View Graph Neural Network to Model Intercellular Gene Regulation From Spatial Transcriptomic Data",
       "path": "/publication/conference/imiracle-an-iterative-multi-view-graph-neural-network-to-model-intercellular-gene-regulation-from-spatial-transcriptomic-data/",
       "year": 2024,
       "type": "Conference paper",
-      "venue": "CIKM-2024",
+      "venue": "CIKM 2024",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Siwei Xu",
         "Cheyu Lee",
         "Dylan Riffle",
@@ -84,19 +125,21 @@
           "url": "/publication/Conference/iMIRACLE-an-Iterative-Multi-View-Graph-Neural-Network-to-Model-Intercellular-Gene-Regulation-from-Spatial-Transcriptomic-Data/iMiracle.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/conference/imiracle-an-iterative-multi-view-graph-neural-network-to-model-intercellular-gene-regulation-from-spatial-transcriptomic-data/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/iMiracle"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/imiracle-an-iterative-multi-view-graph-neural-network-to-model-intercellular-gene-regulation-from-spatial-transcriptomic-data/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1145/3627673.3679574"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1145/3627673.3679574",
+      "citation_filename": "iMIRACLE-2024.bib"
     },
     {
       "title": "Impeller: a path-based heterogeneous graph learning method for spatial transcriptomic data imputation",
@@ -105,7 +148,7 @@
       "type": "Journal article",
       "venue": "Bioinformatics",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Dylan Riffle",
         "Ren Li",
         "Junhao Liu",
@@ -119,19 +162,21 @@
           "url": "/publication/Journal/Impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/btae339.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/Impeller"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1093/bioinformatics/btae339"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1093/bioinformatics/btae339",
+      "citation_filename": "Impeller-2024.bib"
     },
     {
       "title": "Single-cell multi-cohort dissection of the schizophrenia transcriptome",
@@ -140,9 +185,9 @@
       "type": "Journal article",
       "venue": "Science",
       "authors": [
-        "W Brad Ruzicka",
+        "W. Brad Ruzicka",
         "Shahin Mohammadi",
-        "John F Fullard",
+        "John F. Fullard",
         "Jose Davila-Velderrain",
         "Sivan Subburaju",
         "Daniel Reed Tso",
@@ -150,10 +195,10 @@
         "Shan Jiang",
         "Hao-Chih Lee",
         "Jaroslav Bendl",
-        "**PsychENCODE Consortium**",
+        "PsychENCODE Consortium",
         "Georgios Voloudakis",
         "Vahram Haroutunian",
-        "Gabriel E Hoffman",
+        "Gabriel E. Hoffman",
         "Panos Roussos",
         "Manolis Kellis"
       ],
@@ -172,7 +217,10 @@
           "url": "https://doi.org/10.1126/science.adg5136"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/science.adg5136",
+      "citation_filename": "single-cell-multi-cohort-dissection-of-the-schizophrenia-transcriptome-2024.bib"
     },
     {
       "title": "Single-cell genomics and regulatory networks for 388 human brains",
@@ -181,7 +229,87 @@
       "type": "Journal article",
       "venue": "Science",
       "authors": [
-        "PsychENCODE Consortium"
+        "Prashant S. Emani",
+        "Jason J. Liu",
+        "Declan Clarke",
+        "Matthew Jensen",
+        "Jonathan Warrell",
+        "Chirag Gupta",
+        "Ran Meng",
+        "Che Yu Lee",
+        "Siwei Xu",
+        "Cagatay Dursun",
+        "Shaoke Lou",
+        "Yuhang Chen",
+        "Zhiyuan Chu",
+        "Timur Galeev",
+        "Ahyeon Hwang",
+        "Yunyang Li",
+        "Pengyu Ni",
+        "Xiao Zhou",
+        "PsychENCODE Consortium",
+        "Trygve E. Bakken",
+        "Jaroslav Bendl",
+        "Lucy Bicks",
+        "Tanima Chatterjee",
+        "Lijun Cheng",
+        "Yuyan Cheng",
+        "Yi Dai",
+        "Ziheng Duan",
+        "Mary Flaherty",
+        "John F. Fullard",
+        "Michael Gancz",
+        "Diego Garrido-Martín",
+        "Sophia Gaynor-Gillett",
+        "Jennifer Grundman",
+        "Natalie Hawken",
+        "Ella Henry",
+        "Gabriel E. Hoffman",
+        "Ao Huang",
+        "Yunzhe Jiang",
+        "Ting Jin",
+        "Nikolas L. Jorstad",
+        "Riki Kawaguchi",
+        "Saniya Khullar",
+        "Jianyin Liu",
+        "Junhao Liu",
+        "Shuang Liu",
+        "Shaojie Ma",
+        "Michael Margolis",
+        "Samantha Mazariegos",
+        "Jill Moore",
+        "Jennifer R. Moran",
+        "Eric Nguyen",
+        "Nishigandha Phalke",
+        "Milos Pjanic",
+        "Henry Pratt",
+        "Diana Quintero",
+        "Ananya S. Rajagopalan",
+        "Tiernon R. Riesenmy",
+        "Nicole Shedd",
+        "Manman Shi",
+        "Megan Spector",
+        "Rosemarie Terwilliger",
+        "Kyle J. Travaglini",
+        "Brie Wamsley",
+        "Gaoyuan Wang",
+        "Yan Xia",
+        "Shaohua Xiao",
+        "Andrew C. Yang",
+        "Suchen Zheng",
+        "Michael J. Gandal",
+        "Donghoon Lee",
+        "Ed S. Lein",
+        "Panos Roussos",
+        "Nenad Sestan",
+        "Zhiping Weng",
+        "Kevin P. White",
+        "Hyejung Won",
+        "Matthew J. Girgenti",
+        "Jing Zhang",
+        "Daifeng Wang",
+        "Daniel Geschwind",
+        "Mark Gerstein"
       ],
       "abstract": "Single-cell genomics is a powerful tool for studying heterogeneous tissues such as the brain. Yet little is understood about how genetic variants influence cell-level gene expression. Addressing this, we uniformly processed single-nuclei, multiomics datasets into a resource comprising 2.8 million nuclei from the prefrontal cortex across 388 individuals. For 28 cell types, we assessed population-level variation in expression and chromatin across gene families and drug targets. We identified 550,000 cell type–specific regulatory elements and 1.4 million single-cell expression quantitative trait loci, which we used to build cell-type regulatory and cell-to-cell communication networks. These networks manifest cellular changes in aging and neuropsychiatric disorders. We further constructed an integrative model accurately imputing single-cell expression and simulating perturbations; the model prioritized ~250 disease-risk genes and drug targets with associated cell types.",
       "links": [
@@ -198,7 +326,9 @@
           "url": "https://doi.org/10.1126/science.adi5199"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1126/science.adi5199",
+      "citation_filename": "single-cell-genomics-and-regulatory-networks-for-388-human-brains-2024.bib"
     },
     {
       "title": "Massively parallel characterization of regulatory elements in the developing human cortex",
@@ -211,17 +341,17 @@
         "Sean Whalen",
         "Marilyn Steyert",
         "Ryan Ziffra",
-        "Pawel F Przytycki",
+        "Pawel F. Przytycki",
         "Fumitaka Inoue",
-        "Daniela A Pereira",
+        "Daniela A. Pereira",
         "Davide Capauto",
         "Scott Norton",
-        "Flora M Vaccarino",
-        "**PsychENCODE Consortium**",
-        "Alex A Pollen",
-        "Tomasz J Nowakowski",
+        "Flora M. Vaccarino",
+        "PsychENCODE Consortium",
+        "Alex A. Pollen",
+        "Tomasz J. Nowakowski",
         "Nadav Ahituv",
-        "Katherine S Pollard"
+        "Katherine S. Pollard"
       ],
       "abstract": "Nucleotide changes in gene regulatory elements are important determinants of neuronal development and diseases. Using massively parallel reporter assays in primary human cells from mid-gestation cortex and cerebral organoids, we interrogated the cis-regulatory activity of 102,767 open chromatin regions, including thousands of sequences with cell type–specific accessibility and variants associated with brain gene regulation. In primary cells, we identified 46,802 active enhancer sequences and 164 variants that alter enhancer activity. Activity was comparable in organoids and primary cells, suggesting that organoids provide an adequate model for the developing cortex. Using deep learning we decoded the sequence basis and upstream regulators of enhancer activity. This work establishes a comprehensive catalog of functional gene regulatory elements and variants in human neuronal development.",
       "links": [
@@ -238,7 +368,10 @@
           "url": "https://doi.org/10.1126/science.adh0559"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/science.adh0559",
+      "citation_filename": "massively-parallel-characterization-of-regulatory-elements-in-the-developing-human-cortex-2024.bib"
     },
     {
       "title": "Cross-ancestry atlas of gene, isoform, and splicing regulation in the developing human brain",
@@ -265,7 +398,7 @@
         "Christos Chatzinakos",
         "Declan Clarke",
         "Henry Pratt",
-        "**PsychENCODE Consortium**",
+        "PsychENCODE Consortium",
         "Mette A. Peters",
         "Mark Gerstein",
         "Nikolaos P. Daskalakis",
@@ -297,7 +430,10 @@
           "url": "https://doi.org/10.1126/science.adh0829"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/science.adh0829",
+      "citation_filename": "cross-ancestry-atlas-of-gene-isoform-and-splicing-regulation-in-the-developing-human-brain-2024.bib"
     },
     {
       "title": "A data-driven single-cell and spatial transcriptomic map of the human prefrontal cortex",
@@ -306,31 +442,30 @@
       "type": "Journal article",
       "venue": "Science",
       "authors": [
-        "Prashant S Emani",
-        "Louise A Huuki-Myers",
+        "Louise A. Huuki-Myers",
         "Abby Spangler",
-        "Nicholas J Eagles",
-        "Kelsey D Montgomery",
+        "Nicholas J. Eagles",
+        "Kelsey D. Montgomery",
         "Sang Ho Kwon",
         "Boyi Guo",
         "Melissa Grant-Peters",
-        "Heena R Divecha",
+        "Heena R. Divecha",
         "Madhavi Tippani",
         "Chaichontat Sriworarat",
-        "Annie B Nguyen",
+        "Annie B. Nguyen",
         "Prashanthi Ravichandran",
-        "Matthew N Tran",
+        "Matthew N. Tran",
         "Arta Seyedian",
-        "**PsychENCODE Consortium**",
-        "Thomas M Hyde",
-        "Joel E Kleinman",
+        "PsychENCODE Consortium",
+        "Thomas M. Hyde",
+        "Joel E. Kleinman",
         "Alexis Battle",
-        "Stephanie C Page",
+        "Stephanie C. Page",
         "Mina Ryten",
-        "Stephanie C Hicks",
+        "Stephanie C. Hicks",
         "Keri Martinowich",
         "Leonardo Collado-Torres",
-        "Kristen R Maynard"
+        "Kristen R. Maynard"
       ],
       "abstract": "The molecular organization of the human neocortex historically has been studied in the context of its histological layers. However, emerging spatial transcriptomic technologies have enabled unbiased identification of transcriptionally defined spatial domains that move beyond classic cytoarchitecture. We used the Visium spatial gene expression platform to generate a data-driven molecular neuroanatomical atlas across the anterior-posterior axis of the human dorsolateral prefrontal cortex. Integration with paired single-nucleus RNA-sequencing data revealed distinct cell type compositions and cell-cell interactions across spatial domains. Using PsychENCODE and publicly available data, we mapped the enrichment of cell types and genes associated with neuropsychiatric disorders to discrete spatial domains.",
       "links": [
@@ -347,7 +482,10 @@
           "url": "https://doi.org/10.1126/science.adh1938"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/science.adh1938",
+      "citation_filename": "a-data-driven-single-cell-and-spatial-transcriptomic-map-of-the-human-prefrontal-cortex-2024.bib"
     },
     {
       "title": "Using a comprehensive atlas and predictive models to reveal the complexity and evolution of brain-active regulatory elements",
@@ -356,7 +494,7 @@
       "type": "Journal article",
       "venue": "Science Advances",
       "authors": [
-        "Henry E Pratt",
+        "Henry E. Pratt",
         "Gregory Andrews",
         "Nicole Shedd",
         "Nishigandha Phalke",
@@ -364,9 +502,9 @@
         "Anusri Pampari",
         "Matthew Jensen",
         "Cindy Wen",
-        "**PsychENCODE Consortium**",
-        "Michael J Gandal",
-        "Daniel H Geschwind",
+        "PsychENCODE Consortium",
+        "Michael J. Gandal",
+        "Daniel H. Geschwind",
         "Mark Gerstein",
         "Jill Moore",
         "Anshul Kundaje",
@@ -388,7 +526,10 @@
           "url": "https://doi.org/10.1126/sciadv.adj4452"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/sciadv.adj4452",
+      "citation_filename": "using-a-comprehensive-atlas-and-predictive-models-to-reveal-the-complexity-and-evolution-of-brain-active-regulatory-elements-2024.bib"
     },
     {
       "title": "Transcriptomic sex differences in postmortem brain samples from patients with psychiatric disorders",
@@ -405,7 +546,7 @@
         "Rujia Dai",
         "Cong Han",
         "Zhongzheng Mao",
-        "**PsychENCODE Consortium**",
+        "PsychENCODE Consortium",
         "Chunyu Liu",
         "Chao Chen"
       ],
@@ -424,7 +565,10 @@
           "url": "https://doi.org/10.1126/scitranslmed.adh9974"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/scitranslmed.adh9974",
+      "citation_filename": "transcriptomic-sex-differences-in-postmortem-brain-samples-from-patients-with-psychiatric-disorders-2024.bib"
     },
     {
       "title": "Evaluating performance and applications of sample-wise cell deconvolution methods on human brain transcriptomic data",
@@ -440,17 +584,17 @@
         "Alexandre Jourdon",
         "Feinan Wu",
         "Jessica Mariani",
-        "Flora M Vaccarino",
+        "Flora M. Vaccarino",
         "Donghoon Lee",
-        "John F Fullard",
-        "Gabriel E Hoffman",
+        "John F. Fullard",
+        "Gabriel E. Hoffman",
         "Panos Roussos",
         "Yue Wang",
         "Xusheng Wang",
         "Dalila Pinto",
-        "Sidney H Wang",
+        "Sidney H. Wang",
         "Chunling Zhang",
-        "**PsychENCODE consortium**",
+        "PsychENCODE consortium",
         "Chao Chen",
         "Chunyu Liu"
       ],
@@ -469,7 +613,10 @@
           "url": "https://doi.org/10.1126/sciadv.adh2588"
         }
       ],
-      "selected": false
+      "selected": false,
+      "consortium_member": true,
+      "metadata_source": "https://doi.org/10.1126/sciadv.adh2588",
+      "citation_filename": "evaluating-performance-and-applications-of-sample-wise-cell-deconvolution-methods-on-human-brain-transcriptomic-data-2024.bib"
     },
     {
       "title": "Characterizing dysregulations via cell-cell communications in Alzheimer’s brains using single-cell transcriptomes",
@@ -483,10 +630,10 @@
         "Yifeng Xiong",
         "Nadia Momtaz",
         "Yutong Lei",
-        "Joseph M Pariser",
+        "Joseph M. Pariser",
         "Diptanshu Sikdar",
         "Ahyeon Hwang",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Jing Zhang"
       ],
       "abstract": "Background: Alzheimer’s disease (AD) is a devastating neurodegenerative disorder affecting 44 million people worldwide, leading to cognitive decline, memory loss, and significant impairment in daily functioning. The recent single-cell sequencing technology has revolutionized genetic and genomic resolution by enabling scientists to explore the diversity of gene expression patterns at the finest resolution. Most existing studies have solely focused on molecular perturbations within each cell, but cells live in microenvironments rather than in isolated entities. Here, we leveraged the large-scale and publicly available single-nucleus RNA sequencing in the human prefrontal cortex to investigate cell-to-cell communication in healthy brains and their perturbations in AD. We uniformly processed the snRNA-seq with strict QCs and labeled canonical cell types consistent with the definitions from the BRAIN Initiative Cell Census Network. From ligand and receptor gene expression, we built a high-confidence cell-to-cell communication network to investigate signaling differences between AD and healthy brains. Results: Specifically, we first performed broad communication pattern analyses to highlight that biologically related cell types in normal brains rely on largely overlapping signaling networks and that the AD brain exhibits the irregular inter-mixing of cell types and signaling pathways. Secondly, we performed a more focused cell-type-centric analysis and found that excitatory neurons in AD have significantly increased their communications to inhibitory neurons, while inhibitory neurons and other non-neuronal cells globally decreased theirs to all cells. Then, we delved deeper with a signaling-centric view, showing that canonical signaling pathways CSF, TGFβ, and CX3C are significantly dysregulated in their signaling to the cell type microglia/PVM and from endothelial to neuronal cells for the WNT pathway. Finally, after extracting 23 known AD risk genes, our intracellular communication analysis revealed a strong connection of extracellular ligand genes APP, APOE, and PSEN1 to intracellular AD risk genes TREM2, ABCA1, and APP in the communication from astrocytes and microglia to neurons. Conclusions: In summary, with the novel advances in single-cell sequencing technologies, we show that cellular signaling is regulated in a cell-type-specific manner and that improper regulation of extracellular signaling genes is linked to intracellular risk genes, giving the mechanistic intra- and inter-cellular picture of AD.",
@@ -500,7 +647,9 @@
           "url": "https://doi.org/10.1186/s12868-024-00867-y"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1186/s12868-024-00867-y",
+      "citation_filename": "characterizing-dysregulations-via-cell-cell-communications-in-alzheimers-brains-using-single-cell-transcriptomes-2024.bib"
     },
     {
       "title": "scENCORE: leveraging single-cell epigenetic data to predict chromatin conformation using graph embedding",
@@ -509,7 +658,7 @@
       "type": "Journal article",
       "venue": "Briefings in Bioinformatics",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Siwei Xu",
         "Shushrruth Sai Srinivasan",
         "Ahyeon Hwang",
@@ -527,29 +676,31 @@
           "url": "/publication/Journal/scENCORE-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/bbae096.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/scencore-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/scENCORE"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/scencore-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1093/bib/bbae096"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1093/bib/bbae096",
+      "citation_filename": "scENCORE-2024.bib"
     },
     {
-      "title": "ExAD-GNN: explainable graph neural network for Alzheimer’s disease state prediction from single-cell data",
+      "title": "ExAD-GNN: Explainable Graph Neural Network for Alzheimer’s Disease State Prediction from Single-cell Data",
       "path": "/publication/journal/exad-gnn-explainable-graph-neural-network-for-alzheimers-disease-state-prediction-from-single-cell-data/",
       "year": 2023,
       "type": "Journal article",
       "venue": "APSIPA Transactions on Signal and Information Processing",
       "authors": [
-        "**Ziheng Duan**",
-        "CheYu Lee",
+        "Ziheng Duan",
+        "Cheyu Lee",
         "Jing Zhang"
       ],
       "abstract": "Alzheimer’s disease (AD) is a prevalent neurodegenerative disorder with significant impacts on patients and their families. Therefore, accurate and early diagnosis of AD is crucial for improving patient outcomes and developing effective treatments. However, despite advancements in machine learning for AD diagnosis, current methods lack molecular-level insights and completely ignore the heterogeneity in complex human brains, thus potentially masking crucial disease mechanisms. Here, we present ExAD-GNN, an Explainable Graph Neural Network for predicting AD status from single-cell sequencing data. Leveraging K Nearest Neighbours (KNN) graphs derived from the expression profiles of individual cells, ExAD-GNN achieves two primary goals: predicting AD pathology at a cellular level and identifying cell-type-specific marker genes for AD diagnosis through a unique learnable gene importance metric. Extensive benchmarking on large-scale scRNA-seq data with state-of-the-art methods demonstrates ExAD-GNN’s noticeably improved AD prediction accuracy and robustness across various cell types and samples. Furthermore, an extensive ablation study and literature search confirm the majority of top AD risk genes highlighted by our method, demonstrating the effectiveness of ExAD-GNN’s model interpretation scheme. In summary, we develop ExAD-GNN as a publicly.",
@@ -559,28 +710,30 @@
           "url": "/publication/Journal/ExAD-GNN-Explainable-Graph-Neural-Network-for-Alzheimers-Disease-State-Prediction-from-Single-cell-Data/116.00000239.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/exad-gnn-explainable-graph-neural-network-for-alzheimers-disease-state-prediction-from-single-cell-data/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/ExADGNN"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/exad-gnn-explainable-graph-neural-network-for-alzheimers-disease-state-prediction-from-single-cell-data/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1561/116.00000239"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1561/116.00000239",
+      "citation_filename": "ExAD-GNN-2023.bib"
     },
     {
       "title": "iHerd: an integrative hierarchical graph representation learning framework to quantify network changes and prioritize risk genes in disease",
       "path": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/",
       "year": 2023,
       "type": "Journal article",
-      "venue": "Plos Computational Biology",
+      "venue": "PLOS Computational Biology",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yi Dai",
         "Ahyeon Hwang",
         "Cheyu Lee",
@@ -597,29 +750,31 @@
           "url": "/publication/Journal/iHerd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/journal.pcbi.1011444.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/iHerd"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1371/journal.pcbi.1011444"
         }
       ],
-      "selected": true
+      "selected": true,
+      "metadata_source": "https://doi.org/10.1371/journal.pcbi.1011444",
+      "citation_filename": "iHerd-2023.bib"
     },
     {
-      "title": "Turtling: A Time-aware Neural Topic Model on NIH Grant Data",
+      "title": "Turtling: a time-aware neural topic model on NIH grant data",
       "path": "/publication/journal/turtling-a-time-aware-neural-topic-model-on-nih-grant-data/",
       "year": 2023,
       "type": "Journal article",
       "venue": "Bioinformatics Advances",
       "authors": [
         "Ruiyi Zhang",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "CheYu Lee",
         "Dylan Riffle",
         "Martin Renqiang Min",
@@ -632,30 +787,32 @@
           "url": "/publication/Journal/Turtling-A-Time-aware-Neural-Topic-Model-on-NIH-Grant-Data/vbad096.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/turtling-a-time-aware-neural-topic-model-on-nih-grant-data/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/Turtling"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/turtling-a-time-aware-neural-topic-model-on-nih-grant-data/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1093/bioadv/vbad096"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1093/bioadv/vbad096",
+      "citation_filename": "Turtling-2023.bib"
     },
     {
       "title": "Venus: An efficient virus infection detection and fusion site discovery method using single-cell and bulk RNA-seq data",
       "path": "/publication/journal/venus-an-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-rna-seq-data/",
       "year": 2022,
       "type": "Journal article",
-      "venue": "Plos Computational Biology",
+      "venue": "PLOS Computational Biology",
       "authors": [
         "Che Yu Lee",
         "Yuhang Chen",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Min Xu",
         "Matthew J. Girgenti",
         "Ke Xu",
@@ -669,32 +826,35 @@
           "url": "/publication/Journal/Venus-An-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-RNA-seq-data/journal.pcbi.1010636.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/venus-an-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-rna-seq-data/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/Venus"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/venus-an-efficient-virus-infection-detection-and-fusion-site-discovery-method-using-single-cell-and-bulk-rna-seq-data/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1371/journal.pcbi.1010636"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1371/journal.pcbi.1010636",
+      "citation_filename": "Venus-2022.bib"
     },
     {
-      "title": "Multivariate Time Series Classification with Hierarchical Variational Graph Pooling",
+      "title": "Multivariate time-series classification with hierarchical variational graph pooling",
       "path": "/publication/journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/",
       "year": 2022,
       "type": "Journal article",
       "venue": "Neural Networks",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Haoyan Xu",
         "Yueyang Wang",
         "Yida Huang",
         "Anni Ren",
+        "Zhongbin Xu",
         "Yizhou Sun",
         "Wei Wang"
       ],
@@ -705,28 +865,30 @@
           "url": "/publication/Journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/1-s2.0-S0893608022002970-main.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/MTPool"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/multivariate-time-series-classification-with-hierarchical-variational-graph-pooling/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1016/j.neunet.2022.07.032"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1016/j.neunet.2022.07.032",
+      "citation_filename": "multivariate-time-series-classification-with-hierarchical-variational-graph-pooling-2022.bib"
     },
     {
       "title": "Multivariate Time Series Forecasting with Transfer Entropy Graph",
       "path": "/publication/journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/",
-      "year": 2022,
+      "year": 2023,
       "type": "Journal article",
       "venue": "Tsinghua Science and Technology",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Haoyan Xu",
         "Yida Huang",
         "Jie Feng",
@@ -739,28 +901,30 @@
           "url": "/publication/Journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/Multivariate_Time_Series_Forecasting_with_Transfer_Entropy_Graph.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/CauGNN"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/multivariate-time-series-forecasting-with-transfer-entropy-graph/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.26599/tst.2021.9010081"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.26599/tst.2021.9010081",
+      "citation_filename": "multivariate-time-series-forecasting-with-transfer-entropy-graph-2023.bib"
     },
     {
-      "title": "Connecting Latent ReLationships over Heterogeneous Attributed Network for Recommendation",
+      "title": "Connecting latent relationships over heterogeneous attributed network for recommendation",
       "path": "/publication/journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/",
       "year": 2022,
       "type": "Journal article",
       "venue": "Applied Intelligence",
       "authors": [
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yueyang Wang",
         "Weihao Ye",
         "Qilin Fan",
@@ -773,29 +937,31 @@
           "url": "/publication/Journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/Duan2022_Article_ConnectingLatentRelationshipsO.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/HANRec"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1007/s10489-022-03340-7"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1007/s10489-022-03340-7",
+      "citation_filename": "connecting-latent-relationships-over-heterogeneous-attributed-network-for-recommendation-2022.bib"
     },
     {
-      "title": "MTHetGNN: a heterogeneous graph embedding framework for multivariate time series forecasting",
+      "title": "MTHetGNN: A heterogeneous graph embedding framework for multivariate time series forecasting",
       "path": "/publication/journal/mthetgnn-a-heterogeneous-graph-embedding-framework-for-multivariate-time-series-forecasting/",
-      "year": 2021,
+      "year": 2022,
       "type": "Journal article",
-      "venue": "Pattern Recognition Letter",
+      "venue": "Pattern Recognition Letters",
       "authors": [
         "Yueyang Wang",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yida Huang",
         "Haoyan Xu",
         "Jie Feng",
@@ -808,30 +974,32 @@
           "url": "/publication/Journal/MTHetGNN-A-Heterogeneous-Graph-Embedding-Framework-for-Multivariate-Time-Series-Forecasting/MTHetGNN.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/mthetgnn-a-heterogeneous-graph-embedding-framework-for-multivariate-time-series-forecasting/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/MTHetGNN"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/mthetgnn-a-heterogeneous-graph-embedding-framework-for-multivariate-time-series-forecasting/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1016/j.patrec.2021.12.008"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1016/j.patrec.2021.12.008",
+      "citation_filename": "MTHetGNN-2022.bib"
     },
     {
-      "title": "Graph Partitioning and Graph Neural Network based Hierarchical Graph Matching for Graph Similarity Computation",
+      "title": "Graph partitioning and graph neural network based hierarchical graph matching for graph similarity computation",
       "path": "/publication/journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/",
       "year": 2021,
       "type": "Journal article",
       "venue": "Neurocomputing",
       "authors": [
         "Haoyan Xu",
-        "**Ziheng Duan**",
-        "Yueyan Wang",
+        "Ziheng Duan",
+        "Yueyang Wang",
         "Jie Feng",
         "Runjian Chen",
         "Qianru Zhang",
@@ -844,19 +1012,21 @@
           "url": "/publication/Journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/1-s2.0-S0925231221001351-main.pdf"
         },
         {
-          "label": "Cite",
-          "url": "/publication/journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/cite.bib"
-        },
-        {
           "label": "Code",
           "url": "https://github.com/RRRussell/PSimGNN"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation/cite.bib"
         },
         {
           "label": "DOI",
           "url": "https://doi.org/10.1016/j.neucom.2021.01.068"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1016/j.neucom.2021.01.068",
+      "citation_filename": "graph-partitioning-and-graph-neural-network-based-hierarchical-graph-matching-for-graph-similarity-computation-2021.bib"
     },
     {
       "title": "Image-based prediction of granular flow behaviors in a wedge-shaped hopper by combing DEM and deep learning methods",
@@ -869,7 +1039,7 @@
         "Yizhang Yang",
         "Chengfeng Sun",
         "Ruiqi Wu",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yueyang Wang",
         "Xipeng Li",
         "Jian Xu"
@@ -889,50 +1059,54 @@
           "url": "https://doi.org/10.1016/j.powtec.2021.01.041"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1016/j.powtec.2021.01.041",
+      "citation_filename": "image-based-prediction-of-granular-flow-behaviors-in-a-wedge-shaped-hopper-by-combing-dem-and-deep-learning-methods-2021.bib"
     },
     {
-      "title": "Deep Learning Based Detection and Localization of Cerebal Aneurysms in Computed Tomography Angiography",
+      "title": "Deep Learning Based Detection and Localization of Intracranial Aneurysms in Computed Tomography Angiography",
       "path": "/publication/preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/",
-      "year": 2021,
+      "year": 2020,
       "type": "Preprint",
-      "venue": "",
+      "venue": "arXiv",
       "authors": [
         "Dufan Wu",
         "Daniel Montes",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yangsibo Huang",
         "Javier M. Romero",
         "Ramon Gilberto Gonzalez",
         "Quanzheng Li"
       ],
-      "abstract": "Detecting cerebral aneurysms is an important clinical task of brain computed tomography angiography (CTA). However, human interpretation could be time consuming due to the small size of some aneurysms. In this work, we proposed DeepBrain, a deep learning based cerebral aneurysm detection and localization algorithm. The algorithm consisted of a 3D faster region-proposal convolution neural network for aneurysm detection and localization, and a 3D multi-scale fully convolutional neural network for false positive reduction. Furthermore, a novel hierarchical non-maximum suppression algorithm was proposed to process the detection results in 3D, which greatly reduced the time complexity by eliminating unnecessary comparisons. DeepBrain was trained and tested on 550 brain CTA scans and achieved sensitivity of 93.3% with 0.3 false positives per patient on average.",
+      "abstract": "",
       "links": [
         {
           "label": "PDF",
-          "url": "/publication/Preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/2005.11098.pdf"
+          "url": "https://arxiv.org/pdf/2005.11098"
         },
         {
           "label": "Cite",
           "url": "/publication/preprint/deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography/cite.bib"
         },
         {
-          "label": "Code",
-          "url": "https://github.com/wudufan/deep_brain"
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2005.11098"
         }
       ],
-      "selected": false
+      "selected": false,
+      "citation_filename": "deep-learning-based-detection-and-localization-of-cerebal-aneurysms-in-computed-tomography-angiography-2020.bib",
+      "metadata_source": "https://arxiv.org/abs/2005.11098"
     },
     {
       "title": "Classifying herbal medicine origins by temporal and spectral data mining of electronic nose",
       "path": "/publication/preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/",
       "year": 2021,
       "type": "Preprint",
-      "venue": "",
+      "venue": "arXiv",
       "authors": [
         "Li Liu",
         "Xianghao Zhan",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Yi Wu",
         "Rumeng Wu",
         "Xiaoqing Guan",
@@ -940,94 +1114,109 @@
         "You Wang",
         "Guang Li"
       ],
-      "abstract": "The origins of herbal medicines are important for their treatment effect, which could be potentially distinguished by electronic nose system. Because the difference in the odor fingerprint of herbal medicines from different origins can be tiny, the discrimination of origins can be much harder than that of different categories. Therefore, better feature extraction methods are significant for this task to be more accurately done, but there lacks systematic studies on different feature extraction methods and a standardized manner to extract features from e-nose signals upon which most researchers agree. To investigate the effectiveness of multiple feature engineering approaches, we classified different origins of three categories of herbal medicines with different feature extraction methods, manual feature extraction, mathematical transformation, deep learning. With 50 repetitive experiments with bootstrapping, we compared the effectiveness of the extractions with a two-layer neural network w/o dimensionality reduction methods (principal component analysis, linear discriminant analysis) as the three base classifiers. Compared with the conventional aggregated features, the Fast Fourier Transform (FFT) method and our novel approach (longitudinal-information-in-a-line) showed an significant accuracy improvement(p ",
+      "abstract": "",
       "links": [
         {
           "label": "PDF",
-          "url": "/publication/Preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/2104.06640.pdf"
+          "url": "https://arxiv.org/pdf/2104.06640"
         },
         {
           "label": "Cite",
           "url": "/publication/preprint/classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose/cite.bib"
+        },
+        {
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2104.06640"
         }
       ],
-      "selected": false
+      "selected": false,
+      "citation_filename": "classifying-herbal-medicine-origins-by-temporal-and-spectral-data-mining-of-electronic-nose-2021.bib",
+      "metadata_source": "https://arxiv.org/abs/2104.06640"
     },
     {
       "title": "Parallel Extraction of Long-term Trends and Short-term Fluctuation Framework for Multivariate Time Series Forecasting",
       "path": "/publication/preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/",
       "year": 2020,
       "type": "Preprint",
-      "venue": "",
+      "venue": "arXiv",
       "authors": [
         "Yifu Zhou",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Haoyan Xu",
         "Jie Feng",
         "Anni Ren",
         "Yueyang Wang",
         "Xiaoqian Wang"
       ],
-      "abstract": "Multivariate time series forecasting is widely used in various fields. Reasonable prediction results can assist people in planning and decision-making, generate benefits and avoid risks. Normally, there are two characteristics of time series, that is, long-term trend and short-term fluctuation. For example, stock prices will have a long-term upward trend with the market, but there may be a small decline in the short term. These two characteristics are often relatively independent of each other. However, the existing prediction methods often do not distinguish between them, which reduces the accuracy of the prediction model. In this paper, a MTS forecasting framework that can capture the long-term trends and short-term fluctuations of time series in parallel is proposed. This method uses the original time series and its first difference to characterize long-term trends and short-term fluctuations. Three prediction sub-networks are constructed to predict long-term trends, short-term fluctuations and the final value to be predicted. In the overall optimization goal, the idea of multi-task learning is used for reference, which is to make the prediction results of long-term trends and short-term fluctuations as close to the real values as possible while requiring to approximate the values to be predicted. In this way, the proposed method uses more supervision information and can more accurately capture the changing trend of the time series, thereby improving the forecasting performance.",
+      "abstract": "",
       "links": [
         {
           "label": "PDF",
-          "url": "/publication/Preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/2008.07730.pdf"
+          "url": "https://arxiv.org/pdf/2008.07730"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/PFNet"
         },
         {
           "label": "Cite",
           "url": "/publication/preprint/parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting/cite.bib"
         },
         {
-          "label": "Code",
-          "url": "https://github.com/RRRussell/PFNet"
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2008.07730"
         }
       ],
-      "selected": false
+      "selected": false,
+      "citation_filename": "parallel-extraction-of-long-term-trends-and-short-term-fluctuation-framework-for-multivariate-time-series-forecasting-2020.bib",
+      "metadata_source": "https://arxiv.org/abs/2008.07730"
     },
     {
       "title": "CoSimGNN: Towards Large-scale Graph Similarity Computation",
       "path": "/publication/preprint/cosimgnn-towards-large-scale-graph-similarity-computation/",
       "year": 2020,
       "type": "Preprint",
-      "venue": "",
+      "venue": "arXiv",
       "authors": [
         "Haoyan Xu",
         "Runjian Chen",
-        "Yunsheng Bai",
-        "**Ziheng Duan**",
-        "Jie Feng",
-        "Ke Luo",
-        "Yizhou Sun",
-        "Wei Wang"
+        "Yueyang Wang",
+        "Ziheng Duan",
+        "Jie Feng"
       ],
-      "abstract": "In this work, we focus on large graph similarity computation problem and propose a novel \"embedding-coarsening-matching\" learning framework, which outperforms state-of-the-art methods in this task and has significant improvement in time efficiency. Graph similarity computation for metrics such as Graph Edit Distance (GED) is typically NP-hard, and existing heuristics-based algorithms usually achieves a unsatisfactory trade-off between accuracy and efficiency. Recently the development of deep learning techniques provides a promising solution for this problem by a data-driven approach which trains a network to encode graphs to their own feature vectors and computes similarity based on feature vectors. These deep-learning methods can be classified to two categories, embedding models and matching models. Embedding models such as GCN-Mean and GCN-Max, which directly map graphs to respective feature vectors, run faster but the performance is usually poor due to the lack of interactions across graphs. Matching models such as GMN, whose encoding process involves interaction across the two graphs, are more accurate but interaction between whole graphs brings a significant increase in time consumption (at least quadratic time complexity over number of nodes). Inspired by large biological molecular identification where the whole molecular is first mapped to functional groups and then identified based on these functional groups, our \"embedding-coarsening-matching\" learning framework first embeds and coarsens large graphs to coarsened graphs with denser local topology and then matching mechanism is deployed on the coarsened graphs for the final similarity scores. Detailed experiments have been conducted and the results demonstrate the efficiency and effectiveness of our proposed framework.",
+      "abstract": "",
       "links": [
         {
           "label": "PDF",
-          "url": "/publication/Preprint/CoSimGNN-Towards-Large-scale-Graph-Similarity-Computation/2005.07115.pdf"
+          "url": "https://arxiv.org/pdf/2005.07115"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/RRRussell/CoSimGNN"
         },
         {
           "label": "Cite",
           "url": "/publication/preprint/cosimgnn-towards-large-scale-graph-similarity-computation/cite.bib"
         },
         {
-          "label": "Code",
-          "url": "https://github.com/RRRussell/CoSimGNN"
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2005.07115"
         }
       ],
-      "selected": false
+      "selected": false,
+      "citation_filename": "CoSimGNN-2020.bib",
+      "metadata_source": "https://arxiv.org/abs/2005.07115"
     },
     {
       "title": "Untethered quadrupedal hopping and bounding on a trampoline",
       "path": "/publication/journal/untethered-quadrupedal-hopping-and-bounding-on-a-trampoline/",
-      "year": 2019,
+      "year": 2020,
       "type": "Journal article",
       "venue": "Frontiers of Mechanical Engineering",
       "authors": [
         "Boxing Wang",
         "Chunlin Zhou",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Qichao Zhu",
         "Jun Wu",
         "Rong Xiong"
@@ -1047,17 +1236,19 @@
           "url": "https://doi.org/10.1007/s11465-019-0559-5"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1007/s11465-019-0559-5",
+      "citation_filename": "untethered-quadrupedal-hopping-and-bounding-on-a-trampoline-2020.bib"
     },
     {
       "title": "Heterogeneous Attributed Network Embedding with Graph Convolutional Networks",
       "path": "/publication/conference/heterogeneous-attributed-network-embedding-with-graph-convolutional-networks/",
       "year": 2019,
       "type": "Conference paper",
-      "venue": "AAAI-2019",
+      "venue": "AAAI 2019",
       "authors": [
         "Yueyang Wang",
-        "**Ziheng Duan**",
+        "Ziheng Duan",
         "Binbing Liao",
         "Fei Wu",
         "Yueting Zhuang"
@@ -1077,7 +1268,9 @@
           "url": "https://doi.org/10.1609/aaai.v33i01.330110061"
         }
       ],
-      "selected": false
+      "selected": false,
+      "metadata_source": "https://doi.org/10.1609/aaai.v33i01.330110061",
+      "citation_filename": "heterogeneous-attributed-network-embedding-with-graph-convolutional-networks-2019.bib"
     }
   ],
   "talks": [
@@ -1091,32 +1284,36 @@
       "date_label": "September 15, 2026",
       "location": "San Diego, California",
       "upcoming": true,
-      "links": []
+      "links": [],
+      "kind": "Talk"
     },
     {
-      "title": "13th Annual Symposium, Southern California Systems Biology",
+      "title": "scENCORE: reconstructing chromatin compartments from single-cell epigenetic data",
       "path": "/talks/13thannualsymposiumsoutherncaliforniasystemsbiology/",
-      "summary": "Present scENCORE, a computationally method to reconstruct chromatin compartments from the more affordable and widely accessible single-cell epigenetic data.",
+      "summary": "Reconstructing chromatin compartments from affordable, widely accessible single-cell epigenetic data.",
       "year": 2024,
       "links": [
         {
-          "label": "Poster",
+          "label": "Abstracts",
           "url": "https://ccbs.uci.edu/wp-content/uploads/sites/3/securepdfs/2024/03/All-abstracts-2.pdf"
         },
         {
           "label": "Slides",
           "url": "https://docs.google.com/presentation/d/11Qh1H7bsVgTCUXFDKcs_hQtshxu2vcln/edit?usp=sharing&ouid=109346123234240074188&rtpof=true&sd=true"
         }
-      ]
+      ],
+      "event": "13th Annual Symposium, Southern California Systems Biology",
+      "date_label": "May 2024",
+      "kind": "Invited talk"
     },
     {
-      "title": "Fall 2023 SCORCH Consortium Meeting",
+      "title": "iHerd: identifying key driver genes through changes in gene networks",
       "path": "/talks/fall2023scorchconsortiummeeting/",
-      "summary": "Present iHerd, a hierarchical graph representation learning method for identifying key driver genes by analyzing gene network changes across different conditions.",
+      "summary": "Hierarchical graph representation learning to identify key driver genes by comparing gene networks across conditions.",
       "year": 2023,
       "links": [
         {
-          "label": "Poster",
+          "label": "Meeting",
           "url": "https://scorch.igs.umaryland.edu/meetings.php"
         },
         {
@@ -1127,7 +1324,10 @@
           "label": "Video",
           "url": "https://www.youtube.com/watch?v=tMzGw4efwpg"
         }
-      ]
+      ],
+      "event": "SCORCH Consortium Meeting",
+      "date_label": "December 2023",
+      "kind": "Invited talk"
     }
   ],
   "blogs": [
@@ -1353,5 +1553,11 @@
         "url": "https://summerofcode.withgoogle.com/archive/2024/projects/WHnUWgTG"
       }
     ]
+  },
+  "cv": {
+    "url": "/files/Ziheng-Duan-CV.pdf",
+    "updated": "2026-09",
+    "label": "September 2026",
+    "source": "cv_ziheng (4).pdf"
   }
 }

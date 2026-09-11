@@ -2,6 +2,8 @@
 from pathlib import Path
 import runpy
 import shutil
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 runpy.run_path(str(ROOT / "build.py"), run_name="__main__")
@@ -14,3 +16,6 @@ old_image = "https://zihengduan.cn/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00
 for path in out.rglob("*.html"):
     path.write_text(path.read_text().replace(old_image, "https://zihengduan.cn/assets/portrait.jpg"))
 print("Netlify output:", out)
+
+
+subprocess.run([sys.executable, str(ROOT / "scripts/check-site.py"), str(out)], check=True)
