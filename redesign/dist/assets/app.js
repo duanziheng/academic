@@ -54,6 +54,6 @@ matchMedia('(min-width:1101px)').addEventListener('change',e=>{if(e.matches)clos
 
 
 // Follow the system theme until a visitor explicitly chooses a theme.
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{try{if(!localStorage.getItem('theme')){document.documentElement.dataset.theme=e.matches?'dark':'light';themeLabel()}}catch{}});
+
 
 $$('[data-news-event-date]').forEach(el=>{if(new Date()>new Date(el.dataset.newsEventDate+'T23:59:59-07:00')){const p=el.querySelector('p');const first=p?.firstChild;if(first?.nodeType===Node.TEXT_NODE)first.textContent=first.textContent.replace(/^Upcoming talk:/,'Talk:')}});
