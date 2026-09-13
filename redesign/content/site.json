@@ -1525,14 +1525,14 @@
     {
       "company": "Genesis Molecular AI",
       "role": "Consultant",
-      "team": "Immune Atlas Analysis",
+      "team": "I apply computational methods to analyze immune cell atlases.",
       "dates": "Apr 2026 – present",
       "company_url": "https://genesis.ml/"
     },
     {
       "company": "Genesis Molecular AI",
       "role": "Machine Learning Research Intern",
-      "team": "Target Identification",
+      "team": "I developed machine learning methods to integrate omics data and biomedical knowledge for therapeutic target identification.",
       "dates": "Jun – Sep 2025",
       "company_url": "https://genesis.ml/"
     }
