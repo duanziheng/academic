@@ -63,3 +63,8 @@ button.monogram{position:relative;border:0;padding:0;flex-shrink:0}
 .unannotated-cell span{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;font-family:var(--serif);font-size:22px}
 @media(pointer:coarse){button.monogram{width:44px;height:44px}}
 @media(prefers-reduced-motion:reduce){.monogram-letters,.monogram-graph{transition:none;transform:none}}
+
+/* Homepage selections emphasize the research; bylines remain in the archive. */
+#publication .paper.selected-paper{grid-template-columns:minmax(0,1fr);gap:0}
+#publication .selected-paper .venue{margin:8px 0 6px}
+#publication .work-summary{color:var(--muted);font-size:.9375rem;line-height:1.6;margin:0 0 9px;max-width:900px}
