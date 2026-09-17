@@ -1512,14 +1512,26 @@
   ],
   "talks": [
     {
+      "title": "From Immune Atlases to Therapeutic Reprogramming",
+      "year": 2026,
+      "date": "2026-09-22",
+      "date_label": "September 22, 2026 · 11:00 AM–12:00 PM PDT",
+      "event": "Genesis Molecular AI",
+      "kind": "Talk",
+      "upcoming": true,
+      "path": "/talks/genesis-2026-immune-atlases/",
+      "links": [],
+      "summary": "Large-scale single-cell atlases provide an opportunity to connect molecular observations with potential therapeutic interventions. In this talk, I will first present an analysis of NIK-related signaling across multiple immune and disease atlases, highlighting how gene-expression patterns vary across cell types, tissues, and disease contexts. I will then introduce an interactive atlas platform designed to make these results easier to explore and compare at the donor level. The talk will also revisit KNOT, developed during my previous internship at Genesis, before turning to two related directions from my postdoctoral work at UC Irvine. TargetSage explores the use of agentic AI and large language models for therapeutic target identification, while CellReprogrammer moves beyond individual target prioritization to identify small combinations of gene perturbations predicted to shift disease-associated cell states toward healthier states. Finally, I will discuss how these ideas could be extended to cancer, with the goal of identifying interventions that move malignant cells toward more differentiated, normal-like states and generate experimentally testable hypotheses."
+    },
+    {
       "date": "2026-09-15",
       "date_label": "September 15, 2026",
       "event": "SCORCH 2026 Fall Meeting",
       "kind": "Talk",
       "links": [
         {
-          "label": "Slides",
-          "url": "https://docs.google.com/presentation/d/1jgL1HwIIpi5uIJ084xnKvSxDPlEfzhmh/edit?usp=sharing"
+          "label": "PDF",
+          "url": "/files/talks/scorch-2026.pdf"
         }
       ],
       "location": "San Diego, California",
@@ -1532,15 +1544,15 @@
     {
       "date_label": "May 2024",
       "event": "13th Annual Symposium, Southern California Systems Biology",
-      "kind": "Invited talk",
+      "kind": "Talk",
       "links": [
+        {
+          "label": "PDF",
+          "url": "/files/talks/scencore-2024.pdf"
+        },
         {
           "label": "Abstracts",
           "url": "https://ccbs.uci.edu/wp-content/uploads/sites/3/securepdfs/2024/03/All-abstracts-2.pdf"
-        },
-        {
-          "label": "Slides",
-          "url": "https://docs.google.com/presentation/d/11Qh1H7bsVgTCUXFDKcs_hQtshxu2vcln/edit?usp=sharing&ouid=109346123234240074188&rtpof=true&sd=true"
         }
       ],
       "path": "/talks/13thannualsymposiumsoutherncaliforniasystemsbiology/",
@@ -1549,17 +1561,17 @@
       "year": 2024
     },
     {
-      "date_label": "December 2023",
+      "date_label": "December 5, 2023",
       "event": "SCORCH Consortium Meeting",
-      "kind": "Invited talk",
+      "kind": "Talk",
       "links": [
+        {
+          "label": "PDF",
+          "url": "/files/talks/iherd-2023.pdf"
+        },
         {
           "label": "Meeting",
           "url": "https://scorch.igs.umaryland.edu/meetings.php"
-        },
-        {
-          "label": "Slides",
-          "url": "https://docs.google.com/presentation/d/1Zy4AsgGpuQoaho9Ue0Ezg38ULilhSOtjLM5yeaFnFWQ/edit?usp=sharing"
         },
         {
           "label": "Video",
@@ -1569,7 +1581,8 @@
       "path": "/talks/fall2023scorchconsortiummeeting/",
       "summary": "Hierarchical graph representation learning to identify key driver genes by comparing gene networks across conditions.",
       "title": "iHerd: identifying key driver genes through changes in gene networks",
-      "year": 2023
+      "year": 2023,
+      "date": "2023-12-05"
     }
   ]
 }

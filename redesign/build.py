@@ -62,7 +62,7 @@ def talk_context(t):
 def talk_row(t):
  badge='<span class="upcoming" data-event-date="'+e(t['date'])+'">Upcoming</span>' if t.get('upcoming') else ''
  return '<article class="talk"><div class="paper-year">'+str(t['year'])+'</div><div>'+badge+'<h3><a href="'+e(t['path'])+'">'+e(t['title'])+'</a></h3>'+talk_context(t)+('<p>'+e(t['summary'].replace('Present ','Presenting ').replace('a computationally method','a computational method'))+'</p>' if not t.get('event') else '')+links(t)+'</div></article>'
-talksection='<section class="wrap section" id="talks"><div class="section-heading"><div><p class="eyebrow">04 / Talks</p><h2>Talks &amp; presentations</h2></div></div><div class="talk-list">'+''.join(talk_row(t) for t in data['talks'])+'</div></section>'
+talksection='<section class="wrap section" id="talks"><div class="section-heading"><div><p class="eyebrow">04 / Talks</p><h2>Talks</h2></div></div><div class="talk-list">'+''.join(talk_row(t) for t in data['talks'])+'</div></section>'
 
 mentoring = data['mentoring']
 mentoring_section = '<article class="mentoring-service"><h3>'+e(mentoring['program'])+'</h3><p>'+e(mentoring['role'])+'</p><ul>'+''.join('<li><span class="muted">'+str(p['year'])+'</span> · <a href="'+e(p['url'])+'" target="_blank" rel="noopener"><strong>'+e(p['name'])+'</strong></a> — '+e(p['description'])+'</li>' for p in mentoring['projects'])+'</ul></article>'
