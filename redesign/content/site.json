@@ -1532,7 +1532,7 @@
       "date_label": "September 22, 2026 · 11:00 AM–12:00 PM PDT",
       "event": "Genesis Molecular AI",
       "kind": "Talk",
-      "upcoming": true,
+      "upcoming": false,
       "path": "/talks/genesis-2026-immune-atlases/",
       "links": [],
       "summary": "Large-scale single-cell atlases provide an opportunity to connect molecular observations with potential therapeutic interventions. In this talk, I will first present an analysis of NIK-related signaling across multiple immune and disease atlases, highlighting how gene-expression patterns vary across cell types, tissues, and disease contexts. I will then introduce an interactive atlas platform designed to make these results easier to explore and compare at the donor level. The talk will also revisit KNOT, developed during my previous internship at Genesis, before turning to two related directions from my postdoctoral work at UC Irvine. TargetSage explores the use of agentic AI and large language models for therapeutic target identification, while CellReprogrammer moves beyond individual target prioritization to identify small combinations of gene perturbations predicted to shift disease-associated cell states toward healthier states. Finally, I will discuss how these ideas could be extended to cancer, with the goal of identifying interventions that move malignant cells toward more differentiated, normal-like states and generate experimentally testable hypotheses."
