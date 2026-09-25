@@ -210,9 +210,9 @@
     {
       "date": "2026-09-24",
       "label": "Sep 2026",
-      "text": "Two papers accepted to NeurIPS 2026: TargetSage and sMMC-22M: A Context-Aware Dataset and Benchmark for Single-Cell Spatial Transcriptomics.",
-      "link_text": "sMMC-22M",
-      "url": "https://openreview.net/forum?id=Hk85ZGSGbQ"
+      "text": "Two papers accepted to NeurIPS 2026: “TargetSage: Identifying Therapeutic Target Genes with Interpretable and Robust LLM Reasoning” and “sMMC-22M: A Context-Aware Dataset and Benchmark for Single-Cell Spatial Transcriptomics.”",
+      "link_text": "",
+      "url": ""
     },
     {
       "date": "2026-09-15",
@@ -236,8 +236,8 @@
       "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/"
     },
     {
-      "date": "2024",
-      "label": "2024",
+      "date": "2024-05-24",
+      "label": "May 2024",
       "text": "Our collaborative study, “Single-cell genomics and regulatory networks for 388 human brains,” was published in Science.",
       "link_text": "Read the paper",
       "url": "/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/"
