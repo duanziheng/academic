@@ -81,3 +81,8 @@
 .research-overview:after{display:none!important}
 .research-overview .current-interest{background:#081b2a!important;background-image:none!important}
 .research-overview .current-interest[data-active=true]{background:#0b2438!important;background-image:none!important}
+
+/* Match research to the same narrow Selected Work navy range. */
+.research-overview{background:#071521!important}
+.research-overview .current-interest{background:#06131f!important}
+.research-overview .current-interest[data-active=true]{background:#091c2b!important}
