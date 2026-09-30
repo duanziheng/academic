@@ -153,3 +153,55 @@ body{background:var(--bg);color:var(--ink)}
  .section-nav a:hover{color:#a9bfd1;border-left-color:#537da2;background:rgba(70,112,149,.055)}
  .section-nav a[aria-current="location"]{color:#b8cad9;border-left-color:#668daf;background:linear-gradient(90deg,rgba(70,112,149,.09),transparent 78%);font-weight:500}
 }
+
+
+/* Deep Yale section rhythm: alternating navy tones with soft blue transitions. */
+[data-theme=dark] body{
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(24,76,119,.10),transparent 34rem),
+    #050f19;
+}
+[data-theme=dark] main{background:#050f19}
+[data-theme=dark] .hero,
+[data-theme=dark] .education,
+[data-theme=dark] .news-section,
+[data-theme=dark] #publication,
+[data-theme=dark] #experience,
+[data-theme=dark] #talks,
+[data-theme=dark] #service{
+  position:relative;
+  isolation:isolate;
+}
+[data-theme=dark] .hero{background:linear-gradient(180deg,#071522 0%,#081827 78%,#091b2b 100%)}
+[data-theme=dark] .education{background:linear-gradient(180deg,#091b2b 0%,#081724 100%)}
+[data-theme=dark] .news-section{background:linear-gradient(180deg,#081724 0%,#0a2033 48%,#071827 100%)}
+[data-theme=dark] #publication{background:linear-gradient(180deg,#071827 0%,#0a1d2e 50%,#071522 100%)}
+[data-theme=dark] #experience{background:linear-gradient(180deg,#071522 0%,#0b2236 52%,#081827 100%)}
+[data-theme=dark] #talks{background:linear-gradient(180deg,#081827 0%,#0a1e30 52%,#061522 100%)}
+[data-theme=dark] #service{background:linear-gradient(180deg,#061522 0%,#0a2134 52%,#071827 100%)}
+[data-theme=dark] .contact-band{background:linear-gradient(180deg,#071827 0%,#06131f 100%)}
+
+/* Full-bleed section gradients while keeping existing content widths. */
+[data-theme=dark] .hero:before,
+[data-theme=dark] .education:before,
+[data-theme=dark] .news-section:before,
+[data-theme=dark] #publication:before,
+[data-theme=dark] #experience:before,
+[data-theme=dark] #talks:before,
+[data-theme=dark] #service:before{
+  content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:inherit;
+}
+/* Quiet blue transition glow at section boundaries. */
+[data-theme=dark] .education:after,
+[data-theme=dark] .news-section:after,
+[data-theme=dark] #publication:after,
+[data-theme=dark] #experience:after,
+[data-theme=dark] #talks:after,
+[data-theme=dark] #service:after{
+  content:"";position:absolute;z-index:-1;left:50%;top:-42px;width:100vw;height:84px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 50%,rgba(50,111,162,.13) 0%,rgba(25,74,116,.055) 42%,transparent 72%);
+  pointer-events:none;
+}
+[data-theme=dark] .section{padding-top:82px}
+[data-theme=dark] .paper,[data-theme=dark] .talk,[data-theme=dark] .news-list,[data-theme=dark] .industry-roles,[data-theme=dark] .service-grid{border-color:#203b52}
+[data-theme=dark] .muted,[data-theme=dark] .authors,[data-theme=dark] .talk p,[data-theme=dark] .work-summary{color:#9eafbd}
