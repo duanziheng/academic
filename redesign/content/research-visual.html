@@ -1,0 +1,20 @@
+<figure class="research-scene" aria-labelledby="scene-title" data-motion="off" data-scene="0">
+  <div class="scene-topline"><button type="button" class="motion-toggle" aria-controls="cellular-model atlas-model" aria-pressed="false" hidden>Play motion</button></div>
+  <div class="scene-viewport" id="cellular-model">
+    <svg class="scene-fallback" viewBox="0 0 480 300" role="img" aria-labelledby="sphere-title sphere-desc">
+      <title id="sphere-title">Virtual cell modeling</title>
+      <desc id="sphere-desc">A spherical cellular envelope with a nucleus and an internal molecular network. Predicted responses, target networks, and scientific feedback are the research themes represented by the interactive views.</desc>
+      <defs><radialGradient id="sphere-light" cx="35%" cy="30%"><stop stop-color="#a79983" stop-opacity=".09"/><stop offset="1" stop-color="#a79983" stop-opacity="0"/></radialGradient></defs>
+      <circle class="cell-membrane" cx="240" cy="150" r="116" fill="url(#sphere-light)" stroke="#a69780" stroke-opacity=".65" stroke-width=".8"/>
+      <g fill="none" stroke="#839393" stroke-width=".65" opacity=".6">
+        <ellipse cx="240" cy="150" rx="116" ry="38"/><ellipse cx="240" cy="150" rx="116" ry="78"/>
+        <ellipse cx="240" cy="150" rx="38" ry="116"/><ellipse cx="240" cy="150" rx="78" ry="116"/>
+        <circle cx="219" cy="145" r="35" stroke="#b5a182"/>
+        <path d="M173 131 207 90 243 127 302 117 320 181 265 213 243 127 202 195 173 131M207 90 302 117M202 195 265 213M173 131 243 127 320 181" opacity=".65"/>
+      </g>
+      <g fill="#bdab8e"><circle cx="207" cy="90" r="2.5"/><circle cx="243" cy="127" r="3"/><circle cx="320" cy="181" r="2.5"/><circle cx="202" cy="195" r="2"/></g>
+    </svg>
+    <canvas id="cellular-canvas" aria-hidden="true"></canvas>
+  </div>
+  <figcaption><span id="scene-title">01 / Cellular states</span></figcaption>
+</figure>

@@ -1,10 +1,10 @@
-"""Regression tests for the standalone research rendering stage."""
+"""Regression tests for research rendering, the noir sphere and layered slices."""
 import copy
 import importlib.util
 import json
 from pathlib import Path
-import tempfile
 import unittest
+from html.parser import HTMLParser
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('research', ROOT / 'scripts/render-research.py')
@@ -47,6 +47,9 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(once, twice)
         self.assertEqual(twice.count('id="phd-research"'), 1)
         self.assertEqual(twice.count('/assets/research.css?'), 1)
+        self.assertEqual(twice.count('/assets/noir.css?'), 1)
+        self.assertEqual(twice.count('/assets/research-scene.js?'), 1)
+        self.assertEqual(twice.count('/assets/multislice.css?'), 1)
 
     def test_missing_or_duplicate_section_fails(self):
         with self.assertRaises(ValueError):
@@ -77,6 +80,65 @@ class ResearchTests(unittest.TestCase):
         data['interests'][1]['id'] = data['interests'][0]['id']
         with self.assertRaises(ValueError):
             research.render(data)
+
+    def test_removed_vague_captions(self):
+        text = research.render(CONTENT)
+        for phrase in ['A study in biological systems', 'Conceptual visualization', 'not experimental data']:
+            self.assertNotIn(phrase, text)
+        self.assertIn('Virtual cell modeling', text)
+        self.assertIn('Predicted responses', text)
+
+    def test_layered_slices_replace_four_icon_sequence(self):
+        text = research.render(CONTENT)
+        self.assertEqual(text.count('class="slice-plane"'), 4)
+        self.assertIn('class="slice-sculpture"', text)
+        self.assertNotIn('class="atlas-stage"', text)
+        self.assertNotIn('class="atlas-labels"', text)
+        for label in ['Within cells', 'Cell niches', 'Tissues', 'Atlases']:
+            self.assertNotIn('>' + label + '</span>', text)
+        self.assertIn('From Cells to Atlases', text)
+
+    def test_svg_references_and_ids(self):
+        class IDs(HTMLParser):
+            def __init__(self):
+                super().__init__(); self.ids = []; self.refs = []
+            def handle_starttag(self, tag, attrs):
+                values = dict(attrs)
+                if 'id' in values: self.ids.append(values['id'])
+                if values.get('href', '').startswith('#'): self.refs.append(values['href'][1:])
+                for attribute in ['aria-controls', 'aria-labelledby', 'aria-describedby']:
+                    self.refs.extend(values.get(attribute, '').split())
+        doc = IDs(); doc.feed(research.render(CONTENT))
+        self.assertEqual(len(doc.ids), len(set(doc.ids)))
+        self.assertTrue(set(doc.refs).issubset(set(doc.ids)))
+
+    def test_previous_assets_replaced_once(self):
+        before = FIXTURE.replace('</head>', '<link rel="stylesheet" href="/assets/noir.css?v=20260930-preview"></head>').replace('</body>', '<script src="/assets/research-scene.js?v=20260930-preview" defer></script></body>')
+        text = research.update_homepage(before, CONTENT)
+        self.assertNotIn('20260930-preview', text)
+        self.assertEqual(text.count('/assets/noir.css?'), 1)
+        self.assertEqual(text.count('/assets/research-scene.js?'), 1)
+
+    def test_slice_stylesheet_is_available(self):
+        text = research.render(CONTENT)
+        self.assertEqual(text.count('/assets/multislice.css?v=20260930-slices-v4'), 1)
+        self.assertTrue((ROOT / 'dist/assets/multislice.css').is_file())
+
+    def test_slice_motion_is_opt_in_and_respects_controller(self):
+        css = (ROOT / 'dist/assets/multislice.css').read_text()
+        self.assertIn('animation-play-state:paused', css)
+        self.assertIn('[data-running=true] .slice-plane{animation-play-state:running}', css)
+        self.assertIn('prefers-reduced-motion:reduce', css)
+        self.assertIn('animation:none!important', css)
+        text = (ROOT / 'content/phd-visual.html').read_text()
+        self.assertIn('data-running="false"', text)
+        self.assertIn('aria-label="Play research animations" hidden', text)
+
+    def test_regular_sphere_and_static_fallback_retained(self):
+        text = research.render(CONTENT)
+        self.assertIn('<circle class="cell-membrane"', text)
+        self.assertIn('class="scene-fallback"', text)
+        self.assertIn('<canvas id="cellular-canvas"', text)
 
 
 if __name__ == '__main__':

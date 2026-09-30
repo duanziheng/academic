@@ -1,8 +1,8 @@
-"""Render the homepage research component after the legacy site build.
+"""Render current interests and thesis-aligned visual components after the base build.
 
-Content lives in content/research.json. The legacy publication, talk, news and
-experience templates are deliberately left untouched. Only the deployment output
-is rewritten, so no generated HTML needs to be committed.
+Research prose lives in content/research.json. Illustration fragments are separate
+from the prose and use SVG so that meaningful static diagrams survive without JS.
+Only generated homepage markup and the research search index are rewritten.
 """
 from __future__ import annotations
 
@@ -15,6 +15,8 @@ from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
+VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-noir-sphere-v3">'
+VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-noir-sphere-v3" defer></script>'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
     'and spatial transcriptomics to advance drug discovery.'
@@ -83,6 +85,8 @@ def validate(content: dict) -> None:
 
 def render(content: dict) -> str:
     validate(content)
+    visual = (ROOT / 'content/research-visual.html').read_text(encoding='utf-8')
+    atlas_visual = (ROOT / 'content/phd-visual.html').read_text(encoding='utf-8')
     cards = []
     for number, item in enumerate(content['interests'], 1):
         cards.append(
@@ -90,7 +94,11 @@ def render(content: dict) -> str:
             f'aria-labelledby="{esc(item["id"])}-heading">'
             f'<span class="research-number" aria-hidden="true">{number:02d}</span>'
             f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
-            f'<p>{esc(item["description"])}</p></article>'
+            f'<p>{esc(item["description"])}</p>'
+            f'<button type="button" class="scene-select" data-scene="{number - 1}" '
+            f'aria-controls="cellular-model" aria-pressed="{str(number == 1).lower()}" '
+            f'aria-label="Show animation: {esc(item["title"])}" hidden>'
+            'View animation <span aria-hidden="true">↗</span></button></article>'
         )
     phd = content['phd']
     rows = []
@@ -107,13 +115,14 @@ def render(content: dict) -> str:
         )
     return (
         '<section id="research" class="research-band research-overview" aria-labelledby="research-heading">'
-        '<div class="wrap"><div class="section-heading research-intro">'
-        '<div><p class="eyebrow">01 / Research</p>'
-        f'<h2 id="research-heading">{esc(content["heading"])}</h2></div>'
-        f'<p>{esc(content["introduction"])}</p></div>'
+        '<div class="wrap"><div class="section-heading research-intro visual-intro">'
+        '<div class="research-copy"><p class="eyebrow">01 / Research</p>'
+        f'<h2 id="research-heading">{esc(content["heading"])}</h2>'
+        f'<p class="research-lead">{esc(content["introduction"])}</p></div>' + visual + '</div>'
         '<div class="current-interest-grid">' + ''.join(cards) + '</div>'
         '<section id="phd-research" class="phd-research" aria-labelledby="phd-heading">'
-        '<div class="phd-heading-row"><div><p class="eyebrow">PhD Research · UC Irvine</p>'
+        '<div class="phd-heading-row">' + atlas_visual + '<div class="phd-identity">'
+        '<p class="eyebrow">PhD Research · UC Irvine</p>'
         f'<h3 id="phd-heading">{esc(phd["title"])}</h3>'
         f'<p class="phd-subtitle">{esc(phd["subtitle"])}</p></div>'
         f'<a class="dissertation-link" href="{esc(phd["dissertation_url"])}" '
@@ -147,7 +156,6 @@ def update_homepage(document: str, content: dict) -> str:
     elif new_links not in nav:
         raise ValueError('The sidebar template changed; review research navigation')
     document = document[:start] + nav + document[end:]
-    # Update homepage sharing/search descriptions without altering other pages.
     import re
     for attribute in ('name="description"', 'property="og:description"'):
         pattern = rf'<meta {attribute} content="[^"]*">'
@@ -157,6 +165,11 @@ def update_homepage(document: str, content: dict) -> str:
             raise ValueError(f'Expected one homepage meta tag: {attribute}')
     if CSS not in document:
         document = document.replace('</head>', CSS + '</head>', 1)
+    # Replace previous preview assets instead of accumulating style/script layers.
+    document = re.sub(r'<link rel="stylesheet" href="/assets/noir\.css\?[^\"]*">', '', document)
+    document = re.sub(r'<script src="/assets/research-scene\.js\?[^\"]*" defer></script>', '', document)
+    document = document.replace('</head>', VISUAL_CSS + '</head>', 1)
+    document = document.replace('</body>', VISUAL_SCRIPT + '</body>', 1)
     return document
 
 
@@ -186,11 +199,12 @@ def main() -> None:
     index_path = args.output / 'assets/content.json'
     index = json.loads(index_path.read_text(encoding='utf-8'))
     index['research'] = search_entries(content)
-    if not (args.output / 'assets/research.css').is_file():
-        raise FileNotFoundError('Missing research stylesheet')
+    for asset in ('research.css', 'noir.css', 'research-scene.js'):
+        if not (args.output / 'assets' / asset).is_file():
+            raise FileNotFoundError(f'Missing research asset: {asset}')
     home.write_text(updated, encoding='utf-8')
     index_path.write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
-    print('Rendered three current interests, three PhD themes, and research search entries.')
+    print('Rendered current interests, multiscale PhD research, and research search entries.')
 
 
 if __name__ == '__main__':
