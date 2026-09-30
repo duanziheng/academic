@@ -16,7 +16,7 @@ from urllib.parse import quote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
 VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-yale-noir-v7">'
-VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-yale-noir-v7" defer></script>'
+VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-card-select-v8" defer></script>'
 QUIET_CSS = '<link rel="stylesheet" href="/assets/quiet-controls.css?v=20260930-centered-v6">'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
@@ -92,10 +92,10 @@ def render(content: dict) -> str:
     for number, item in enumerate(content['interests'], 1):
         cards.append(
             f'<article class="current-interest" id="{esc(item["id"])}" '
-            f'aria-labelledby="{esc(item["id"])}-heading">'
-            f'<button type="button" class="research-number scene-select" data-scene="{number - 1}" '
-            f'aria-controls="cellular-model" aria-pressed="{str(number == 1).lower()}" '
-            f'aria-label="Show research view: {esc(item["title"])}" disabled>{number:02d}</button>'
+            f'aria-labelledby="{esc(item["id"])}-heading" data-scene="{number - 1}" '
+            f'role="button" tabindex="0" aria-pressed="{str(number == 1).lower()}" '
+            f'aria-controls="cellular-model">'
+            f'<span class="research-number" aria-hidden="true">{number}</span>'
             f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
             f'<p>{esc(item["description"])}</p></article>'
         )
