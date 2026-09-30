@@ -205,3 +205,21 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .section{padding-top:82px}
 [data-theme=dark] .paper,[data-theme=dark] .talk,[data-theme=dark] .news-list,[data-theme=dark] .industry-roles,[data-theme=dark] .service-grid{border-color:#203b52}
 [data-theme=dark] .muted,[data-theme=dark] .authors,[data-theme=dark] .talk p,[data-theme=dark] .work-summary{color:#9eafbd}
+
+/* Subdue dividers in the deep Yale theme. */
+[data-theme=dark]{--line:#182f43}
+[data-theme=dark] .education,
+[data-theme=dark] .papers,
+[data-theme=dark] .paper,
+[data-theme=dark] .talk-list,
+[data-theme=dark] .talk,
+[data-theme=dark] .news-list,
+[data-theme=dark] .news-list li,
+[data-theme=dark] .industry-roles,
+[data-theme=dark] .service-grid,
+[data-theme=dark] #service .mentoring-service li,
+[data-theme=dark] .contact-band,
+[data-theme=dark] .abstract{border-color:rgba(88,127,159,.18)}
+[data-theme=dark] .social-links a,
+[data-theme=dark] .education a,
+[data-theme=dark] .email-link{border-color:rgba(88,127,159,.22)}
