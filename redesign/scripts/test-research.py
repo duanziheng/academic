@@ -1,10 +1,10 @@
-"""Regression tests for the standalone research rendering stage."""
+"""Regression tests for research rendering and readable multiscale illustrations."""
 import copy
 import importlib.util
 import json
 from pathlib import Path
-import tempfile
 import unittest
+from html.parser import HTMLParser
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('research', ROOT / 'scripts/render-research.py')
@@ -47,6 +47,8 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(once, twice)
         self.assertEqual(twice.count('id="phd-research"'), 1)
         self.assertEqual(twice.count('/assets/research.css?'), 1)
+        self.assertEqual(twice.count('/assets/noir.css?'), 1)
+        self.assertEqual(twice.count('/assets/research-scene.js?'), 1)
 
     def test_missing_or_duplicate_section_fails(self):
         with self.assertRaises(ValueError):
@@ -77,6 +79,40 @@ class ResearchTests(unittest.TestCase):
         data['interests'][1]['id'] = data['interests'][0]['id']
         with self.assertRaises(ValueError):
             research.render(data)
+
+    def test_removed_vague_captions(self):
+        text = research.render(CONTENT)
+        for phrase in ['A study in biological systems', 'Conceptual visualization', 'not experimental data', 'slice-sculpture']:
+            self.assertNotIn(phrase, text)
+        self.assertIn('Virtual cell modeling', text)
+        self.assertIn('Predicted responses', text)
+
+    def test_full_cells_to_atlases_sequence(self):
+        text = research.render(CONTENT)
+        self.assertEqual(text.count('class="atlas-stage"'), 4)
+        for label in ['Within cells', 'Cell niches', 'Tissues', 'Atlases']:
+            self.assertIn('>' + label + '</span>', text)
+        self.assertIn('gene regulation', text)
+
+    def test_svg_references_and_ids(self):
+        class IDs(HTMLParser):
+            def __init__(self):
+                super().__init__(); self.ids = []; self.refs = []
+            def handle_starttag(self, tag, attrs):
+                values = dict(attrs)
+                if 'id' in values: self.ids.append(values['id'])
+                if values.get('href', '').startswith('#'): self.refs.append(values['href'][1:])
+                self.refs.extend(values.get('aria-controls', '').split())
+        doc = IDs(); doc.feed(research.render(CONTENT))
+        self.assertEqual(len(doc.ids), len(set(doc.ids)))
+        self.assertTrue(set(doc.refs).issubset(set(doc.ids)))
+
+    def test_previous_assets_replaced_once(self):
+        before = FIXTURE.replace('</head>', '<link rel="stylesheet" href="/assets/noir.css?v=20260930-preview"></head>').replace('</body>', '<script src="/assets/research-scene.js?v=20260930-preview" defer></script></body>')
+        text = research.update_homepage(before, CONTENT)
+        self.assertNotIn('20260930-preview', text)
+        self.assertEqual(text.count('/assets/noir.css?'), 1)
+        self.assertEqual(text.count('/assets/research-scene.js?'), 1)
 
 
 if __name__ == '__main__':
