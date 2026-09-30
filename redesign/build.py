@@ -7,6 +7,8 @@ TODAY=datetime.now(ZoneInfo("America/Los_Angeles")).date().isoformat()
 SITE_URL="https://zihengduan.cn"
 page_urls=[]
 R=Path(__file__).parent; D=R/'dist'; data=json.loads((R/'content/site.json').read_text()); pubs=sorted(data['publications'],key=lambda p:p['year'],reverse=True)
+# Canonical talk metadata is maintained separately from the legacy site export.
+data['talks']=json.loads((R/'content/talks.json').read_text(encoding='utf-8'))
 def e(s):return html.escape(str(s),quote=True)
 def clean(s):return str(s).replace('**','')
 def authors(p,full=False):

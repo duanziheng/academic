@@ -1,0 +1,57 @@
+[
+  {
+    "title": "From Immune Atlases to Therapeutic Reprogramming",
+    "year": 2026,
+    "date": "2026-09-22",
+    "date_label": "September 22, 2026",
+    "event": "Genesis Molecular AI",
+    "kind": "Talk",
+    "upcoming": false,
+    "path": "/talks/genesis-2026-immune-atlases/",
+    "links": [],
+    "summary": "This talk connects single-cell immune atlas analysis with AI approaches to therapeutic target discovery and cell-state reprogramming. It covers NIK-related signaling across tissues and disease contexts, an interactive platform for donor-level atlas exploration, and KNOT for target identification. It also introduces TargetSage and CellReprogrammer and discusses potential extensions to cancer."
+  },
+  {
+    "title": "AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming",
+    "year": 2026,
+    "date": "2026-09-15",
+    "date_label": "September 15, 2026",
+    "event": "SCORCH 2026 Fall Meeting",
+    "kind": "Talk",
+    "upcoming": false,
+    "location": "San Diego, California",
+    "path": "/talks/scorch-2026-fall/",
+    "links": [
+      {"label": "Slides", "url": "/files/talks/scorch-2026.pdf"}
+    ],
+    "summary": "This talk presents AI-based approaches to therapeutic target discovery and cell-state reprogramming."
+  },
+  {
+    "title": "scENCORE: Reconstructing Chromatin Compartments from Single-Cell Epigenetic Data",
+    "year": 2024,
+    "date_label": "May 2024",
+    "event": "13th Annual Symposium, Southern California Systems Biology",
+    "kind": "Talk",
+    "path": "/talks/13thannualsymposiumsoutherncaliforniasystemsbiology/",
+    "links": [
+      {"label": "Slides", "url": "/files/talks/scencore-2024.pdf"},
+      {"label": "Abstracts", "url": "https://ccbs.uci.edu/wp-content/uploads/sites/3/securepdfs/2024/03/All-abstracts-2.pdf"}
+    ],
+    "summary": "This talk presents scENCORE, a computational method for reconstructing chromatin compartments from affordable, widely accessible single-cell epigenetic data."
+  },
+  {
+    "title": "iHerd: Identifying Key Driver Genes through Changes in Gene Networks",
+    "year": 2023,
+    "date": "2023-12-05",
+    "date_label": "December 5, 2023",
+    "event": "SCORCH Consortium Meeting",
+    "kind": "Talk",
+    "path": "/talks/fall2023scorchconsortiummeeting/",
+    "links": [
+      {"label": "Slides", "url": "/files/talks/iherd-2023.pdf"},
+      {"label": "Event", "url": "https://scorch.igs.umaryland.edu/meetings.php"},
+      {"label": "Recording", "url": "https://www.youtube.com/watch?v=tMzGw4efwpg"}
+    ],
+    "summary": "This talk presents iHerd, a hierarchical graph representation learning framework for identifying key driver genes by comparing gene networks across biological conditions."
+  }
+]
