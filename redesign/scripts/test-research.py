@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+import subprocess
 from html.parser import HTMLParser
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,7 +125,7 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(text.count('/assets/multislice.css?v=20260930-slices-v4'), 1)
         self.assertTrue((ROOT / 'dist/assets/multislice.css').is_file())
 
-    def test_slice_motion_is_opt_in_and_respects_controller(self):
+    def test_slice_motion_respects_visibility_and_reduced_motion(self):
         css = (ROOT / 'dist/assets/multislice.css').read_text()
         self.assertIn('animation-play-state:paused', css)
         self.assertIn('[data-running=true] .slice-plane{animation-play-state:running}', css)
@@ -132,13 +133,24 @@ class ResearchTests(unittest.TestCase):
         self.assertIn('animation:none!important', css)
         text = (ROOT / 'content/phd-visual.html').read_text()
         self.assertIn('data-running="false"', text)
-        self.assertIn('aria-label="Play research animations" hidden', text)
+        self.assertNotIn('<button', text)
 
     def test_regular_sphere_and_static_fallback_retained(self):
         text = research.render(CONTENT)
         self.assertIn('<circle class="cell-membrane"', text)
         self.assertIn('class="scene-fallback"', text)
         self.assertIn('<canvas id="cellular-canvas"', text)
+
+    def test_no_playback_controls_or_action_copy(self):
+        text = research.render(CONTENT)
+        for phrase in ['motion-toggle', 'motion-icon', 'Play motion', 'Pause motion', 'View animation', 'Play research animations']:
+            self.assertNotIn(phrase, text)
+        self.assertEqual(text.count('<button'), 3)
+        for number in ['01', '02', '03']:
+            self.assertIn('>' + number + '</button>', text)
+
+    def test_orbit_geometry(self):
+        subprocess.run(['node', str(ROOT / 'scripts/test-research-geometry.cjs')], check=True, timeout=20)
 
 
 if __name__ == '__main__':

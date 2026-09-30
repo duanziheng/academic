@@ -9,7 +9,6 @@
   let ctx;
   try { ctx = canvas.getContext('2d', { alpha: true }); } catch { return; }
   if (!ctx) return;
-  const toggles = [...section.querySelectorAll('.motion-toggle,.atlas-motion-toggle')];
   const title = document.getElementById('scene-title');
   const viewport = figure.querySelector('.scene-viewport');
   const atlas = section.querySelector('.atlas-journey');
@@ -27,9 +26,7 @@
   let width = 480, height = 290, dpr = 1;
   let mode = 0, phase = 0, atlasPhase = 0, frame = 0, last = 0;
   let pointer = { x: 0, y: 0 }, camera = { x: 0, y: 0 };
-  let manuallyPlaying = false, paused = false;
   const visible = new Set();
-  try { paused = localStorage.getItem('research-motion') === 'paused'; } catch { /* Optional preference. */ }
   const shell = [], filaments = [], nucleus = [], network = [], edges = [];
   function membrane(u, v, scale = 1) {
     const r = Math.sin(v) * scale;
@@ -73,7 +70,8 @@
   const atlasPath = atlas?.querySelector('#atlas-flow');
   const atlasDot = atlas?.querySelector('.atlas-flow-dot');
   const atlasLength = atlasPath?.getTotalLength() || 0;
-  function moving() { return !reduced.matches && !paused && (!compact.matches || manuallyPlaying); }
+  // No playback UI. Preserve automatic desktop motion and a static mobile view.
+  function moving() { return !reduced.matches && !compact.matches; }
   function scale() { return Math.min(width * .325, height * .40); }
   function project(p) {
     const a = -.4 + phase * .038 + camera.x, b = -.18 + camera.y;
@@ -179,12 +177,6 @@
       el.dataset.motion = section.dataset.motion;
       el.dataset.running = String(enabled && visible.has(el) && !document.hidden);
     }
-    for (const toggle of toggles) {
-      // Icons are styled from aria-pressed; labels are for assistive technology only.
-      toggle.hidden = reduced.matches; toggle.disabled = reduced.matches;
-      toggle.setAttribute('aria-pressed', String(enabled));
-      toggle.setAttribute('aria-label', reduced.matches ? 'Animations disabled by reduced-motion preference' : enabled ? 'Pause research animations' : 'Play research animations');
-    }
     if (!enabled) {
       pointer = { x: 0, y: 0 };
       cards.forEach(card => { card.style.removeProperty('--tilt-x'); card.style.removeProperty('--tilt-y'); });
@@ -203,12 +195,6 @@
     cards.forEach((card, i) => { card.dataset.active = String(i === mode); });
     selectors.forEach((button, i) => button.setAttribute('aria-pressed', String(i === mode))); render();
   }
-  toggles.forEach(toggle => toggle.addEventListener('click', () => {
-    if (reduced.matches) return;
-    const play = !moving(); paused = !play; manuallyPlaying = play;
-    try { if (paused) localStorage.setItem('research-motion', 'paused'); else localStorage.removeItem('research-motion'); } catch { /* Optional. */ }
-    sync();
-  }));
   selectors.forEach((button, i) => {
     button.hidden = false; button.disabled = false; button.addEventListener('click', () => selectMode(i)); button.addEventListener('focus', () => selectMode(i));
   });
@@ -236,10 +222,9 @@
   } else { visible.add(figure); if (atlas) visible.add(atlas); }
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(viewport);
   else window.addEventListener('resize', resize, { passive: true });
-  reduced.addEventListener('change', () => { manuallyPlaying = false; sync(); render(); });
-  compact.addEventListener('change', () => { manuallyPlaying = false; resize(); });
+  reduced.addEventListener('change', () => { sync(); render(); });
+  compact.addEventListener('change', resize);
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('pagehide', stop); window.addEventListener('pageshow', sync);
-  window.addEventListener('storage', event => { if (event.key === 'research-motion') { paused = event.newValue === 'paused'; sync(); } });
   resize(); selectMode(0); renderAtlas(); figure.dataset.ready = 'true'; sync();
 })();
