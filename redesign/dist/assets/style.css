@@ -358,3 +358,18 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] #publication:before{background:#06131f!important}
 [data-theme=dark] #publication .papers,
 [data-theme=dark] #publication .paper{border-color:rgba(76,105,130,.09)}
+
+/* Final flat Yale surfaces: no UI/section gradients. */
+[data-theme=dark] body,[data-theme=dark] main{background:#050f19!important;background-image:none!important}
+[data-theme=dark] .hero{background:#061522!important;background-image:none!important}
+[data-theme=dark] .education{background:#071824!important;background-image:none!important}
+[data-theme=dark] .news-section{background:#061522!important;background-image:none!important}
+[data-theme=dark] #publication{background:#06131f!important;background-image:none!important}
+[data-theme=dark] #experience{background:#071723!important;background-image:none!important}
+[data-theme=dark] #talks{background:#081c2b!important;background-image:none!important}
+[data-theme=dark] #service{background:#071723!important;background-image:none!important}
+[data-theme=dark] .contact-band{background:#071824!important;background-image:none!important}
+@media(min-width:1440px){
+ .section-nav{background:#061522!important;background-image:none!important}
+ .section-nav a[aria-current="location"]{background:#0a2031!important;background-image:none!important}
+}
