@@ -3,21 +3,39 @@
   <div class="scene-viewport" id="cellular-model">
     <svg class="biology-diagram" viewBox="0 0 480 240" role="img" aria-labelledby="model-svg-title model-svg-desc">
       <title id="model-svg-title">Virtual cell modeling</title>
-      <desc id="model-svg-desc">A cell's molecular state enters a virtual model, which predicts responses in different biological contexts.</desc>
+      <desc id="model-svg-desc">A molecular state enters a virtual cell with a circular membrane, nucleus, and organelles, which predicts cellular responses in different biological contexts.</desc>
       <defs>
-        <radialGradient id="cell-fill" cx="30%" cy="24%" r="80%"><stop stop-color="#fff"/><stop offset=".55" stop-color="#d7eafb"/><stop offset="1" stop-color="#92bce2"/></radialGradient>
-        <radialGradient id="nucleus-fill" cx="28%" cy="24%" r="80%"><stop stop-color="#dceeff"/><stop offset="1" stop-color="#6e9ac5"/></radialGradient>
+        <radialGradient id="cell-fill" cx="29%" cy="23%" r="78%"><stop stop-color="#ffffff"/><stop offset=".42" stop-color="#e8f4fc"/><stop offset=".78" stop-color="#c0deef"/><stop offset="1" stop-color="#81afd0"/></radialGradient>
+        <radialGradient id="nucleus-fill" cx="27%" cy="22%" r="80%"><stop stop-color="#b8d9ef"/><stop offset=".58" stop-color="#699dc4"/><stop offset="1" stop-color="#345f8d"/></radialGradient>
+        <radialGradient id="cell-sheen" cx="27%" cy="20%" r="70%"><stop stop-color="#fff" stop-opacity=".78"/><stop offset=".44" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
         <radialGradient id="rose-fill" cx="30%" cy="25%" r="80%"><stop stop-color="#fff8fc"/><stop offset=".6" stop-color="#e7d1e3"/><stop offset="1" stop-color="#bd91af"/></radialGradient>
-        <linearGradient id="cube-front" x2="1" y2="1"><stop stop-color="#32699e"/><stop offset="1" stop-color="#143d68"/></linearGradient>
+        <linearGradient id="organelle-fill" x2="1" y2="1"><stop stop-color="#cde6e1"/><stop offset="1" stop-color="#71a9b3"/></linearGradient>
         <marker id="model-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 6 3 0 6Z" fill="#638db4"/></marker>
+        <g id="model-mitochondrion">
+          <path d="M-8-3C-4-9 7-7 9-2C11 4 4 8-1 5C-6 2-11 3-8-3Z" fill="url(#organelle-fill)" stroke="#6597a8" stroke-width=".6"/>
+          <path d="M-5-2-2 1 0-3 3 2 5-2" fill="none" stroke="#598d9d" stroke-width=".7" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
         <g id="model-cell">
-          <ellipse cy="48" rx="44" ry="7" fill="#366da8" opacity=".10"/>
-          <path d="M-39-24C-23-49 9-45 32-29C52-13 46 17 28 33C8 48-23 43-38 23C-47 8-47-8-39-24Z" fill="url(#cell-fill)" stroke="#457aa8" stroke-width="1.6"/>
-          <path d="M-34-24C-16-41 6-36 25-29" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/>
-          <ellipse cx="-5" cy="-2" rx="18" ry="19" fill="url(#nucleus-fill)" stroke="#5884ad" stroke-width="1.2"/>
-          <path d="M-13-12Q9-7-13 0T-9 13M0-13Q-19-6 0 1T-2 13M-10-9-2-7M-9 2-2 4M-9 9-3 11" fill="none" stroke="#345f89" stroke-width="1.15" stroke-linecap="round"/>
-          <path d="M18-21Q34-24 30-12Q20-5 18-21ZM-30 14Q-17 7-18 20Q-28 26-30 14Z" fill="#89b7cf" stroke="#568aaf" stroke-width=".8"/>
-          <g fill="#4676a0"><circle cx="23" cy="16" r="2.3"/><circle cx="12" cy="28" r="2"/><circle cx="-27" cy="-17" r="2"/></g>
+          <ellipse cy="51" rx="36" ry="5" fill="#366da8" opacity=".09"/>
+          <circle class="cell-membrane" r="43" fill="url(#cell-fill)" stroke="#6f9cbc" stroke-width=".9"/>
+          <circle r="40.2" fill="none" stroke="#f4fbff" stroke-width="1.1" opacity=".8"/>
+          <circle r="38.7" fill="none" stroke="#89b5cf" stroke-width=".45" opacity=".48"/>
+          <path d="M-31-25A40 40 0 0 1 13-37" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" opacity=".95"/>
+          <g fill="none" stroke="#83afca" stroke-width="1" stroke-linecap="round" opacity=".7">
+            <path d="M-22 2C-28 17-12 28 2 22M-24 7C-26 23-7 31 7 23M-22 16C-18 29-3 32 10 26"/>
+            <path d="M9-21C21-15 24-4 17 7M13-23C26-15 29-2 22 9"/>
+          </g>
+          <circle cx="-6" cy="-5" r="17.5" fill="url(#nucleus-fill)" stroke="#6490b0" stroke-width=".8"/>
+          <circle cx="-6" cy="-5" r="15.7" fill="none" stroke="#c6e3f5" stroke-width=".6" opacity=".7"/>
+          <path d="M-17-8C-14-16-2-14-5-5S-13 2-8 7M-15-1C-9 6 3 3 0-5S-10-8-6-15" fill="none" stroke="#d6e8f4" stroke-width=".85" stroke-linecap="round" opacity=".9"/>
+          <circle cx="0" cy="-9" r="4.3" fill="#315c86" opacity=".62"/>
+          <circle cx="-1.2" cy="-10.6" r="1.4" fill="#9fc5e0" opacity=".7"/>
+          <use href="#model-mitochondrion" transform="translate(22 -20) rotate(-30) scale(.83)"/>
+          <use href="#model-mitochondrion" transform="translate(22 19) rotate(29)"/>
+          <use href="#model-mitochondrion" transform="translate(-27 14) rotate(74) scale(.67)"/>
+          <g fill="#6294b5" opacity=".75"><circle cx="-27" cy="-19" r="1.3"/><circle cx="-32" cy="-9" r="1"/><circle cx="9" cy="-29" r="1.2"/><circle cx="32" cy="-3" r="1.2"/><circle cx="31" cy="9" r="1"/><circle cx="-11" cy="31" r="1.2"/><circle cx="4" cy="33" r=".9"/></g>
+          <g fill="#d0b57f" stroke="#b39866" stroke-width=".5"><circle cx="12" cy="14" r="2.1"/><circle cx="-20" cy="-28" r="1.6"/><circle cx="-17" cy="24" r="1.4"/></g>
+          <circle r="42.4" fill="url(#cell-sheen)"/>
         </g>
         <g id="model-network" fill="#c4e5ff" stroke="#b9d9f5" stroke-width="1.1">
           <path d="M-21-15 0-25 22-7 9 16-15 16-21-15 9 16M0-25-15 16M-21-15 22-7" fill="none" opacity=".7"/>
@@ -25,27 +43,26 @@
         </g>
       </defs>
       <g class="scene-layer" data-mode="0">
-        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-input" d="M125 116H186"/>
-        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-a" d="M294 112C330 112 315 62 355 62"/>
-        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-b" d="M294 117H392"/>
-        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-c" d="M294 123C330 123 315 171 355 171"/>
-        <g transform="translate(76 115)"><g data-float="0"><use href="#model-cell"/></g></g>
-        <ellipse cx="240" cy="175" rx="57" ry="8" fill="#315e8c" opacity=".10"/>
-        <g transform="translate(240 113)"><g data-float="1">
-          <path d="M-48-32 0-54 48-32 0-10Z" fill="#79abda" stroke="#36699e"/>
-          <path d="M-48-32 0-10V51L-48 29Z" fill="#497db1" stroke="#36699e"/>
-          <path d="M0-10 48-32V29L0 51Z" fill="url(#cube-front)" stroke="#36699e"/>
-          <use href="#model-network" transform="translate(0 3) scale(.85)"/>
+        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-input" d="M117 115H154"/>
+        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-a" d="M322 102C342 101 333 58 360 58"/>
+        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-b" d="M324 115H391"/>
+        <path class="signal-path" marker-end="url(#model-arrow)" id="prediction-c" d="M322 128C342 131 335 175 360 175"/>
+        <g transform="translate(69 115)"><g data-float="0">
+          <circle r="37" fill="#deecf6" stroke="#9cbbd3" stroke-width=".8"/>
+          <path d="M-22-9-4-25 20-15 24 10 0 24-22 14-22-9 0 24M-4-25 0 24M-22-9 24 10M20-15-22 14" fill="none" stroke="#83a4be" stroke-width="1"/>
+          <g fill="#4d80a6" stroke="#f3f9ff" stroke-width="1.3"><circle cx="-22" cy="-9" r="4"/><circle cx="-4" cy="-25" r="3.8"/><circle cx="20" cy="-15" r="4"/><circle cx="24" cy="10" r="3.8"/><circle cy="24" r="4"/><circle cx="-22" cy="14" r="3.8"/></g>
+          <circle cx="2" cy="-3" r="5" fill="#c4a66f" stroke="#fff6e5" stroke-width="1.3"/>
         </g></g>
-        <g transform="translate(382 62) scale(.58)"><g data-float="2"><use href="#model-cell"/></g></g>
-        <g transform="translate(423 117) scale(.58)"><g data-float="3"><use href="#model-cell"/></g></g>
-        <g transform="translate(382 171) scale(.58)"><g data-float="4"><use href="#model-cell"/></g></g>
-        <g fill="#3d7897"><circle cx="391" cy="55" r="3.8"/><circle cx="434" cy="125" r="3.8"/><circle cx="371" cy="180" r="3.8"/></g>
-        <circle class="signal-dot" r="3.4" data-track="prediction-input" data-offset="0"/><circle class="signal-dot" r="3.4" data-track="prediction-a" data-offset=".25"/><circle class="signal-dot" r="3.4" data-track="prediction-b" data-offset=".5"/><circle class="signal-dot" r="3.4" data-track="prediction-c" data-offset=".75"/>
+        <g transform="translate(239 114) scale(1.77)"><g data-float="1"><use href="#model-cell"/></g></g>
+        <g transform="translate(390 58) scale(.55)"><g data-float="2"><use href="#model-cell"/></g></g>
+        <g transform="translate(423 115) scale(.55)"><g data-float="3"><use href="#model-cell"/></g></g>
+        <g transform="translate(390 175) scale(.55)"><g data-float="4"><use href="#model-cell"/></g></g>
+        <g stroke="#f7fbff" stroke-width="1.1"><circle cx="402" cy="61" r="3.3" fill="#b69a67"/><circle cx="434" cy="120" r="3.3" fill="#548d9c"/><circle cx="400" cy="180" r="3.3" fill="#6784ac"/></g>
+        <circle class="signal-dot" r="3" data-track="prediction-input" data-offset="0"/><circle class="signal-dot" r="3" data-track="prediction-a" data-offset=".25"/><circle class="signal-dot" r="3" data-track="prediction-b" data-offset=".5"/><circle class="signal-dot" r="3" data-track="prediction-c" data-offset=".75"/>
       </g>
       <g class="scene-layer" data-mode="1" hidden>
         <path class="signal-path" marker-end="url(#model-arrow)" id="intervention-input" d="M126 116H184"/><path class="signal-path" marker-end="url(#model-arrow)" id="intervention-output" d="M294 116H353"/>
-        <g transform="translate(77 115)"><g data-float="0"><use href="#model-cell"/><path d="M-39-24C-23-49 9-45 32-29C52-13 46 17 28 33C8 48-23 43-38 23C-47 8-47-8-39-24Z" fill="url(#rose-fill)" opacity=".45"/><g fill="#8d577e"><circle cx="-24" cy="-12" r="3.7"/><circle cx="23" cy="15" r="4"/><circle cx="8" cy="29" r="3"/></g></g></g>
+        <g transform="translate(77 115)"><g data-float="0"><use href="#model-cell"/><circle r="43" fill="url(#rose-fill)" opacity=".35"/><g fill="#8d577e"><circle cx="-24" cy="-12" r="3.7"/><circle cx="23" cy="15" r="4"/><circle cx="8" cy="29" r="3"/></g></g></g>
         <g transform="translate(239 115)"><g data-float="1">
           <circle r="49" fill="#dcebf9" stroke="#91b7d8" stroke-width="1.2"/>
           <path d="M-28-13 0-28 29-8 19 25-19 25-28-13 19 25M0-28-19 25M-28-13 29-8" fill="none" stroke="#658aaa" stroke-width="1.5"/>
