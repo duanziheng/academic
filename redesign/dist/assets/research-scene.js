@@ -68,11 +68,6 @@
     for (const { j } of nearest) if (j > i) edges.push([i, j]);
   }
   const targets = new Set([5, 17, 28]);
-  const loop = [];
-  for (let i = 0; i <= 120; i++) {
-    const a = i / 120 * TAU;
-    loop.push([1.2 * Math.cos(a), .38 * Math.sin(a), .9 * Math.sin(a)]);
-  }
   const halos = atlas ? [...atlas.querySelectorAll('.scale-halo')] : [];
   const atlasLabels = atlas ? [...atlas.querySelectorAll('.atlas-labels span')] : [];
   const atlasPath = atlas?.querySelector('#atlas-flow');
@@ -133,11 +128,22 @@
     ctx.strokeStyle = `rgba(189,170,143,${mode === 0 ? .45 : .27})`; ctx.lineWidth = .7;
     ctx.beginPath(); ctx.arc(width * .5, height * .5, radius, 0, TAU); ctx.stroke();
     if (mode === 2) {
-      strokePath(loop, '171,153,124', .45, .9);
+      // Center the feedback orbit on the exact same screen-space center as the sphere.
+      const rotation = -.32;
+      const c = Math.cos(rotation), s = Math.sin(rotation);
+      const rx = radius * .64, ry = radius * .20;
+      ctx.strokeStyle = 'rgba(171,153,124,.48)';
+      ctx.lineWidth = .9;
+      ctx.beginPath();
+      ctx.ellipse(width * .5, height * .5, rx, ry, rotation, 0, TAU);
+      ctx.stroke();
       for (let k = 0; k < 3; k++) {
-        const t = (phase * .034 + k / 3) % 1, pos = t * 120, i = Math.floor(pos);
-        const p = loop[i].map((v, n) => mix(v, loop[i + 1][n], pos - i));
-        dot(project(p), 3.1, '207,182,146', .95);
+        const angle = ((phase * .34 + k / 3) % 1) * TAU;
+        const ex = rx * Math.cos(angle), ey = ry * Math.sin(angle);
+        const x = width * .5 + ex * c - ey * s;
+        const y = height * .5 + ex * s + ey * c;
+        ctx.fillStyle = 'rgba(207,182,146,.95)';
+        ctx.beginPath(); ctx.arc(x, y, 2.8, 0, TAU); ctx.fill();
       }
     }
     ctx.strokeStyle = 'rgba(156,166,170,.21)'; ctx.lineWidth = .7;
