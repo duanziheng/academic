@@ -34,3 +34,13 @@
 .research-overview .phd-heading-row>.dissertation-link{grid-column:3;grid-row:1;align-self:center;justify-self:end}
 @media(max-width:1100px){.research-overview .phd-heading-row{grid-template-columns:minmax(0,1fr) 260px}.research-overview .phd-heading-row>.dissertation-link{grid-column:1;grid-row:2;justify-self:start}.research-overview .phd-visual{grid-column:2;grid-row:1/3}}
 @media(max-width:760px){.research-overview .phd-heading-row{grid-template-columns:minmax(0,1fr);gap:18px}.research-overview .phd-identity{grid-column:1;grid-row:1}.research-overview .phd-visual{grid-column:1;grid-row:2;justify-self:start;width:min(100%,360px)}.research-overview .phd-visual .atlas-journey{max-width:360px}.research-overview .phd-heading-row>.dissertation-link{grid-column:1;grid-row:3;justify-self:start}}
+
+/* Give the PhD header more breathing room. */
+.research-overview .phd-research{margin-top:64px;padding-top:40px}
+.research-overview .phd-heading-row{grid-template-columns:minmax(360px,1.35fr) minmax(300px,.85fr) auto;gap:52px}
+.research-overview .phd-identity{max-width:620px}
+.research-overview .phd-heading-row h3{font-size:clamp(2rem,3vw,2.65rem);max-width:560px}
+.research-overview .phd-subtitle{font-size:.95rem;line-height:1.7;max-width:520px}
+.research-overview .phd-visual{padding-inline:8px}
+@media(max-width:1100px){.research-overview .phd-heading-row{grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:34px}}
+@media(max-width:760px){.research-overview .phd-research{margin-top:46px;padding-top:32px}.research-overview .phd-heading-row{gap:26px}.research-overview .phd-heading-row h3{font-size:2rem}.research-overview .phd-subtitle{font-size:.9rem}}
