@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
+CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260930-phd-layout-v2">'
 VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-yale-v10">'
 VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-yale-v10" defer></script>'
 QUIET_CSS = '<link rel="stylesheet" href="/assets/quiet-controls.css?v=20260930-centered-v6">'
@@ -120,10 +120,11 @@ def render(content: dict) -> str:
         f'<p class="research-lead">{esc(content["introduction"])}</p></div>' + visual + '</div>'
         '<div class="current-interest-grid">' + ''.join(cards) + '</div>'
         '<section id="phd-research" class="phd-research" aria-labelledby="phd-heading">'
-        '<div class="phd-heading-row">' + atlas_visual + '<div class="phd-identity">'
+        '<div class="phd-heading-row"><div class="phd-identity">'
         '<p class="eyebrow">PhD Research · UC Irvine</p>'
         f'<h3 id="phd-heading">{esc(phd["title"])}</h3>'
         f'<p class="phd-subtitle">{esc(phd["subtitle"])}</p></div>'
+        '<div class="phd-visual">' + atlas_visual + '</div>'
         f'<a class="dissertation-link" href="{esc(phd["dissertation_url"])}" '
         'target="_blank" rel="noopener" '
         f'aria-label="Doctoral dissertation: {esc(phd["dissertation_title"])} (opens in a new tab)">'
