@@ -223,3 +223,41 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .social-links a,
 [data-theme=dark] .education a,
 [data-theme=dark] .email-link{border-color:rgba(88,127,159,.22)}
+
+
+/* Flat deep-Yale section rhythm: no gradient seams or bright section rules. */
+[data-theme=dark] body,[data-theme=dark] main{background:#06131f}
+[data-theme=dark] .hero{background:#071522}
+[data-theme=dark] .education{background:#081827}
+[data-theme=dark] .news-section{background:#071522}
+[data-theme=dark] #publication{background:#091b2a}
+[data-theme=dark] #experience{background:#071725}
+[data-theme=dark] #talks{background:#091c2c}
+[data-theme=dark] #service{background:#071725}
+[data-theme=dark] .contact-band{background:#081827}
+[data-theme=dark] .hero:before,
+[data-theme=dark] .education:before,
+[data-theme=dark] .news-section:before,
+[data-theme=dark] #publication:before,
+[data-theme=dark] #experience:before,
+[data-theme=dark] #talks:before,
+[data-theme=dark] #service:before{background:inherit}
+[data-theme=dark] .education:after,
+[data-theme=dark] .news-section:after,
+[data-theme=dark] #publication:after,
+[data-theme=dark] #experience:after,
+[data-theme=dark] #talks:after,
+[data-theme=dark] #service:after{display:none!important}
+[data-theme=dark] .education,
+[data-theme=dark] .papers,
+[data-theme=dark] .paper,
+[data-theme=dark] .talk-list,
+[data-theme=dark] .talk,
+[data-theme=dark] .news-list,
+[data-theme=dark] .news-list li,
+[data-theme=dark] .industry-roles,
+[data-theme=dark] .service-grid,
+[data-theme=dark] #service .mentoring-service li,
+[data-theme=dark] .contact-band,
+[data-theme=dark] .abstract{border-color:rgba(83,112,136,.10)}
+[data-theme=dark] .section-heading{border-color:transparent}
