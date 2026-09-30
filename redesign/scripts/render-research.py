@@ -16,7 +16,8 @@ from urllib.parse import quote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
 VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-noir-sphere-v3">'
-VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-noir-sphere-v3" defer></script>'
+VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-quiet-v5" defer></script>'
+QUIET_CSS = '<link rel="stylesheet" href="/assets/quiet-controls.css?v=20260930-quiet-v5">'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
     'and spatial transcriptomics to advance drug discovery.'
@@ -92,13 +93,11 @@ def render(content: dict) -> str:
         cards.append(
             f'<article class="current-interest" id="{esc(item["id"])}" '
             f'aria-labelledby="{esc(item["id"])}-heading">'
-            f'<span class="research-number" aria-hidden="true">{number:02d}</span>'
-            f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
-            f'<p>{esc(item["description"])}</p>'
-            f'<button type="button" class="scene-select" data-scene="{number - 1}" '
+            f'<button type="button" class="research-number scene-select" data-scene="{number - 1}" '
             f'aria-controls="cellular-model" aria-pressed="{str(number == 1).lower()}" '
-            f'aria-label="Show animation: {esc(item["title"])}" hidden>'
-            'View animation <span aria-hidden="true">↗</span></button></article>'
+            f'aria-label="Show research view: {esc(item["title"])}" disabled>{number:02d}</button>'
+            f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
+            f'<p>{esc(item["description"])}</p></article>'
         )
     phd = content['phd']
     rows = []
@@ -168,7 +167,8 @@ def update_homepage(document: str, content: dict) -> str:
     # Replace previous preview assets instead of accumulating style/script layers.
     document = re.sub(r'<link rel="stylesheet" href="/assets/noir\.css\?[^\"]*">', '', document)
     document = re.sub(r'<script src="/assets/research-scene\.js\?[^\"]*" defer></script>', '', document)
-    document = document.replace('</head>', VISUAL_CSS + '</head>', 1)
+    document = re.sub(r'<link rel="stylesheet" href="/assets/quiet-controls\.css\?[^\"]*">', '', document)
+    document = document.replace('</head>', VISUAL_CSS + QUIET_CSS + '</head>', 1)
     document = document.replace('</body>', VISUAL_SCRIPT + '</body>', 1)
     return document
 
@@ -199,7 +199,7 @@ def main() -> None:
     index_path = args.output / 'assets/content.json'
     index = json.loads(index_path.read_text(encoding='utf-8'))
     index['research'] = search_entries(content)
-    for asset in ('research.css', 'noir.css', 'research-scene.js'):
+    for asset in ('research.css', 'noir.css', 'research-scene.js', 'quiet-controls.css'):
         if not (args.output / 'assets' / asset).is_file():
             raise FileNotFoundError(f'Missing research asset: {asset}')
     home.write_text(updated, encoding='utf-8')

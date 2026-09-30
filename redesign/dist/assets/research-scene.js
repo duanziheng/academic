@@ -174,8 +174,8 @@
       el.dataset.running = String(enabled && visible.has(el) && !document.hidden);
     }
     for (const toggle of toggles) {
-      toggle.hidden = false; toggle.disabled = reduced.matches;
-      toggle.textContent = reduced.matches ? 'Static' : enabled ? 'Pause motion' : 'Play motion';
+      // Icons are styled from aria-pressed; labels are for assistive technology only.
+      toggle.hidden = reduced.matches; toggle.disabled = reduced.matches;
       toggle.setAttribute('aria-pressed', String(enabled));
       toggle.setAttribute('aria-label', reduced.matches ? 'Animations disabled by reduced-motion preference' : enabled ? 'Pause research animations' : 'Play research animations');
     }
@@ -204,7 +204,7 @@
     sync();
   }));
   selectors.forEach((button, i) => {
-    button.hidden = false; button.addEventListener('click', () => selectMode(i)); button.addEventListener('focus', () => selectMode(i));
+    button.hidden = false; button.disabled = false; button.addEventListener('click', () => selectMode(i)); button.addEventListener('focus', () => selectMode(i));
   });
   cards.forEach((card, i) => {
     card.addEventListener('pointerenter', () => { if (fine.matches) selectMode(i); });
