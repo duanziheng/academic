@@ -279,3 +279,17 @@ body{background:var(--bg);color:var(--ink)}
   border-color:#6a9bc3!important;
   color:#fff!important;
 }
+
+/* Darker, quieter contact CTA. */
+.contact-band .button,.contact-band a.button,
+[data-theme=dark] .contact-band .button,[data-theme=dark] .contact-band a.button{
+ background:#0b3153!important;
+ border-color:#315a7b!important;
+ color:#dce8f1!important;
+}
+.contact-band .button:hover,.contact-band a.button:hover,
+[data-theme=dark] .contact-band .button:hover,[data-theme=dark] .contact-band a.button:hover{
+ background:#104064!important;
+ border-color:#456f91!important;
+ color:#f5f8fb!important;
+}
