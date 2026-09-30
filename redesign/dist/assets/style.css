@@ -324,3 +324,17 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .contact-band .button:hover,[data-theme=dark] .contact-band a.button:hover{
  background:#091c2b!important;border-color:#315773!important;color:#f0f5f8!important
 }
+
+/* Tighten the dark Yale range: keep section variation subtle and consistently deep. */
+[data-theme=dark] body,[data-theme=dark] main{background:#071522}
+[data-theme=dark] .hero{background:#081a29}
+[data-theme=dark] .education{background:#091d2d}
+[data-theme=dark] .news-section{background:#081a29}
+[data-theme=dark] #publication{background:#0a2031}
+[data-theme=dark] #experience{background:#091c2c}
+[data-theme=dark] #talks{background:#0a2133}
+[data-theme=dark] #service{background:#091c2c}
+[data-theme=dark] .contact-band{background:#091d2d}
+[data-theme=dark] .contact-band .button,[data-theme=dark] .contact-band a.button{
+ background:#06131f!important;border-color:#1e3b52!important
+}
