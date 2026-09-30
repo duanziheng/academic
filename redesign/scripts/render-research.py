@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260930-phd-layout-v2">'
+CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260930-phd-layout-v3">'
 VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-yale-v10">'
 VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-yale-v10" defer></script>'
 QUIET_CSS = '<link rel="stylesheet" href="/assets/quiet-controls.css?v=20260930-centered-v6">'
