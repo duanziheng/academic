@@ -120,3 +120,15 @@
  .research-overview .phd-heading-row>.atlas-journey{grid-column:1;grid-row:2;width:min(100%,360px);max-width:360px}
  .research-overview .phd-heading-row>.dissertation-link{grid-column:1;grid-row:3}
 }
+
+/* Mobile PhD header: one coherent vertical stack, no desktop grid residue. */
+@media(max-width:760px){
+ .research-overview .phd-heading-row{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:0!important}
+ .research-overview .phd-identity{order:1!important;width:100%!important;max-width:none!important}
+ .research-overview .phd-heading-row>.atlas-journey{order:2!important;width:min(260px,72vw)!important;max-width:260px!important;margin:26px 0 24px!important;align-self:flex-start!important}
+ .research-overview .phd-heading-row>.dissertation-link{order:3!important;align-self:flex-start!important;margin:0!important}
+ .research-overview .phd-heading-row h3{font-size:clamp(2rem,9vw,2.55rem)!important;line-height:1.08!important;margin:0!important}
+ .research-overview .phd-subtitle{font-size:.95rem!important;line-height:1.6!important;margin:14px 0 0!important;max-width:34rem!important}
+ .research-overview .phd-research .eyebrow{margin-bottom:14px!important}
+ .research-overview .phd-summary{margin-top:34px!important}
+}
