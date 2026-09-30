@@ -261,3 +261,21 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .contact-band,
 [data-theme=dark] .abstract{border-color:rgba(83,112,136,.10)}
 [data-theme=dark] .section-heading{border-color:transparent}
+
+/* Remove the last legacy gold accent from contact actions. */
+.contact-band .button,
+.contact-band a.button,
+[data-theme=dark] .contact-band .button,
+[data-theme=dark] .contact-band a.button{
+  background:#174f82!important;
+  border-color:#4f82ad!important;
+  color:#f3f7fa!important;
+}
+.contact-band .button:hover,
+.contact-band a.button:hover,
+[data-theme=dark] .contact-band .button:hover,
+[data-theme=dark] .contact-band a.button:hover{
+  background:#205f94!important;
+  border-color:#6a9bc3!important;
+  color:#fff!important;
+}
