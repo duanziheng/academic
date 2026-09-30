@@ -385,3 +385,15 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] #service{background:#071521!important}
 [data-theme=dark] .contact-band{background:#06131f!important}
 @media(min-width:1440px){.section-nav{background:#05111c!important}.section-nav a[aria-current="location"]{background:#081a29!important}}
+
+/* Refined Yale accents: darker, desaturated, editorial rather than bright blue. */
+[data-theme=dark]{--blue:#6687a3}
+[data-theme=dark] .eyebrow,
+[data-theme=dark] .venue,
+[data-theme=dark] .position a,
+[data-theme=dark] .talk .talk-context,
+[data-theme=dark] .service-grid summary{color:#6f8ea8}
+[data-theme=dark] .news-section .eyebrow{color:#617f99}
+[data-theme=dark] .news-list a{color:#7f9db5;border-bottom-color:rgba(95,126,151,.20)}
+[data-theme=dark] .news-list a:hover{color:#a4b8c8}
+[data-theme=dark] .section-nav a[aria-current="location"]{color:#9aafbf;border-left-color:#4f718d}
