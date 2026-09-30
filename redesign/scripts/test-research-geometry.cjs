@@ -27,12 +27,14 @@ for(const size of [[276,225],[346,225],[500,290]]) {
     phase=time;
     for(const view of [[0,0],[-.125,-.08],[.125,.08]]) {
       [camera.x,camera.y]=view; circles=[];ellipses=[];render();
-      assert.equal(ellipses.length,1);
-      const e=ellipses[0], sphere=circles[0];
+      assert.equal(ellipses.length,2);
+      const e=ellipses[0], accent=ellipses[1], sphere=circles[0];
       assert.equal(e.x,sphere.x);assert.equal(e.y,sphere.y);
+      assert.equal(accent.x,sphere.x);assert.equal(accent.y,sphere.y);
       assert.equal(e.x,width*.5);assert.equal(e.y,height*.5);
-      assert.equal(e.rx,sphere.r*.64);assert.equal(e.ry,sphere.r*.20);
-      const particles=circles.filter(p=>p.r===2.8);assert.equal(particles.length,3);
+      assert.equal(e.rx,sphere.r*.82);assert.equal(e.ry,sphere.r*.27);
+      assert.equal(accent.rx,e.rx*1.018);assert.equal(accent.ry,e.ry*1.018);
+      const particles=circles.filter(p=>p.r===3);assert.equal(particles.length,3);
       for(const p of particles) {
         const dx=p.x-e.x,dy=p.y-e.y,c=Math.cos(e.rotation),s=Math.sin(e.rotation);
         const x=dx*c+dy*s,y=-dx*s+dy*c;
