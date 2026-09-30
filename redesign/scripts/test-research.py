@@ -145,9 +145,10 @@ class ResearchTests(unittest.TestCase):
         text = research.render(CONTENT)
         for phrase in ['motion-toggle', 'motion-icon', 'Play motion', 'Pause motion', 'View animation', 'Play research animations']:
             self.assertNotIn(phrase, text)
-        self.assertEqual(text.count('<button'), 3)
-        for number in ['01', '02', '03']:
-            self.assertIn('>' + number + '</button>', text)
+        self.assertEqual(text.count('<button'), 0)
+        for number in ['1', '2', '3']:
+            self.assertIn('class="research-number" aria-hidden="true">' + number + '</span>', text)
+        self.assertEqual(text.count('role="button" tabindex="0"'), 3)
 
     def test_orbit_geometry(self):
         subprocess.run(['node', str(ROOT / 'scripts/test-research-geometry.cjs')], check=True, timeout=20)
