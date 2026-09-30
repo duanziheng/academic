@@ -15,6 +15,8 @@ from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
+NOIR_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-preview">'
+NOIR_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-preview" defer></script>'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
     'and spatial transcriptomics to advance drug discovery.'
@@ -83,6 +85,7 @@ def validate(content: dict) -> None:
 
 def render(content: dict) -> str:
     validate(content)
+    visual = (ROOT / 'content/research-visual.html').read_text(encoding='utf-8')
     cards = []
     for number, item in enumerate(content['interests'], 1):
         cards.append(
@@ -90,7 +93,11 @@ def render(content: dict) -> str:
             f'aria-labelledby="{esc(item["id"])}-heading">'
             f'<span class="research-number" aria-hidden="true">{number:02d}</span>'
             f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
-            f'<p>{esc(item["description"])}</p></article>'
+            f'<p>{esc(item["description"])}</p>'
+            f'<button type="button" class="scene-select" data-scene="{number - 1}" '
+            f'aria-controls="cellular-canvas" aria-pressed="{str(number == 1).lower()}" '
+            f'aria-label="View conceptual visualization: {esc(item["title"])}" hidden>'
+            'Explore view <span aria-hidden="true">↗</span></button></article>' 
         )
     phd = content['phd']
     rows = []
@@ -107,15 +114,19 @@ def render(content: dict) -> str:
         )
     return (
         '<section id="research" class="research-band research-overview" aria-labelledby="research-heading">'
-        '<div class="wrap"><div class="section-heading research-intro">'
-        '<div><p class="eyebrow">01 / Research</p>'
-        f'<h2 id="research-heading">{esc(content["heading"])}</h2></div>'
-        f'<p>{esc(content["introduction"])}</p></div>'
+        '<div class="wrap"><div class="section-heading research-intro noir-intro">'
+        '<div class="research-copy"><p class="eyebrow">01 / Research</p>'
+        f'<h2 id="research-heading">{esc(content["heading"])}</h2>'
+        f'<p class="noir-lead">{esc(content["introduction"])}</p></div>' + visual + '</div>'
         '<div class="current-interest-grid">' + ''.join(cards) + '</div>'
         '<section id="phd-research" class="phd-research" aria-labelledby="phd-heading">'
-        '<div class="phd-heading-row"><div><p class="eyebrow">PhD Research · UC Irvine</p>'
+        '<div class="phd-heading-row"><div class="phd-identity">'
+        '<span class="slice-sculpture" aria-hidden="true"><span class="slice-plane"></span>'
+        '<span class="slice-plane"></span><span class="slice-plane"></span>'
+        '<span class="slice-plane"></span></span>'
+        '<div><p class="eyebrow">PhD Research · UC Irvine</p>'
         f'<h3 id="phd-heading">{esc(phd["title"])}</h3>'
-        f'<p class="phd-subtitle">{esc(phd["subtitle"])}</p></div>'
+        f'<p class="phd-subtitle">{esc(phd["subtitle"])}</p></div></div>'
         f'<a class="dissertation-link" href="{esc(phd["dissertation_url"])}" '
         'target="_blank" rel="noopener" '
         f'aria-label="Doctoral dissertation: {esc(phd["dissertation_title"])} (opens in a new tab)">'
@@ -157,6 +168,10 @@ def update_homepage(document: str, content: dict) -> str:
             raise ValueError(f'Expected one homepage meta tag: {attribute}')
     if CSS not in document:
         document = document.replace('</head>', CSS + '</head>', 1)
+    if NOIR_CSS not in document:
+        document = document.replace('</head>', NOIR_CSS + '</head>', 1)
+    if NOIR_SCRIPT not in document:
+        document = document.replace('</body>', NOIR_SCRIPT + '</body>', 1)
     return document
 
 
@@ -186,8 +201,9 @@ def main() -> None:
     index_path = args.output / 'assets/content.json'
     index = json.loads(index_path.read_text(encoding='utf-8'))
     index['research'] = search_entries(content)
-    if not (args.output / 'assets/research.css').is_file():
-        raise FileNotFoundError('Missing research stylesheet')
+    for asset in ('research.css', 'noir.css', 'research-scene.js'):
+        if not (args.output / 'assets' / asset).is_file():
+            raise FileNotFoundError(f'Missing research asset: {asset}')
     home.write_text(updated, encoding='utf-8')
     index_path.write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
     print('Rendered three current interests, three PhD themes, and research search entries.')
