@@ -15,8 +15,8 @@ from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260929-research">'
-VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-yale-v2">'
-VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-yale-v2" defer></script>'
+VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-noir-sphere-v3">'
+VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-noir-sphere-v3" defer></script>'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
     'and spatial transcriptomics to advance drug discovery.'
