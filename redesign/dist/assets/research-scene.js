@@ -13,7 +13,6 @@
   const viewport = figure.querySelector('.scene-viewport');
   const atlas = section.querySelector('.atlas-journey');
   const cards = [...section.querySelectorAll('.current-interest')];
-  const selectors = [...section.querySelectorAll('.scene-select')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 760px)');
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
@@ -200,12 +199,17 @@
     if (!Number.isInteger(next) || next < 0 || next >= labels.length) return;
     mode = next; title.textContent = labels[mode]; figure.dataset.scene = String(mode);
     cards.forEach((card, i) => { card.dataset.active = String(i === mode); });
-    selectors.forEach((button, i) => button.setAttribute('aria-pressed', String(i === mode))); render();
+    cards.forEach((card, i) => card.setAttribute('aria-pressed', String(i === mode))); render();
   }
-  selectors.forEach((button, i) => {
-    button.hidden = false; button.disabled = false; button.addEventListener('click', () => selectMode(i)); button.addEventListener('focus', () => selectMode(i));
-  });
   cards.forEach((card, i) => {
+    card.addEventListener('click', () => selectMode(i));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectMode(i);
+      }
+    });
+    card.addEventListener('focus', () => selectMode(i));
     card.addEventListener('pointerenter', () => { if (fine.matches) selectMode(i); });
     card.addEventListener('pointermove', event => {
       if (!fine.matches || !moving()) return;
