@@ -307,3 +307,20 @@ body{background:var(--bg);color:var(--ink)}
  border-color:#294a63!important;
  color:#eef4f8!important;
 }
+
+/* Rebalance flat Yale sections: narrower tonal range, no near-black blocks. */
+[data-theme=dark] body,[data-theme=dark] main{background:#091a29}
+[data-theme=dark] .hero{background:#0b2032}
+[data-theme=dark] .education{background:#0d2438}
+[data-theme=dark] .news-section{background:#0b2032}
+[data-theme=dark] #publication{background:#0e273c}
+[data-theme=dark] #experience{background:#0c2235}
+[data-theme=dark] #talks{background:#0f293f}
+[data-theme=dark] #service{background:#0c2235}
+[data-theme=dark] .contact-band{background:#0d2438}
+[data-theme=dark] .contact-band .button,[data-theme=dark] .contact-band a.button{
+ background:#071522!important;border-color:#24445e!important;color:#d2e0ea!important
+}
+[data-theme=dark] .contact-band .button:hover,[data-theme=dark] .contact-band a.button:hover{
+ background:#091c2b!important;border-color:#315773!important;color:#f0f5f8!important
+}
