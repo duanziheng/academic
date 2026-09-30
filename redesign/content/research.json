@@ -1,13 +1,13 @@
 {
-  "hero": "I develop AI methods to model biological systems and guide therapeutic discovery. My current interests span virtual cells, precision medicine, and closed-loop AI for science.",
-  "description": "Ziheng Duan — AI for virtual cells, precision medicine, and therapeutic discovery, grounded in graph learning for single-cell and spatial omics.",
+  "hero": "I develop AI methods to model biological systems and guide therapeutic discovery. My current interests include virtual cells for precision medicine, therapeutic intervention design, and closed-loop AI for science.",
+  "description": "Ziheng Duan — virtual cells for precision medicine, AI for therapeutic discovery, and closed-loop AI for science, grounded in graph learning for single-cell and spatial omics.",
   "doctoral_bio": "My doctoral research developed graph learning methods for single-cell and spatial omics, from genomic regulation to multi-slice tissue atlases.",
   "heading": "Current Research Interests",
   "introduction": "Modeling cellular responses, designing therapeutic interventions, and learning from scientific feedback.",
   "interests": [
     {
       "id": "virtual-cells",
-      "title": "Virtual Cells & Precision Medicine",
+      "title": "Virtual Cells for Precision Medicine",
       "description": "Modeling cellular states and responses across diverse biological and patient contexts to support precision medicine."
     },
     {
