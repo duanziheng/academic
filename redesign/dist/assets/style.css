@@ -71,3 +71,41 @@ button.monogram{position:relative;border:0;padding:0;flex-shrink:0}
 
 /* Keep the news archive compact and keyboard-accessible. */
 .news-list{max-height:340px;overflow-y:auto;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--muted) var(--soft);padding-right:16px}.news-list:focus-visible{outline:2px solid var(--blue);outline-offset:5px}.news-list::-webkit-scrollbar{width:7px}.news-list::-webkit-scrollbar-track{background:var(--soft);border-radius:8px}.news-list::-webkit-scrollbar-thumb{background:var(--muted);border-radius:8px}.news-list p{overflow-wrap:anywhere}@media(max-width:760px){.news-list{max-height:360px;padding-right:12px}}@media print{.news-list{max-height:none;overflow:visible}}
+
+
+/* Site-wide Yale identity. Portrait remains natural. */
+:root{
+  --bg:#f7f8fa;
+  --ink:#10283f;
+  --muted:#52677a;
+  --line:#ccd8e3;
+  --soft:#edf3f8;
+  --blue:#00356b;
+  --navy:#00356b;
+}
+body{background:var(--bg);color:var(--ink)}
+.site-header{background:rgba(247,248,250,.96);border-bottom-color:#c5d3df;backdrop-filter:blur(12px)}
+.monogram{background:#00356b;color:#fff}
+.eyebrow,.venue,.position a,.talk .talk-context,.service-grid summary{color:#2868a0}
+.portrait img,[data-theme=dark] .portrait img{filter:none!important;mix-blend-mode:normal!important;opacity:1!important}
+.portrait:before{background:#00356b}
+.button{background:#00356b;border-color:#00356b;color:#fff}
+.button:hover{background:#174f82;color:#fff}
+.contact-band,.filters{background:#edf3f8}
+::selection{background:#8db7db55;color:#10283f}
+
+[data-theme=dark]{
+  --bg:#071522;
+  --ink:#eef4f8;
+  --muted:#aebfcd;
+  --line:#27445e;
+  --soft:#0c2032;
+  --blue:#8eb9de;
+  --navy:#00356b;
+}
+[data-theme=dark] body{background:#071522}
+[data-theme=dark] .site-header{background:rgba(7,21,34,.96);border-bottom-color:#27445e}
+[data-theme=dark] .monogram{background:#0b477c;color:#fff}
+[data-theme=dark] .button{background:#1d5f96;border-color:#4f8dbc;color:#fff}
+[data-theme=dark] .contact-band,[data-theme=dark] .filters{background:#0c2032}
+[data-theme=dark] ::selection{background:#6ba0cf55;color:#fff}
