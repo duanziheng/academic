@@ -129,19 +129,26 @@
       // Center the feedback orbit on the exact same screen-space center as the sphere.
       const rotation = -.32;
       const c = Math.cos(rotation), s = Math.sin(rotation);
-      const rx = radius * .64, ry = radius * .20;
-      ctx.strokeStyle = 'rgba(171,153,124,.48)';
-      ctx.lineWidth = .9;
+      const rx = radius * .82, ry = radius * .27;
+      // Warm-gold primary orbit with one restrained Yale-blue accent arc.
+      ctx.strokeStyle = 'rgba(207,173,105,.62)';
+      ctx.lineWidth = 1.05;
       ctx.beginPath();
       ctx.ellipse(width * .5, height * .5, rx, ry, rotation, 0, TAU);
       ctx.stroke();
+      ctx.strokeStyle = 'rgba(40,104,165,.48)';
+      ctx.lineWidth = .9;
+      ctx.beginPath();
+      ctx.ellipse(width * .5, height * .5, rx * 1.018, ry * 1.018, rotation, .18 * Math.PI, .92 * Math.PI);
+      ctx.stroke();
+      const orbitColors = ['rgba(220,185,116,.98)', 'rgba(74,133,190,.94)', 'rgba(232,218,190,.96)'];
       for (let k = 0; k < 3; k++) {
         const angle = ((phase * .34 + k / 3) % 1) * TAU;
         const ex = rx * Math.cos(angle), ey = ry * Math.sin(angle);
         const x = width * .5 + ex * c - ey * s;
         const y = height * .5 + ex * s + ey * c;
-        ctx.fillStyle = 'rgba(207,182,146,.95)';
-        ctx.beginPath(); ctx.arc(x, y, 2.8, 0, TAU); ctx.fill();
+        ctx.fillStyle = orbitColors[k];
+        ctx.beginPath(); ctx.arc(x, y, 3, 0, TAU); ctx.fill();
       }
     }
     ctx.strokeStyle = 'rgba(156,166,170,.21)'; ctx.lineWidth = .7;
