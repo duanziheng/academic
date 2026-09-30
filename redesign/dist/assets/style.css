@@ -293,3 +293,17 @@ body{background:var(--bg);color:var(--ink)}
  border-color:#456f91!important;
  color:#f5f8fb!important;
 }
+
+/* Contact CTA darker than its section background. */
+.contact-band .button,.contact-band a.button,
+[data-theme=dark] .contact-band .button,[data-theme=dark] .contact-band a.button{
+ background:#030b12!important;
+ border-color:#1b3448!important;
+ color:#c7d7e3!important;
+}
+.contact-band .button:hover,.contact-band a.button:hover,
+[data-theme=dark] .contact-band .button:hover,[data-theme=dark] .contact-band a.button:hover{
+ background:#06121d!important;
+ border-color:#294a63!important;
+ color:#eef4f8!important;
+}
