@@ -75,3 +75,9 @@
 .research-overview .phd-research{border-top-color:#284968}
 .research-overview .current-interest[data-active=true]{border-color:#5b8fc0;background:linear-gradient(145deg,rgba(12,37,59,.92),rgba(7,23,38,.82));box-shadow:inset 0 1px 0 rgba(151,190,224,.08)}
 .research-overview .dissertation-link:hover,.research-overview .phd-projects a:hover{color:#e6f1fa;border-color:#5b8fc0}
+
+/* Flat Yale research surfaces; multislice artwork keeps its own internal shading. */
+.research-overview{background:#071827!important;background-image:none!important}
+.research-overview:after{display:none!important}
+.research-overview .current-interest{background:#081b2a!important;background-image:none!important}
+.research-overview .current-interest[data-active=true]{background:#0b2438!important;background-image:none!important}
