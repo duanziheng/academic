@@ -109,3 +109,38 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .button{background:#1d5f96;border-color:#4f8dbc;color:#fff}
 [data-theme=dark] .contact-band,[data-theme=dark] .filters{background:#0c2032}
 [data-theme=dark] ::selection{background:#6ba0cf55;color:#fff}
+
+
+/* Yale-styled desktop section navigation. */
+@media(min-width:1440px){
+  .section-nav{
+    background:linear-gradient(180deg,rgba(0,53,107,.96),rgba(6,31,53,.97));
+    border:1px solid rgba(142,185,222,.24);
+    border-radius:6px;
+    padding:18px 14px 16px;
+    box-shadow:0 18px 44px rgba(0,24,48,.22);
+  }
+  .section-nav-title{
+    color:#b9d1e5;
+    margin:0 0 14px 12px;
+    letter-spacing:.14em;
+  }
+  .section-nav a{
+    border-left:1px solid rgba(174,207,233,.24);
+    color:#c7d8e6;
+    padding:9px 10px 9px 14px;
+    background:transparent;
+  }
+  .section-nav a:hover{
+    color:#fff;
+    border-left-color:#8eb9de;
+    background:rgba(142,185,222,.09);
+  }
+  .section-nav a[aria-current="location"]{
+    color:#fff;
+    border-left:2px solid #8eb9de;
+    padding-left:13px;
+    background:linear-gradient(90deg,rgba(142,185,222,.16),transparent 82%);
+    font-weight:600;
+  }
+}
