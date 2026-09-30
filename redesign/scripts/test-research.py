@@ -1,4 +1,4 @@
-"""Regression tests for research rendering and readable multiscale illustrations."""
+"""Regression tests for research rendering, the noir sphere and layered slices."""
 import copy
 import importlib.util
 import json
@@ -49,6 +49,7 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(twice.count('/assets/research.css?'), 1)
         self.assertEqual(twice.count('/assets/noir.css?'), 1)
         self.assertEqual(twice.count('/assets/research-scene.js?'), 1)
+        self.assertEqual(twice.count('/assets/multislice.css?'), 1)
 
     def test_missing_or_duplicate_section_fails(self):
         with self.assertRaises(ValueError):
@@ -82,17 +83,20 @@ class ResearchTests(unittest.TestCase):
 
     def test_removed_vague_captions(self):
         text = research.render(CONTENT)
-        for phrase in ['A study in biological systems', 'Conceptual visualization', 'not experimental data', 'slice-sculpture']:
+        for phrase in ['A study in biological systems', 'Conceptual visualization', 'not experimental data']:
             self.assertNotIn(phrase, text)
         self.assertIn('Virtual cell modeling', text)
         self.assertIn('Predicted responses', text)
 
-    def test_full_cells_to_atlases_sequence(self):
+    def test_layered_slices_replace_four_icon_sequence(self):
         text = research.render(CONTENT)
-        self.assertEqual(text.count('class="atlas-stage"'), 4)
+        self.assertEqual(text.count('class="slice-plane"'), 4)
+        self.assertIn('class="slice-sculpture"', text)
+        self.assertNotIn('class="atlas-stage"', text)
+        self.assertNotIn('class="atlas-labels"', text)
         for label in ['Within cells', 'Cell niches', 'Tissues', 'Atlases']:
-            self.assertIn('>' + label + '</span>', text)
-        self.assertIn('gene regulation', text)
+            self.assertNotIn('>' + label + '</span>', text)
+        self.assertIn('From Cells to Atlases', text)
 
     def test_svg_references_and_ids(self):
         class IDs(HTMLParser):
@@ -102,7 +106,8 @@ class ResearchTests(unittest.TestCase):
                 values = dict(attrs)
                 if 'id' in values: self.ids.append(values['id'])
                 if values.get('href', '').startswith('#'): self.refs.append(values['href'][1:])
-                self.refs.extend(values.get('aria-controls', '').split())
+                for attribute in ['aria-controls', 'aria-labelledby', 'aria-describedby']:
+                    self.refs.extend(values.get(attribute, '').split())
         doc = IDs(); doc.feed(research.render(CONTENT))
         self.assertEqual(len(doc.ids), len(set(doc.ids)))
         self.assertTrue(set(doc.refs).issubset(set(doc.ids)))
@@ -113,6 +118,27 @@ class ResearchTests(unittest.TestCase):
         self.assertNotIn('20260930-preview', text)
         self.assertEqual(text.count('/assets/noir.css?'), 1)
         self.assertEqual(text.count('/assets/research-scene.js?'), 1)
+
+    def test_slice_stylesheet_is_available(self):
+        text = research.render(CONTENT)
+        self.assertEqual(text.count('/assets/multislice.css?v=20260930-slices-v4'), 1)
+        self.assertTrue((ROOT / 'dist/assets/multislice.css').is_file())
+
+    def test_slice_motion_is_opt_in_and_respects_controller(self):
+        css = (ROOT / 'dist/assets/multislice.css').read_text()
+        self.assertIn('animation-play-state:paused', css)
+        self.assertIn('[data-running=true] .slice-plane{animation-play-state:running}', css)
+        self.assertIn('prefers-reduced-motion:reduce', css)
+        self.assertIn('animation:none!important', css)
+        text = (ROOT / 'content/phd-visual.html').read_text()
+        self.assertIn('data-running="false"', text)
+        self.assertIn('aria-label="Play research animations" hidden', text)
+
+    def test_regular_sphere_and_static_fallback_retained(self):
+        text = research.render(CONTENT)
+        self.assertIn('<circle class="cell-membrane"', text)
+        self.assertIn('class="scene-fallback"', text)
+        self.assertIn('<canvas id="cellular-canvas"', text)
 
 
 if __name__ == '__main__':

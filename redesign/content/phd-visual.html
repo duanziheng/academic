@@ -1,76 +1,10 @@
-<figure class="atlas-journey" aria-label="From gene regulation within one cell to interacting cells, organized tissues, and an integrated three-dimensional cell atlas" data-motion="off">
-  <svg id="atlas-model" viewBox="0 0 360 154" role="img" aria-labelledby="atlas-svg-title atlas-svg-desc">
-    <title id="atlas-svg-title">From cells to atlases</title>
-    <desc id="atlas-svg-desc">Zooming out across four connected scales: a cell with a nucleus and gene regulation; that same highlighted cell among interacting neighbors; a cellular neighborhood embedded in tissue; and many spatially registered cells forming a continuous three-dimensional atlas. Shared blue, teal, and gold cell populations connect the scales.</desc>
-    <defs>
-      <radialGradient id="atlas-cell-fill" cx="27%" cy="22%" r="80%"><stop stop-color="#fff"/><stop offset=".5" stop-color="#e1effa"/><stop offset="1" stop-color="#91b9d7"/></radialGradient>
-      <radialGradient id="atlas-nucleus-fill" cx="27%" cy="22%" r="80%"><stop stop-color="#c2deee"/><stop offset="1" stop-color="#4278a1"/></radialGradient>
-      <linearGradient id="atlas-volume-fill" x2="1" y2=".6"><stop stop-color="#87b1cd" stop-opacity=".8"/><stop offset=".46" stop-color="#d2e7ef" stop-opacity=".9"/><stop offset="1" stop-color="#77a6b5" stop-opacity=".85"/></linearGradient>
-      <marker id="atlas-arrow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0 0 5 2.5 0 5Z" fill="#648cad"/></marker>
-      <g id="atlas-blue-cell"><circle r="8" fill="url(#atlas-cell-fill)" stroke="#6f9bbc" stroke-width=".6"/><circle cx="-1" cy="-1" r="3" fill="#5e8eb3"/><path d="M-5-4A6.5 6.5 0 0 1 2-6" fill="none" stroke="#fff" stroke-width=".8"/></g>
-      <g id="atlas-teal-cell"><circle r="8" fill="#c7e2df" stroke="#74a5ac" stroke-width=".6"/><circle cx="-1" cy="-1" r="3" fill="#61979e"/><path d="M-5-4A6.5 6.5 0 0 1 2-6" fill="none" stroke="#eefbf7" stroke-width=".8"/></g>
-      <g id="atlas-gold-cell"><circle r="8" fill="#eee2c6" stroke="#b69b64" stroke-width=".7"/><circle cx="-1" cy="-1" r="3" fill="#ba9d62"/><path d="M-5-4A6.5 6.5 0 0 1 2-6" fill="none" stroke="#fffaf0" stroke-width=".8"/></g>
-      <g id="atlas-neighborhood">
-        <path d="M0 0-17-10 0-20 17-10 17 10 0 20-17 10-17-10M-17 10 17-10M0-20V20M-17-10 17 10" fill="none" stroke="#82a7c0" stroke-width=".85"/>
-        <use href="#atlas-blue-cell" x="-17" y="-10"/><use href="#atlas-blue-cell" y="-20"/>
-        <use href="#atlas-teal-cell" x="17" y="-10"/><use href="#atlas-teal-cell" x="17" y="10"/>
-        <use href="#atlas-blue-cell" y="20"/><use href="#atlas-blue-cell" x="-17" y="10"/>
-        <use href="#atlas-gold-cell"/>
-      </g>
-      <g id="atlas-cell-field">
-        <g fill="#5589af"><circle cx="-24" cy="-9" r="2"/><circle cx="-16" cy="-15" r="2"/><circle cx="-9" cy="-19" r="2"/><circle cx="-27" cy="0" r="2"/><circle cx="-20" cy="3" r="2"/><circle cx="-13" cy="-6" r="2"/><circle cx="-22" cy="11" r="2"/><circle cx="-13" cy="14" r="2"/><circle cx="-7" cy="6" r="2"/><circle cx="-6" cy="-12" r="2"/><circle cx="-4" cy="21" r="2"/></g>
-        <g fill="#639eaa"><circle cx="7" cy="-18" r="2"/><circle cx="16" cy="-15" r="2"/><circle cx="23" cy="-8" r="2"/><circle cx="15" cy="-4" r="2"/><circle cx="27" cy="0" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="24" cy="12" r="2"/><circle cx="14" cy="15" r="2"/><circle cx="7" cy="22" r="2"/><circle cx="9" cy="7" r="2"/></g>
-        <g fill="#ba9b62"><circle cx="1" cy="-12" r="2"/><circle cx="4" cy="-3" r="2"/><circle cx="-1" cy="7" r="2"/><circle cx="3" cy="16" r="2"/></g>
-      </g>
-    </defs>
-    <!-- A persistent cell identity and nested focus regions make this a zoom-out,
-         not four unrelated symbols or a pile of isolated tissue sections. -->
-    <path d="M64 48 123 66M64 99 123 82M151 49 211 69M151 99 211 83" fill="none" stroke="#b89b67" stroke-width=".8" stroke-dasharray="2 3" opacity=".55"/>
-    <path d="M253 60 284 51M253 89 284 100" fill="none" stroke="#83a8bf" stroke-width=".8" stroke-dasharray="2 3" opacity=".65"/>
-    <g class="atlas-stage" data-scale="0" transform="translate(43 74)">
-      <circle class="scale-halo" r="34"/>
-      <circle class="cell-membrane" r="29" fill="url(#atlas-cell-fill)" stroke="#759cb9" stroke-width=".9"/>
-      <circle r="26.8" fill="none" stroke="#f5fbff" stroke-width="1"/>
-      <path d="M-21-18A27 27 0 0 1 6-26" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
-      <circle cx="-4" cy="-3" r="12.5" fill="url(#atlas-nucleus-fill)" stroke="#6a95b5" stroke-width=".65"/>
-      <path d="M-12-6C-7-13 3-8-3-2S-9 4-4 7M-9-1C-3 6 5 1 0-5" fill="none" stroke="#d9edf8" stroke-width="1" stroke-linecap="round"/>
-      <circle cx="0" cy="-6" r="3" fill="#3b6f98" opacity=".6"/>
-      <path d="M12-16C18-21 25-14 20-10S12-9 12-16ZM-21 9C-17 2-12 9-14 14S-23 15-21 9Z" fill="#a0c9c9" stroke="#6398a7" stroke-width=".6"/>
-      <path d="M-14 11Q-4 22 8 13M-12 15Q-1 26 10 17" fill="none" stroke="#87aec6" stroke-width=".8"/>
-      <g fill="#ba9b62"><circle cx="17" cy="10" r="2.5"/><circle cx="-18" cy="-15" r="1.6"/><circle cx="3" cy="22" r="1.5"/></g>
-    </g>
-    <g class="atlas-stage" data-scale="1" transform="translate(132 74)">
-      <circle class="scale-halo" r="34"/>
-      <use href="#atlas-neighborhood"/>
-      <circle r="10" fill="none" stroke="#b59b66" stroke-width=".9" stroke-dasharray="2 2"/>
-    </g>
-    <g class="atlas-stage" data-scale="2" transform="translate(222 74)">
-      <circle class="scale-halo" r="34"/>
-      <path d="M-27-19C-12-32 10-30 27-17C39-3 31 19 17 26C-3 35-27 25-32 10C-37-2-34-12-27-19Z" fill="#dcecf4" stroke="#8caec5" stroke-width=".8"/>
-      <path d="M2-27C-8-16 9-9 3 1S-4 17 9 29" fill="none" stroke="#9bb9c8" stroke-width=".7"/>
-      <use href="#atlas-cell-field"/>
-      <circle cx="-9" cy="1" r="12" fill="#f6faf5" fill-opacity=".7" stroke="#b59b66" stroke-width=".85" stroke-dasharray="2 2"/>
-      <use href="#atlas-neighborhood" transform="translate(-9 1) scale(.36)"/>
-    </g>
-    <g class="atlas-stage" data-scale="3" transform="translate(315 74)">
-      <circle class="scale-halo" r="35"/>
-      <ellipse cy="33" rx="33" ry="5" fill="#6089a7" opacity=".1"/>
-      <path d="M-32-18A32 13 0 0 1 32-18V22A32 13 0 0 1-32 22Z" fill="url(#atlas-volume-fill)" stroke="#779fb7" stroke-width=".8"/>
-      <path d="M-9-7V34M13-6V33" fill="none" stroke="#c4dbdf" stroke-width=".7"/>
-      <g fill="none" stroke="#779fb7" stroke-width=".65" opacity=".65"><path d="M-32-5A32 13 0 0 0 32-5"/><path d="M-32 8A32 13 0 0 0 32 8"/><path d="M-32 21A32 13 0 0 0 32 21"/></g>
-      <ellipse cy="-18" rx="32" ry="13" fill="#e1eef4" stroke="#789fb8" stroke-width=".85"/>
-      <g transform="translate(0 -18) scale(.94 .43)"><use href="#atlas-cell-field"/></g>
-      <g stroke-width=".65" opacity=".7"><path d="M-23-8-23 25M-14-5-14 30" stroke="#5688a8"/><path d="M0-4V33M7-4V32" stroke="#b09562"/><path d="M18-6V29M25-9V25" stroke="#5a919f"/></g>
-      <g fill="#5286ab"><circle cx="-23" cy="-4" r="1.7"/><circle cx="-14" cy="0" r="1.7"/><circle cx="-23" cy="9" r="1.7"/><circle cx="-14" cy="13" r="1.7"/><circle cx="-23" cy="22" r="1.7"/><circle cx="-14" cy="26" r="1.7"/></g>
-      <g fill="#b89b65"><circle cy="1" r="1.7"/><circle cx="7" cy="5" r="1.7"/><circle cy="14" r="1.7"/><circle cx="7" cy="18" r="1.7"/><circle cy="27" r="1.7"/><circle cx="7" cy="30" r="1.7"/></g>
-      <g fill="#5b939f"><circle cx="18" cy="-1" r="1.7"/><circle cx="25" cy="-4" r="1.7"/><circle cx="18" cy="12" r="1.7"/><circle cx="25" cy="9" r="1.7"/><circle cx="18" cy="25" r="1.7"/><circle cx="25" cy="22" r="1.7"/></g>
-      <ellipse cy="-18" rx="32" ry="13" fill="none" stroke="#f0f8fd" stroke-width=".6" opacity=".8"/>
-    </g>
-    <path id="atlas-flow" d="M43 125H315" fill="none" stroke="#95b1c7" stroke-width=".9"/>
-    <g fill="#edf5fc" stroke="#7a9cb8" stroke-width=".8"><circle cx="43" cy="125" r="2.3"/><circle cx="132" cy="125" r="2.3"/><circle cx="222" cy="125" r="2.3"/><circle cx="315" cy="125" r="2.3"/></g>
-    <path d="M82 125H92M172 125H182M263 125H273" fill="none" stroke="#648cad" stroke-width="1" marker-end="url(#atlas-arrow)"/>
-    <circle class="atlas-flow-dot" r="2.8" cx="43" cy="125" fill="#b49863"/>
-  </svg>
-  <figcaption class="atlas-labels"><span>Within cells</span><span>Cell niches</span><span>Tissues</span><span>Atlases</span></figcaption>
-  <button type="button" class="atlas-motion-toggle" aria-controls="atlas-model cellular-model" aria-pressed="false" aria-label="Play research animations" hidden>Play</button>
+<link rel="stylesheet" href="/assets/multislice.css?v=20260930-slices-v4">
+<figure class="atlas-journey multislice-study" aria-label="Layered spatial-omics slices" data-motion="off" data-running="false">
+  <div id="atlas-model" class="slice-sculpture" aria-hidden="true">
+    <span class="slice-plane"></span>
+    <span class="slice-plane"></span>
+    <span class="slice-plane"></span>
+    <span class="slice-plane"></span>
+  </div>
+  <button type="button" class="atlas-motion-toggle" aria-controls="atlas-model cellular-model" aria-pressed="false" aria-label="Play research animations" hidden>Play motion</button>
 </figure>

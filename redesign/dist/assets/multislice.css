@@ -1,0 +1,20 @@
+/* Restore the original restrained slice sculpture, not a four-step infographic.
+   The existing research controller owns play/pause, visibility and preferences.
+   Without JavaScript the layered sculpture remains static. */
+.research-overview .phd-heading-row{grid-template-columns:132px minmax(0,1fr) auto;gap:24px}
+.atlas-journey.multislice-study{position:relative;width:132px;min-width:0;margin:0;padding:0;align-self:center}
+#atlas-model.slice-sculpture{position:relative;display:block;width:132px;height:118px;margin:0;perspective:500px}
+.multislice-study .slice-plane{position:absolute;left:31px;top:24px;width:70px;height:70px;border:1px solid #9e8a6d80;background:radial-gradient(ellipse at 60% 38%,#ad998026,transparent 53%),radial-gradient(circle,#a6b2b359 .85px,transparent 1.2px);background-size:auto,9px 9px;background-color:#171e22b0;box-shadow:0 5px 12px #00000014;transform-origin:center;transform:rotateX(57deg) rotateZ(-32deg) translateZ(var(--slice-z));animation:multislice-drift 12s ease-in-out infinite both;animation-play-state:paused}
+.multislice-study .slice-plane:nth-child(1){--slice-z:-33px}
+.multislice-study .slice-plane:nth-child(2){--slice-z:-11px}
+.multislice-study .slice-plane:nth-child(3){--slice-z:11px}
+.multislice-study .slice-plane:nth-child(4){--slice-z:33px}
+.multislice-study[data-running=true] .slice-plane{animation-play-state:running}
+@keyframes multislice-drift{0%,100%{transform:rotateX(57deg) rotateZ(-32deg) translateZ(var(--slice-z))}50%{transform:rotateX(57deg) rotateZ(-24deg) translateZ(calc(var(--slice-z)*1.25))}}
+.multislice-study .atlas-motion-toggle{position:relative;display:block;top:auto;right:auto;margin:0 auto;padding:3px 7px;min-height:24px;font-size:.6rem;line-height:1.5;color:#abb5ba;border-color:#3b4143;background:transparent}
+@media(max-width:1100px){.research-overview .phd-heading-row{grid-template-columns:120px minmax(0,1fr);gap:12px 24px}.phd-heading-row .multislice-study{grid-column:1;grid-row:1/3;width:120px}.phd-heading-row .phd-identity{grid-column:2;grid-row:1}.phd-heading-row .dissertation-link{grid-column:2;grid-row:2;justify-self:start;margin:0}.multislice-study #atlas-model{width:120px}.multislice-study .slice-plane{left:25px}}
+@media(max-width:760px){.research-overview .phd-heading-row{grid-template-columns:104px minmax(0,1fr);gap:12px 18px}.phd-heading-row .multislice-study{grid-column:1;grid-row:1/3;width:104px;max-width:none}.multislice-study #atlas-model{width:104px;height:112px}.multislice-study .slice-plane{left:21px;top:24px;width:62px;height:62px}.phd-heading-row .phd-identity{grid-column:2;grid-row:1}.phd-heading-row .dissertation-link{grid-column:2;grid-row:2;justify-self:start;margin:0}.phd-identity .phd-subtitle{font-size:.8rem}}
+@media(max-width:400px){.research-overview .phd-heading-row{grid-template-columns:92px minmax(0,1fr);column-gap:14px}.phd-heading-row .multislice-study,.multislice-study #atlas-model{width:92px}.multislice-study .slice-plane{left:17px;width:58px;height:58px}}
+@media(pointer:coarse){.multislice-study .atlas-motion-toggle{min-height:44px;min-width:44px;top:auto}}
+@media(prefers-reduced-motion:reduce){.multislice-study .slice-plane{animation:none!important}}
+@media print{.phd-heading-row .multislice-study{display:none!important}.research-overview .phd-heading-row{display:block}}
