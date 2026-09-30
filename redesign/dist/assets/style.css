@@ -373,3 +373,15 @@ body{background:var(--bg);color:var(--ink)}
  .section-nav{background:#061522!important;background-image:none!important}
  .section-nav a[aria-current="location"]{background:#0a2031!important;background-image:none!important}
 }
+
+/* Unify the site around the Selected Work navy; section differences are deliberately minimal. */
+[data-theme=dark] body,[data-theme=dark] main{background:#05111c!important}
+[data-theme=dark] .hero{background:#06131f!important}
+[data-theme=dark] .education{background:#071521!important}
+[data-theme=dark] .news-section{background:#06131f!important}
+[data-theme=dark] #publication{background:#06131f!important}
+[data-theme=dark] #experience{background:#071521!important}
+[data-theme=dark] #talks{background:#06131f!important}
+[data-theme=dark] #service{background:#071521!important}
+[data-theme=dark] .contact-band{background:#06131f!important}
+@media(min-width:1440px){.section-nav{background:#05111c!important}.section-nav a[aria-current="location"]{background:#081a29!important}}
