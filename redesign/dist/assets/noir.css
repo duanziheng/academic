@@ -5,7 +5,7 @@
 .portrait img,[data-theme=dark] .portrait img{filter:none!important;mix-blend-mode:normal!important;opacity:1!important}
 [data-theme=dark] .portrait:before{background:#998872;height:2px}
 [data-theme=dark] ::selection{background:#5c5146;color:#fff}
-.research-overview{--scene-accent:#d0ad69;--scene-text:#eee8dd;--scene-muted:#b9b1a4;--scene-line:#3b3328;position:relative;background:radial-gradient(ellipse at 88% 13%,rgba(0,53,107,.22) 0%,rgba(0,53,107,.07) 20%,transparent 43%),radial-gradient(ellipse at 17% 0%,rgba(208,173,105,.09) 0%,transparent 34%),linear-gradient(180deg,#090a0c 0%,#0e0e10 46%,#11100f 100%);color:var(--scene-text);border-block:1px solid #30291f;padding-block:52px}
+.research-overview{--scene-accent:#5b8fc0;--scene-text:#f1f4f7;--scene-muted:#b7c3ce;--scene-line:#284968;position:relative;background:radial-gradient(ellipse at 84% 10%,rgba(80,133,184,.20) 0%,rgba(0,53,107,.18) 24%,transparent 48%),linear-gradient(180deg,#06111d 0%,#081827 48%,#07131f 100%);color:var(--scene-text);border-block:1px solid #24425e;padding-block:52px}
 .research-overview .eyebrow,.research-overview .research-number{color:var(--scene-accent)}
 .research-overview .visual-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;align-items:center;margin:0}
 .research-copy{min-width:0;max-width:510px}
@@ -25,21 +25,21 @@
 #scene-title{font-size:.72rem;color:#d4c7b4}
 .research-overview .current-interest-grid{margin-top:32px;gap:20px;perspective:1200px}
 .research-overview .current-interest{position:relative;display:flex;flex-direction:column;padding:24px;border:1px solid var(--scene-line);background:linear-gradient(145deg,rgba(20,19,17,.72),rgba(12,14,17,.58));border-radius:3px;transform:perspective(1200px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:transform .4s ease,border-color .4s ease,background .4s ease;transform-origin:50% 50%;min-width:0}
-.research-overview .current-interest h3{font-size:1.2rem;line-height:1.45;color:#e7e4dd;min-height:3.48rem;margin:16px 0 15px;text-wrap:balance}
+.research-overview .current-interest h3{font-size:1.2rem;line-height:1.45;color:#f0f4f7;min-height:3.48rem;margin:16px 0 15px;text-wrap:balance}
 .research-overview .current-interest p{color:var(--scene-muted);font-size:.9rem;line-height:1.85;margin:0 0 16px}
-.research-overview .current-interest[data-active=true]{border-color:#8f7548;background:linear-gradient(145deg,rgba(31,27,20,.82),rgba(12,19,26,.68));box-shadow:inset 0 1px 0 rgba(208,173,105,.05)}
-.scene-select{align-self:flex-start;margin-top:auto;min-height:32px;padding:5px 0;border:0;background:none;color:#c8b89e;font-size:.73rem;letter-spacing:.025em;display:inline-flex;align-items:center;gap:18px}
+.research-overview .current-interest[data-active=true]{border-color:#4778a6;background:linear-gradient(145deg,rgba(31,27,20,.82),rgba(12,19,26,.68));box-shadow:inset 0 1px 0 rgba(208,173,105,.05)}
+.scene-select{align-self:flex-start;margin-top:auto;min-height:32px;padding:5px 0;border:0;background:none;color:#8eb4d8;font-size:.73rem;letter-spacing:.025em;display:inline-flex;align-items:center;gap:18px}
 .scene-select:hover{text-decoration:underline;text-underline-offset:5px}
 .research-overview .phd-research{margin-top:44px;border-color:var(--scene-line);padding-top:28px}
 .research-overview .phd-heading-row{display:grid;grid-template-columns:280px minmax(0,1fr) auto;gap:24px;align-items:center}
 .phd-identity{min-width:0}
-.research-overview .phd-research .eyebrow{color:#bbaa91}
-.research-overview .phd-heading-row h3{color:#e6e3dd}
+.research-overview .phd-research .eyebrow{color:#8eb4d8}
+.research-overview .phd-heading-row h3{color:#f0f4f7}
 .research-overview .phd-subtitle,.research-overview .phd-summary,.research-overview .phd-theme-description{color:var(--scene-muted)}
 .research-overview .phd-theme{border-color:var(--scene-line)}
-.research-overview .phd-theme dt{color:#d3d5d4}
-.research-overview .phd-projects a,.research-overview .dissertation-link{color:#cbbba3;border-color:#6b6154}
-.research-overview .phd-projects a:hover,.research-overview .dissertation-link:hover{color:#f0e1ca}
+.research-overview .phd-theme dt{color:#dbe5ed}
+.research-overview .phd-projects a,.research-overview .dissertation-link{color:#9fc0de;border-color:#416b92}
+.research-overview .phd-projects a:hover,.research-overview .dissertation-link:hover{color:#dcecf8}
 /* Retain the connected cell-to-atlas sequence without the pale-blue panel. */
 .atlas-journey{position:relative;margin:0;padding:0 0 14px;min-width:0;color:#abb5ba}
 #atlas-model{display:block;width:100%;height:auto;margin:0 0 -13px}
@@ -58,7 +58,7 @@
 #atlas-volume-fill stop:last-child{stop-color:#485f58}
 #atlas-model .scale-halo{fill:#bdaa8f;fill-opacity:.04;stroke:#bdaa8f;stroke-opacity:.3;stroke-width:.8;opacity:.3}
 .atlas-labels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;font-size:.67rem;line-height:1.4;text-align:center;font-weight:500;color:#a9aea9}
-.atlas-labels span[data-active=true]{color:#d4c3a8}
+.atlas-labels span[data-active=true]{color:#b7d1e8}
 .atlas-motion-toggle{position:absolute;right:0;top:-5px;font-size:.6rem;min-height:24px;padding:3px 6px}
 .research-overview[data-motion=off] .current-interest{transform:none;transition:none}
 @media(max-width:1100px){.research-overview .phd-heading-row{grid-template-columns:260px minmax(0,1fr)}.phd-heading-row .dissertation-link{grid-column:2;justify-self:start;margin-top:-14px}.phd-heading-row .atlas-journey{grid-row:1/3}}
@@ -69,8 +69,9 @@
 @media(prefers-reduced-motion:reduce){.research-overview .current-interest{transform:none!important;transition:none!important}}
 @media print{.motion-toggle,.atlas-motion-toggle,.scene-select{display:none!important}.research-scene{display:none!important}.research-overview{background:white;color:black}.research-overview .visual-intro{display:block}.research-overview *{color:black!important;transform:none!important}}
 
-/* Yale accents stay secondary to the black-gold research palette. */
-.research-overview:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 0 74%,rgba(0,53,107,.045) 100%);mix-blend-mode:screen}
+/* Yale palette: deep Yale blue, slate blue and warm ivory. */
+.research-overview:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 0 68%,rgba(91,143,192,.07) 100%)}
 .research-overview .wrap{position:relative;z-index:1}
-.research-overview .phd-research{border-top-color:#3b3328}
-.research-overview .dissertation-link:hover,.research-overview .phd-projects a:hover{color:#d9c39a;border-color:#315f8d}
+.research-overview .phd-research{border-top-color:#284968}
+.research-overview .current-interest[data-active=true]{border-color:#5b8fc0;background:linear-gradient(145deg,rgba(12,37,59,.92),rgba(7,23,38,.82));box-shadow:inset 0 1px 0 rgba(151,190,224,.08)}
+.research-overview .dissertation-link:hover,.research-overview .phd-projects a:hover{color:#e6f1fa;border-color:#5b8fc0}
