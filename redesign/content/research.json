@@ -1,0 +1,48 @@
+{
+  "hero": "I develop AI methods to model biological systems and guide therapeutic discovery. My current interests span virtual cells, precision medicine, and closed-loop AI for science.",
+  "description": "Ziheng Duan — AI for virtual cells, precision medicine, and therapeutic discovery, grounded in graph learning for single-cell and spatial omics.",
+  "doctoral_bio": "My doctoral research developed graph learning methods for single-cell and spatial omics, from genomic regulation to multi-slice tissue atlases.",
+  "heading": "Current Research Interests",
+  "introduction": "Modeling cellular responses, designing therapeutic interventions, and learning from scientific feedback.",
+  "interests": [
+    {
+      "id": "virtual-cells",
+      "title": "Virtual Cells & Precision Medicine",
+      "description": "Modeling cellular states and responses across diverse biological and patient contexts to support precision medicine."
+    },
+    {
+      "id": "therapeutic-discovery",
+      "title": "AI for Therapeutic Discovery",
+      "description": "Identifying therapeutic targets and designing interventions to steer disease-associated cells toward healthier states."
+    },
+    {
+      "id": "closed-loop-science",
+      "title": "Closed-Loop AI for Science",
+      "description": "Exploring AI systems that connect hypothesis generation, experimental design, and learning from experimental feedback."
+    }
+  ],
+  "phd": {
+    "title": "From Cells to Atlases",
+    "subtitle": "Graph Learning for Single-Cell and Spatial Omics",
+    "description": "My doctoral research developed graph learning methods for single-cell and spatial omics across biological scales—from chromatin organization and disease-associated gene networks to cellular microenvironments and multi-slice tissue atlases.",
+    "dissertation_title": "From Cells to Atlases: Mining Single-cell and Spatial Omics with Graph Learning",
+    "dissertation_url": "https://www.proquest.com/openview/99d988134b9f87818fa69b4df2239c17/1?pq-origsite=gscholar&cbl=18750&diss=y",
+    "themes": [
+      {
+        "title": "Genomic & Cellular Analysis",
+        "description": "Reconstructing chromatin compartments, quantifying disease-associated network changes, and predicting disease states from single-cell data.",
+        "projects": ["scENCORE", "iHerd", "ExAD-GNN"]
+      },
+      {
+        "title": "Microenvironments & Intercellular Regulation",
+        "description": "Recovering spatial gene expression and modeling intercellular gene regulation within tissue microenvironments.",
+        "projects": ["Impeller", "iMIRACLE"]
+      },
+      {
+        "title": "Region Completion & Multi-Slice Integration",
+        "description": "Reconstructing missing spatial regions and integrating tissue slices for consistent joint analysis.",
+        "projects": ["DISCO", "MUSE"]
+      }
+    ]
+  }
+}
