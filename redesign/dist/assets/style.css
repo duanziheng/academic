@@ -144,3 +144,12 @@ body{background:var(--bg);color:var(--ink)}
     font-weight:600;
   }
 }
+
+/* Quieter desktop section navigation within the Yale palette. */
+@media(min-width:1440px){
+ .section-nav{background:rgba(5,25,42,.82);border-color:rgba(102,142,177,.13);box-shadow:0 14px 34px rgba(0,18,34,.13)}
+ .section-nav-title{color:#7893aa}
+ .section-nav a{color:#8298aa;border-left-color:rgba(111,147,177,.16)}
+ .section-nav a:hover{color:#a9bfd1;border-left-color:#537da2;background:rgba(70,112,149,.055)}
+ .section-nav a[aria-current="location"]{color:#b8cad9;border-left-color:#668daf;background:linear-gradient(90deg,rgba(70,112,149,.09),transparent 78%);font-weight:500}
+}
