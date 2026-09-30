@@ -352,3 +352,9 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .contact-band .button,[data-theme=dark] .contact-band a.button{
  background:#030c14!important;border-color:#193248!important;color:#cbd9e4!important
 }
+
+/* Selected work should sit in the darker tier of the Yale rhythm. */
+[data-theme=dark] #publication{background:#06131f!important}
+[data-theme=dark] #publication:before{background:#06131f!important}
+[data-theme=dark] #publication .papers,
+[data-theme=dark] #publication .paper{border-color:rgba(76,105,130,.09)}
