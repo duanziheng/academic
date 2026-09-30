@@ -107,15 +107,15 @@
     const dots = shell.map(n => ({ ...n, q: project(n.p) })).sort((a, b) => a.q.z - b.q.z);
     for (const n of dots) if (n.q.z < 0) dot(n.q, n.r, '132,147,146', n.a * .4 * fade);
     for (const f of filaments) strokePath(f, '146,151,142', .19 * fade);
-    for (const f of nucleus) strokePath(f, '178,157,124', mode === 0 ? .40 : .17, .65);
+    for (const f of nucleus) strokePath(f, '103,153,198', mode === 0 ? .40 : .17, .65);
     const nn = network.map(project);
     for (const [i, j] of edges) {
       const highlighted = mode === 1 && (targets.has(i) || targets.has(j));
-      line(nn[i], nn[j], highlighted ? '184,157,113' : '151,165,161', highlighted ? .58 : mode === 0 ? .18 : .22, highlighted ? 1 : .65);
+      line(nn[i], nn[j], highlighted ? '91,143,192' : '151,165,161', highlighted ? .58 : mode === 0 ? .18 : .22, highlighted ? 1 : .65);
     }
     [...nn.keys()].sort((a, b) => nn[a].z - nn[b].z).forEach(i => {
       const highlighted = targets.has(i) && mode === 1;
-      dot(nn[i], highlighted ? 3.5 : 1.6, highlighted ? '206,179,138' : '159,179,173', highlighted ? .98 : .64);
+      dot(nn[i], highlighted ? 3.5 : 1.6, highlighted ? '151,190,224' : '159,179,173', highlighted ? .98 : .64);
       if (highlighted) {
         ctx.strokeStyle = 'rgba(192,165,123,.35)'; ctx.lineWidth = .8;
         ctx.beginPath(); ctx.arc(nn[i].x, nn[i].y, 7 * nn[i].s, 0, TAU); ctx.stroke();
@@ -130,17 +130,17 @@
       const c = Math.cos(rotation), s = Math.sin(rotation);
       const rx = radius * .82, ry = radius * .27;
       // Warm-gold primary orbit with one restrained Yale-blue accent arc.
-      ctx.strokeStyle = 'rgba(207,173,105,.62)';
+      ctx.strokeStyle = 'rgba(91,143,192,.68)';
       ctx.lineWidth = 1.05;
       ctx.beginPath();
       ctx.ellipse(width * .5, height * .5, rx, ry, rotation, 0, TAU);
       ctx.stroke();
-      ctx.strokeStyle = 'rgba(40,104,165,.48)';
+      ctx.strokeStyle = 'rgba(151,190,224,.55)';
       ctx.lineWidth = .9;
       ctx.beginPath();
       ctx.ellipse(width * .5, height * .5, rx * 1.018, ry * 1.018, rotation, .18 * Math.PI, .92 * Math.PI);
       ctx.stroke();
-      const orbitColors = ['rgba(220,185,116,.98)', 'rgba(74,133,190,.94)', 'rgba(232,218,190,.96)'];
+      const orbitColors = ['rgba(151,190,224,.98)', 'rgba(74,133,190,.96)', 'rgba(226,238,248,.96)'];
       for (let k = 0; k < 3; k++) {
         const angle = ((phase * .34 + k / 3) % 1) * TAU;
         const ex = rx * Math.cos(angle), ey = ry * Math.sin(angle);
