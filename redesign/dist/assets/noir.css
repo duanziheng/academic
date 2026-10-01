@@ -86,3 +86,8 @@
 .research-overview{background:#071521!important}
 .research-overview .current-interest{background:#06131f!important}
 .research-overview .current-interest[data-active=true]{background:#091c2b!important}
+
+/* Research follows the heritage blue-gray palette. */
+.research-overview{background:#0d1722!important;--scene-accent:#7896b2;--scene-text:#e7edf3;--scene-muted:#a2afbb;--scene-line:#293b4a}
+.research-overview .current-interest{background:#0b141e!important;border-color:#2b4051}
+.research-overview .current-interest[data-active=true]{background:#111d2a!important;border-color:#526f88}
