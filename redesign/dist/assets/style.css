@@ -397,3 +397,33 @@ body{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .news-list a{color:#7f9db5;border-bottom-color:rgba(95,126,151,.20)}
 [data-theme=dark] .news-list a:hover{color:#a4b8c8}
 [data-theme=dark] .section-nav a[aria-current="location"]{color:#9aafbf;border-left-color:#4f718d}
+
+/* Heritage blue-gray palette: based on the original dark theme, one step deeper. */
+[data-theme=dark]{
+ --bg:#0b121b;
+ --ink:#e7edf3;
+ --muted:#9eacba;
+ --line:#263746;
+ --soft:#111d2a;
+ --blue:#7896b2;
+ --navy:#101c2b;
+}
+[data-theme=dark] body,[data-theme=dark] main{background:#0b121b!important}
+[data-theme=dark] .hero{background:#0c1520!important}
+[data-theme=dark] .education{background:#0e1824!important}
+[data-theme=dark] .news-section{background:#0c1520!important}
+[data-theme=dark] #publication{background:#0b141e!important}
+[data-theme=dark] #experience{background:#0e1824!important}
+[data-theme=dark] #talks{background:#0c1621!important}
+[data-theme=dark] #service{background:#0e1824!important}
+[data-theme=dark] .contact-band{background:#0c1520!important}
+[data-theme=dark] .eyebrow,[data-theme=dark] .venue,[data-theme=dark] .position a,
+[data-theme=dark] .talk .talk-context,[data-theme=dark] .service-grid summary{color:#7896b2}
+[data-theme=dark] .news-section .eyebrow{color:#708ba4}
+[data-theme=dark] .news-list a{color:#8ca4b9}
+@media(min-width:1440px){
+ .section-nav{background:#0a121b!important;border-color:#20313f!important}
+ .section-nav-title{color:#718394}
+ .section-nav a{color:#81909d;border-left-color:#263746}
+ .section-nav a[aria-current="location"]{background:#111d2a!important;color:#a7b5c1;border-left-color:#607f99}
+}
