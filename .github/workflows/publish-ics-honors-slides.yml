@@ -22,26 +22,23 @@ jobs:
         with:
           ref: master
       - name: Import the owner-provided slide deck and update its website link
-        env:
-          SLIDES_SOURCE: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-8bd8-81fd-bfc8-ae7804e0d75a/raw?se=2026-10-06T04%3A47%3A19Z&sp=r&sv=2026-02-06&sr=b&scid=eda9af1b-b702-528d-8e24-d6aca8d5568d&skoid=b9a47e8b-72a2-4ed3-8028-a2a98c1a6142&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T02%3A07%3A33Z&ske=2026-10-07T02%3A07%3A33Z&sks=b&skv=2026-02-06&sig=ScIZ%2Bi7HCiYDsnAqwD7w97vUKd9PKGuG0HL1RGiGldE%3D'
         run: |
           python3 - <<'PY'
           import hashlib
           import io
           import json
-          import os
           import urllib.request
           import zipfile
           from pathlib import Path
 
-          # This expiring source grants read access only to the slide deck
-          # supplied by the owner for public publication. It is not an account token.
           asset = Path('redesign/dist/files/talks/ics-honors-seminar-2026.pptx')
           expected = 'f1484ca9c2b0c0097841517c0cad05f085141595baae3f61696019d62ee6e671'
           if asset.exists():
               payload = asset.read_bytes()
           else:
-              with urllib.request.urlopen(os.environ['SLIDES_SOURCE'], timeout=120) as response:
+              source = 'https://drive.usercontent.google.com/download?id=1XnBj4JV3GW2uLF0azCcnXBxCw-h9vuqm&export=download&confirm=t'
+              request = urllib.request.Request(source, headers={'User-Agent': 'Mozilla/5.0'})
+              with urllib.request.urlopen(request, timeout=180) as response:
                   payload = response.read()
           if hashlib.sha256(payload).hexdigest() != expected:
               raise SystemExit('Slide deck checksum mismatch; nothing will be published.')
@@ -61,6 +58,8 @@ jobs:
           print('Verified original PowerPoint:', len(payload), 'bytes')
           print('Slides now use a self-hosted website asset.')
           PY
+      - name: Validate the website build
+        run: python3 redesign/scripts/build-netlify.py
       - name: Commit only the slide deck and its talk metadata
         run: |
           git config user.name 'github-actions[bot]'
@@ -71,5 +70,6 @@ jobs:
             exit 0
           fi
           git commit -m 'Host ICS Honors Seminar slides directly on the website'
+          git restore --worktree .
           git pull --rebase origin master
           git push origin HEAD:master
