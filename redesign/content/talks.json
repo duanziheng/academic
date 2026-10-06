@@ -1,5 +1,20 @@
 [
   {
+    "title": "Decoding Disease, Designing Interventions",
+    "year": 2026,
+    "date": "2026-10-07",
+    "date_label": "October 7, 2026",
+    "event": "ICS Honors Seminar",
+    "kind": "Talk",
+    "upcoming": true,
+    "location": "University of California, Irvine",
+    "path": "/talks/ics-honors-seminar-2026/",
+    "links": [
+      {"label": "Slides", "url": "https://docs.google.com/presentation/d/1XnBj4JV3GW2uLF0azCcnXBxCw-h9vuqm/edit"}
+    ],
+    "summary": "An introduction to research in the Jing Zhang Lab for the UC Irvine ICS Honors program. The talk covers MUSE, iMiracle, TargetSage, and CellReprogrammer, connecting tissue organization and cell-cell signaling with therapeutic target discovery and cell-state reprogramming."
+  },
+  {
     "title": "From Immune Atlases to Therapeutic Reprogramming",
     "year": 2026,
     "date": "2026-09-22",
