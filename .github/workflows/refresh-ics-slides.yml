@@ -1,0 +1,101 @@
+name: Refresh ICS Honors PDF
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/refresh-ics-slides.yml]
+permissions:
+  contents: write
+concurrency:
+  group: refresh-ics-honors-pdf
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Install PDF validator
+        run: python3 -m pip install --quiet pypdf==5.9.0
+      - name: Export and validate the updated Google Slides
+        run: |
+          python3 - <<'PY'
+          import hashlib, io, json, time, urllib.request
+          from pathlib import Path
+          from pypdf import PdfReader
+          source = 'https://docs.google.com/presentation/d/1SrbVf809bqqE-jWfHzIRmHrrheUoYFOrptTSnesTZjg/export/pdf'
+          expected_text = '856ebd42309d49e8887122cc161bc367dddf2f062504f2355a9c1b3a6d8d3a90'
+          for attempt in range(3):
+              try:
+                  req = urllib.request.Request(source, headers={'User-Agent': 'Mozilla/5.0', 'Cache-Control': 'no-cache'})
+                  with urllib.request.urlopen(req, timeout=120) as response:
+                      payload = response.read(40000001)
+                  assert payload.startswith(b'%PDF-') and len(payload) <= 40000000, 'Invalid PDF response'
+                  reader = PdfReader(io.BytesIO(payload))
+                  assert len(reader.pages) == 34, 'Unexpected page count'
+                  text = [' '.join((page.extract_text() or '').split()) for page in reader.pages]
+                  actual_text = hashlib.sha256(json.dumps(text, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
+                  assert actual_text == expected_text, 'Export does not match the freshly reviewed Google Slides revision'
+                  break
+              except Exception:
+                  if attempt == 2:
+                      raise
+                  time.sleep(5)
+          asset = Path('redesign/dist/files/talks/ics-honors-seminar-2026.pdf')
+          assert asset.is_file(), 'Existing website asset not found'
+          previous = hashlib.sha256(asset.read_bytes()).hexdigest()
+          asset.write_bytes(payload)
+          print('Updated PDF: 34 pages;', len(payload), 'bytes')
+          print('Previous SHA-256:', previous)
+          print('Updated SHA-256:', hashlib.sha256(payload).hexdigest())
+          print('Content matches the Google Slides revision modified 2026-10-06T05:10:52.041Z')
+          PY
+      - name: Build and validate website
+        run: python3 redesign/scripts/build-netlify.py
+      - name: Commit only the refreshed PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- redesign/dist/files/talks/ics-honors-seminar-2026.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update ICS Honors Seminar PDF from revised Google Slides'
+          fi
+          git restore --worktree .
+          git pull --rebase origin master
+          git push origin HEAD:master
+          git log -1 --format='Published commit: %H'
+      - name: Verify the refreshed PDF on the live website
+        run: |
+          python3 - <<'PY'
+          import hashlib, time, urllib.request
+          from pathlib import Path
+          base = 'https://zihengduan.cn'
+          asset = '/files/talks/ics-honors-seminar-2026.pdf'
+          expected = hashlib.sha256(Path('redesign/dist' + asset).read_bytes()).hexdigest()
+          note = b'Internal company talk; slides are not publicly available at this time.'
+          def fetch(path):
+              req = urllib.request.Request(base + path, headers={'User-Agent': 'ICS-PDF-refresh-check', 'Cache-Control': 'no-cache'})
+              with urllib.request.urlopen(req, timeout=40) as response:
+                  return response.status, response.headers.get('Content-Type', ''), response.read()
+          for attempt in range(20):
+              try:
+                  status, kind, payload = fetch(asset)
+                  assert payload.startswith(b'%PDF-') and 'application/pdf' in kind, 'Live response is not a PDF'
+                  assert hashlib.sha256(payload).hexdigest() == expected, 'Deployment still serves the previous PDF'
+                  _, _, home = fetch('/')
+                  _, _, detail = fetch('/talks/ics-honors-seminar-2026/')
+                  _, _, genesis = fetch('/talks/genesis-2026-immune-atlases/')
+                  assert asset.encode() in home and asset.encode() in detail, 'Slides link changed unexpectedly'
+                  assert note in home and note in genesis, 'Genesis availability note changed unexpectedly'
+                  print('VERIFIED: refreshed PDF is publicly served at the unchanged Slides URL.')
+                  print('HTTP', status, '|', kind, '|', len(payload), 'bytes | SHA-256', expected)
+                  print('VERIFIED: homepage and talk detail still link to this PDF; Genesis note is unchanged.')
+                  print('LIVE URL:', base + asset)
+                  break
+              except Exception as error:
+                  print('Waiting for deployment:', str(error), flush=True)
+                  if attempt == 19:
+                      raise
+                  time.sleep(12)
+          PY
