@@ -42,7 +42,7 @@ def links(p):
    extra=' target="_blank" rel="noopener"' if external or label in ('PDF','Slides') else ''
    arrow=' <span aria-hidden="true">↗</span>' if extra else ''
    parts.append('<a href="'+e(url)+'"'+extra+' aria-label="'+e(label+': '+title)+ (' (opens in a new tab)' if extra else '')+'">'+e(label)+arrow+'</a>')
- return '<div class="resource-links">'+''.join(parts)+'</div>'
+ return ('<div class="resource-links">'+''.join(parts)+'</div>' if parts else '')+('<p class="muted talk-slides-note">'+e(p['slides_note'])+'</p>' if p.get('slides_note') else '')
 def selected_row(p):
  venue=p['venue'].removesuffix(' '+str(p['year']))
  byline='<p class="authors"><strong>Ziheng Duan</strong>, et al.</p>' if p.get('authors') and clean(p['authors'][0])=='Ziheng Duan' else ''

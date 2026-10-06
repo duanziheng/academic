@@ -12,7 +12,7 @@
     "links": [
       {
         "label": "Slides",
-        "url": "/files/talks/ics-honors-seminar-2026.pptx"
+        "url": "/files/talks/ics-honors-seminar-2026.pdf"
       }
     ],
     "summary": "An introduction to research in the Jing Zhang Lab for the UC Irvine ICS Honors program. The talk covers MUSE, iMiracle, TargetSage, and CellReprogrammer, connecting tissue organization and cell-cell signaling with therapeutic target discovery and cell-state reprogramming."
@@ -27,7 +27,8 @@
     "upcoming": false,
     "path": "/talks/genesis-2026-immune-atlases/",
     "links": [],
-    "summary": "This talk connects single-cell immune atlas analysis with AI approaches to therapeutic target discovery and cell-state reprogramming. It covers NIK-related signaling across tissues and disease contexts, an interactive platform for donor-level atlas exploration, and KNOT for target identification. It also introduces TargetSage and CellReprogrammer and discusses potential extensions to cancer."
+    "summary": "This talk connects single-cell immune atlas analysis with AI approaches to therapeutic target discovery and cell-state reprogramming. It covers NIK-related signaling across tissues and disease contexts, an interactive platform for donor-level atlas exploration, and KNOT for target identification. It also introduces TargetSage and CellReprogrammer and discusses potential extensions to cancer.",
+    "slides_note": "Internal company talk; slides are not publicly available at this time."
   },
   {
     "title": "AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming",
