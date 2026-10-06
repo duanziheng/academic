@@ -1,0 +1,47 @@
+name: Verify live ICS Honors slides
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/verify-ics-honors-live.yml]
+permissions: {}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check public pages and compare the complete slide deck checksum
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import time
+          import urllib.request
+
+          base = 'https://zihengduan.cn'
+          asset = '/files/talks/ics-honors-seminar-2026.pptx'
+          expected = 'f1484ca9c2b0c0097841517c0cad05f085141595baae3f61696019d62ee6e671'
+          def fetch(path):
+              request = urllib.request.Request(base + path, headers={'User-Agent': 'ICS-slides-deployment-check', 'Cache-Control': 'no-cache'})
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  return response.status, response.read()
+          for attempt in range(8):
+              try:
+                  status, home = fetch('/')
+                  assert b'ICS Honors Seminar' in home, 'Talk not yet on homepage'
+                  assert asset.encode() in home, 'Homepage still uses the old slides link'
+                  detail_status, detail = fetch('/talks/ics-honors-seminar-2026/')
+                  assert asset.encode() in detail, 'Talk detail still uses the old slides link'
+                  slide_status, slides = fetch(asset)
+                  actual = hashlib.sha256(slides).hexdigest()
+                  assert actual == expected, 'Published slide deck checksum mismatch'
+                  print('Homepage: HTTP', status, '- ICS Honors Seminar and self-hosted slides link verified')
+                  print('Talk detail: HTTP', detail_status, '- self-hosted slides link verified')
+                  print('Slides: HTTP', slide_status, '-', len(slides), 'bytes')
+                  print('SHA-256:', actual)
+                  print('LIVE DEPLOYMENT VERIFIED: https://zihengduan.cn/talks/ics-honors-seminar-2026/')
+                  break
+              except Exception as error:
+                  print('Attempt', attempt + 1, ':', str(error), flush=True)
+                  if attempt == 7:
+                      raise
+                  time.sleep(15)
+          PY
