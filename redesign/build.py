@@ -43,15 +43,25 @@ def links(p):
    arrow=' <span aria-hidden="true">↗</span>' if extra else ''
    parts.append('<a href="'+e(url)+'"'+extra+' aria-label="'+e(label+': '+title)+ (' (opens in a new tab)' if extra else '')+'">'+e(label)+arrow+'</a>')
  return ('<div class="resource-links">'+''.join(parts)+'</div>' if parts else '')+('<p class="muted talk-slides-note">'+e(p['slides_note'])+'</p>' if p.get('slides_note') else '')
-# A publication with a Walkthrough link shows that walkthrough on its page, above the abstract. The frame reports
-# its height in embed mode (dist/walkthroughs/*/index.html); the listener only accepts same-origin frames.
-FRAME_JS='<script>addEventListener("message",function(m){var d=m.data;if(m.origin!==location.origin||!d||d.type!=="walkthrough-height")return;document.querySelectorAll(".walkthrough-frame").forEach(function(f){if(f.contentWindow===m.source)f.style.height=Math.min(4000,Math.max(240,Math.ceil(+d.height)))+"px"})})</script>'
+# A publication with a Walkthrough link shows that walkthrough on its page, above the abstract, followed by its
+# interactive explorer when site.json gives one ("explore"). The frames report their height in embed mode
+# (dist/walkthroughs/*/index.html); the listener only accepts same-origin frames.
+FRAME_JS='<script>addEventListener("message",function(m){var d=m.data;if(m.origin!==location.origin||!d||d.type!=="walkthrough-height")return;document.querySelectorAll(".walkthrough-frame").forEach(function(f){if(f.contentWindow===m.source)f.style.height=Math.min(12000,Math.max(240,Math.ceil(+d.height)))+"px"})})</script>'
 def walkthrough(p):
  url=next((x['url'] for x in p['links'] if x['label']=='Walkthrough'),None)
  if not url:return ''
  return ('<section class="walkthrough" aria-labelledby="walkthrough-title"><div class="walkthrough-head"><h2 id="walkthrough-title">Walkthrough</h2>'
   '<a href="'+e(url)+'">Open full page</a></div><p class="walkthrough-lede">The paper, step by step. Click the slide or use the arrow keys to move through it.</p>'
-  '<iframe class="walkthrough-frame" src="'+e(url)+'?embed" title="'+e('Animated walkthrough: '+p['title'])+'" loading="lazy" allowfullscreen></iframe></section>'+FRAME_JS)
+  '<iframe class="walkthrough-frame" src="'+e(url)+'?embed" title="'+e('Animated walkthrough: '+p['title'])+'" loading="lazy" allowfullscreen></iframe></section>')
+def explore(p):
+ url=p.get('explore')
+ if not url:return ''
+ return ('<section class="walkthrough" aria-labelledby="explore-title"><div class="walkthrough-head"><h2 id="explore-title">Explore</h2>'
+  '<a href="'+e(url)+'">Open full page</a></div><p class="walkthrough-lede">Try the ideas yourself: the controls change the figures right away.</p>'
+  '<iframe class="walkthrough-frame" src="'+e(url)+'?embed" title="'+e('Interactive explorer: '+p['title'])+'" loading="lazy"></iframe></section>')
+def frames(p):
+ parts=walkthrough(p)+explore(p)
+ return parts+FRAME_JS if parts else ''
 def selected_row(p):
  venue=p['venue'].removesuffix(' '+str(p['year']))
  byline='<p class="authors"><strong>Ziheng Duan</strong>, et al.</p>' if p.get('authors') and clean(p['authors'][0])=='Ziheng Duan' else ''
@@ -93,7 +103,7 @@ years=sorted(set(p['year'] for p in pubs),reverse=True)
 filters='<div class="filters"><div class="query"><label for="publication-query">Search publications</label><input type="search" id="publication-query" placeholder="Title, author, keyword…"></div><div><label for="publication-year">Year</label><select id="publication-year"><option value="">All years</option>'+''.join(f'<option>{y}</option>' for y in years)+'</select></div><div><label for="publication-type">Type</label><select id="publication-type"><option value="">All types</option><option>Journal article</option><option>Conference paper</option><option>Preprint</option></select></div></div>'
 save('/publication/',shell('Publications · Ziheng Duan','<main id="main" class="wrap page"><p class="eyebrow">Research archive</p><h1 class="page-title">Publications<span>.</span></h1>'+filters+f'<p id="publication-count" class="muted" role="status">{len(pubs)} publications</p><div class="papers" id="publication-list">'+''.join(row(p) for p in pubs)+'</div><div id="no-results" hidden><h2>No matching publications</h2><p>Try another keyword or clear the filters.</p><button class="button" id="clear-filters">Clear filters</button></div></main>'))
 for p in pubs:
- body='<main id="main" class="wrap detail page"><a class="back" href="/publication/">← Publications</a><p class="eyebrow">'+e(str(p['year'])+' / '+p['type'])+'</p><h1>'+e(p['title'])+'</h1><p class="detail-authors">'+authors(p,True)+'</p>'+author_note(p)+'<p class="venue">'+e(p['venue'])+'</p>'+links(p)+walkthrough(p)+('<section class="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>' if p['abstract'] else '')+'</main>'
+ body='<main id="main" class="wrap detail page"><a class="back" href="/publication/">← Publications</a><p class="eyebrow">'+e(str(p['year'])+' / '+p['type'])+'</p><h1>'+e(p['title'])+'</h1><p class="detail-authors">'+authors(p,True)+'</p>'+author_note(p)+'<p class="venue">'+e(p['venue'])+'</p>'+links(p)+frames(p)+('<section class="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>' if p['abstract'] else '')+'</main>'
  save(p['path'],shell(p['title']+' · Ziheng Duan',body,p['abstract'][:200]))
 for t in data['talks']:
  save(t['path'],shell(t['title']+' · Ziheng Duan','<main id="main" class="wrap detail page"><a class="back" href="/#talks">← Talks</a><p class="eyebrow">'+str(t['year'])+' / Talk</p><h1>'+e(t['title'])+'</h1>'+talk_context(t)+'<p class="abstract">'+e(t['summary'])+'</p>'+links(t)+'</main>'))

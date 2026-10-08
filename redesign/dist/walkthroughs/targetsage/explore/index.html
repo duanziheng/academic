@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TargetSage playground · Ziheng Duan</title>
+<meta name="description" content="Try how TargetSage (NeurIPS 2026) works: run the agent that builds a gene’s evidence profile, step through GRPO training of the reasoning policy, and set up gated fusion, the class prior and the nnPU loss.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="TargetSage playground · Ziheng Duan">
+<meta property="og:description" content="Try how TargetSage (NeurIPS 2026) works: run the agent that builds a gene’s evidence profile, step through GRPO training of the reasoning policy, and set up gated fusion, the class prior and the nnPU loss.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zihengduan.cn/walkthroughs/targetsage/explore/">
+<link rel="canonical" href="https://zihengduan.cn/walkthroughs/targetsage/explore/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261008-2">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}if(/[?&]embed(?:[=&]|$)/.test(location.search))document.documentElement.classList.add("embed")</script>
+<style>
+/* How TargetSage works, one module per tab. Every figure is drawn by script at the width it is shown (1 SVG unit = 1 px),
+   so text stays legible from phone to desktop. Colours are CSS variables; SVG reads them through style="fill:var(..)". */
+:root {
+  --bg: #EDF1F4; --panel: #FFFFFF; --ink: #1B2630; --ink2: #4B5966; --mute: #6F7F8C; --line: #D3DCE3; --line2: #E5EBEF;
+  --accent: #2B5A6E; --accent-ink: #FFFFFF; --chip: #E2EAF0; --track: #EAEFF3; --soft: #F4F7F9;
+  --known: #2E7D5B; --unl: #A3B0BA; --hidden: #D9822B; --bad: #B83A2E; --bad-bg: #FBEBE9; --warn: #9A6210; --warn-bg: #FCF1DE;
+  --m-bio: #2B6F8A; --m-attr: #C2701A; --m-emb: #7A5AA6;
+  --r1: #2B7A99; --r2: #C2701A; --r3: #7A5AA6; --r4: #B0475A;
+  --c1: #5E86AB; --c2: #8E78C2; --c3: #CF9440; --c4: #4F9C82;
+  --s-feat: #4B5966; --s-ncbi: #3B6EA5; --s-uni: #2E7D5B; --s-pm: #7A5AA6; --s-ot: #B4651A; --s-fc: #B0475A;
+  --heat0: #F6F8FA; --heat1: #2B6F8A;
+  --sans: "Arimo", "Noto Sans Math", "Liberation Sans", Arial, Helvetica, sans-serif;
+  --serif: "Tinos", "Noto Sans Math", "Liberation Serif", "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740; --line2: #22303A;
+    --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --track: #22303A; --soft: #1B2830;
+    --known: #6CC49A; --unl: #5E6E7A; --hidden: #F0A659; --bad: #F08A7E; --bad-bg: #3A1F1C; --warn: #E8B45C; --warn-bg: #352A17;
+    --m-bio: #7FC0D8; --m-attr: #E8A55C; --m-emb: #B9A0E6;
+    --r1: #6FC0DC; --r2: #E8A55C; --r3: #B9A0E6; --r4: #E88A9A;
+    --c1: #7EA6CB; --c2: #A894DD; --c3: #DDA75A; --c4: #6FBCA0;
+    --s-feat: #B3BFC9; --s-ncbi: #8DB4E2; --s-uni: #6CC49A; --s-pm: #B9A0E6; --s-ot: #E8A55C; --s-fc: #E88A9A;
+    --heat0: #172128; --heat1: #7FC0D8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740; --line2: #22303A;
+  --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --track: #22303A; --soft: #1B2830;
+  --known: #6CC49A; --unl: #5E6E7A; --hidden: #F0A659; --bad: #F08A7E; --bad-bg: #3A1F1C; --warn: #E8B45C; --warn-bg: #352A17;
+  --m-bio: #7FC0D8; --m-attr: #E8A55C; --m-emb: #B9A0E6;
+  --r1: #6FC0DC; --r2: #E8A55C; --r3: #B9A0E6; --r4: #E88A9A;
+  --c1: #7EA6CB; --c2: #A894DD; --c3: #DDA75A; --c4: #6FBCA0;
+  --s-feat: #B3BFC9; --s-ncbi: #8DB4E2; --s-uni: #6CC49A; --s-pm: #B9A0E6; --s-ot: #E8A55C; --s-fc: #E88A9A;
+  --heat0: #172128; --heat1: #7FC0D8; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 40px; display: grid; gap: 16px; }
+.top { display: grid; gap: 6px; }
+.kick { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
+h1 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+h2 { margin: 0; font-size: 18px; line-height: 1.3; }
+.lede, .intro { margin: 0; color: var(--ink2); max-width: 78ch; }
+.view { display: grid; gap: 16px; min-width: 0; }
+.seg { display: flex; flex-wrap: wrap; gap: 4px; background: var(--chip); padding: 4px; border-radius: 10px; justify-self: start; max-width: 100%; }
+.seg button { font: 600 14px/1.2 var(--sans); padding: 9px 14px; border: 0; border-radius: 7px; background: transparent; color: var(--ink2); cursor: pointer; }
+.seg button b { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 7px; border-radius: 50%; background: var(--line); color: var(--ink2); font-size: 12px; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+.seg button[aria-pressed="true"] b { background: var(--accent); color: var(--accent-ink); }
+.seg.sub button { font-size: 13.5px; padding: 8px 12px; }
+button:focus-visible, input:focus-visible, select:focus-visible, svg:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.lab { margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--mute); }
+.pill { font-size: 12px; color: var(--mute); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.ptag { display: inline-block; font: 700 10.5px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent); border-radius: 4px; padding: 3px 5px; vertical-align: 1px; }
+.mute { color: var(--mute); }
+.note { margin: 0; font-size: 14px; color: var(--ink2); max-width: 80ch; }
+.foot { margin: 0; font-size: 12.5px; color: var(--mute); max-width: 100ch; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font: 600 13.5px/1 var(--sans); padding: 9px 13px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--mute); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.sv { width: 100%; min-width: 0; line-height: 0; }
+.sv svg { display: block; overflow: visible; }
+.sv svg text { font-family: var(--sans); }
+.eq { font: 17px/1.6 var(--serif); color: var(--ink); overflow-wrap: anywhere; }
+.eq i { font-style: italic; }
+.eq sub, .eq sup { font-size: 70%; }
+.ss { display: inline-flex; flex-direction: column; vertical-align: 0.52em; font-size: 70%; line-height: 1; margin-left: 1px; }
+.ss > * { font-style: normal; }
+.paper { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 12px; background: var(--soft); font-size: 14px; color: var(--ink2); display: grid; gap: 6px; }
+.paper p { margin: 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.range { display: grid; grid-template-columns: auto minmax(0, 1fr) 3.2em; gap: 10px; align-items: center; font-size: 14px; }
+.range output { font-variant-numeric: tabular-nums; text-align: right; font-weight: 700; }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; flex: none; }
+.checks { display: grid; gap: 8px; font-size: 14px; }
+.checks label, .radios label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.checks label input, .radios label input { margin-top: 2px; }
+.radios { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; }
+.hbars { display: grid; gap: 5px; font-size: 13px; }
+.hbar { display: grid; grid-template-columns: minmax(0, 10.5em) minmax(0, 1fr) 2.6em; gap: 8px; align-items: center; color: var(--ink2); }
+.hbar .tk { height: 9px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.hbar .tk span { display: block; height: 100%; background: var(--unl); border-radius: 3px; }
+.hbar.on { color: var(--ink); font-weight: 700; }
+.hbar.on .tk span { background: var(--accent); }
+.hbar b { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ---------------------------------------------------------------- 1. agentic profiling */
+.prof { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.25fr); gap: 16px; align-items: start; }
+.tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tools button { width: 100%; text-align: left; display: grid; grid-template-columns: 26px minmax(0, 1fr) 18px; gap: 10px; align-items: start; padding: 9px 10px; border: 1px solid var(--line2); border-radius: 9px; background: transparent; color: var(--ink); font: 14px/1.4 var(--sans); cursor: pointer; }
+.tools button:hover { border-color: var(--line); background: var(--soft); }
+.tools .tn { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-weight: 700; font-size: 13px; color: var(--panel); background: var(--sc); }
+.tools .tt b { font-weight: 700; }
+.tools .tt small { display: block; color: var(--ink2); font-size: 13px; }
+.tools .tt em { font-style: normal; color: var(--mute); font-size: 12.5px; }
+.tools .st { width: 16px; height: 16px; margin-top: 5px; border-radius: 50%; border: 2px solid var(--line); }
+.tools [data-state="run"] { border-color: var(--sc); }
+.tools [data-state="run"] .st { border-color: var(--sc); border-right-color: transparent; animation: spin .7s linear infinite; }
+.tools [data-state="done"] .st { border-color: var(--known); background: var(--known); box-shadow: inset 0 0 0 3px var(--panel); }
+.tools [data-state="skip"] .st, .tools [data-state="off"] .st { border-color: var(--mute); border-style: dashed; }
+.tools [data-state="wait"] .tn { opacity: .55; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.opts { border: 0; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--line2); display: grid; gap: 8px; }
+.opts legend { padding: 0 0 6px; }
+.phead { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: space-between; }
+.flegend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 12px; font-size: 12px; color: var(--ink2); line-height: 1.35; }
+.flegend b { display: block; font-size: 12px; color: var(--ink); }
+.flegend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+.fcap { margin: 0; font-size: 13.5px; color: var(--ink2); }
+.psecs { display: grid; gap: 10px; }
+.psec { border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; animation: rise .35s ease; }
+.psec header { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-size: 12.5px; color: var(--mute); }
+.stag { font: 700 11.5px/1 var(--sans); letter-spacing: .04em; color: var(--sc); border: 1px solid var(--sc); border-radius: 5px; padding: 3px 6px; }
+.psec p { margin: 0; font-size: 14px; line-height: 1.55; }
+.psec .none { color: var(--mute); font-style: italic; }
+.stmts { display: grid; gap: 3px; font-size: 13.5px; margin: 0; padding: 0; list-style: none; }
+.stmts li { display: grid; grid-template-columns: 20px minmax(0, 7.6em) minmax(0, 1fr); gap: 6px; align-items: baseline; }
+.stmts .k { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: var(--ink); color: var(--panel); font-size: 10.5px; font-weight: 700; }
+.stmts .raw { color: var(--mute); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+.sent.leak.removed { text-decoration: line-through; text-decoration-color: var(--bad); color: var(--mute); }
+.sent.leak.live { background: var(--bad-bg); box-shadow: inset 0 -2px 0 var(--bad); }
+.sent.conf.flag { background: var(--warn-bg); box-shadow: inset 0 -2px 0 var(--warn); }
+.badge { display: inline-block; font: 700 11px/1.2 var(--sans); padding: 2px 6px; border-radius: 4px; margin-left: 4px; vertical-align: 1px; white-space: nowrap; }
+.badge.bad { color: var(--bad); background: var(--bad-bg); }
+.badge.warn { color: var(--warn); background: var(--warn-bg); }
+.pdone { border-radius: 10px; padding: 10px 12px; background: var(--soft); border: 1px solid var(--line); font-size: 14px; display: grid; gap: 3px; animation: rise .35s ease; }
+.pdone.alarm { background: var(--bad-bg); border-color: var(--bad); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.facts > div { display: grid; gap: 8px; align-content: start; font-size: 14px; color: var(--ink2); }
+.facts p { margin: 0; }
+.covs { display: grid; gap: 6px; font-size: 13px; }
+.cov { display: grid; grid-template-columns: minmax(0, 8.6em) minmax(0, 1fr); gap: 8px; align-items: center; }
+.cov .tk { height: 9px; border-radius: 3px; background: var(--track); overflow: hidden; }
+.cov .tk span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.cov .tx { grid-column: 2; font-size: 12px; color: var(--mute); margin-top: -4px; }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ---------------------------------------------------------------- 2. guided reasoning */
+.io { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.1fr) auto minmax(0, 1.5fr); gap: 10px; align-items: center; }
+.io .box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; }
+.io .box b { font-size: 13px; }
+.io .box.pol { border-color: var(--accent); background: var(--soft); }
+.io .arr { color: var(--mute); font-size: 20px; }
+.io ol { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.vocab { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); gap: 16px; align-items: start; }
+.funnel { display: grid; gap: 6px; }
+.funnel div { border-radius: 8px; padding: 6px 10px; background: var(--soft); border: 1px solid var(--line2); font-size: 13px; color: var(--ink2); }
+.funnel b { font-size: 18px; color: var(--ink); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font-size: 12.5px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink2); }
+.chip.on { border-color: var(--accent); color: var(--ink); font-weight: 700; }
+.stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; counter-reset: st; }
+.stages li { border: 1px solid var(--line2); border-radius: 9px; padding: 8px 9px; font-size: 13px; line-height: 1.35; color: var(--mute); display: grid; gap: 2px; align-content: start; }
+.stages li b { color: inherit; font-size: 13.5px; }
+.stages li.done { color: var(--ink2); }
+.stages li.now { border-color: var(--accent); background: var(--soft); color: var(--ink); box-shadow: inset 0 3px 0 var(--accent); }
+.cap { margin: 0; min-height: 3em; font-size: 14.5px; color: var(--ink); max-width: 90ch; }
+.ggrid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr); gap: 16px; align-items: start; }
+.rolls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.roll { border: 1px solid var(--line2); border-top: 3px solid var(--rc); border-radius: 10px; padding: 9px 10px; display: grid; gap: 6px; font-size: 13px; align-content: start; }
+.roll .rh { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.roll .rh b { color: var(--rc); font-size: 14px; }
+.roll .chain { margin: 0; color: var(--ink2); font-style: italic; min-height: 2.8em; line-height: 1.4; }
+.roll .sl { display: grid; grid-template-columns: minmax(0, 7.4em) minmax(0, 1fr) 2.4em; gap: 6px; align-items: center; }
+.roll .sl output { font-variant-numeric: tabular-nums; text-align: right; }
+.roll input[type="range"] { accent-color: var(--rc); }
+.roll .rs { display: grid; gap: 2px; border-top: 1px solid var(--line2); padding-top: 6px; font-variant-numeric: tabular-nums; }
+.roll .rs .hide { visibility: hidden; }
+.roll .rw b { font-size: 14px; }
+.advbar { position: relative; height: 12px; background: var(--track); border-radius: 3px; margin-top: 3px; }
+.advbar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--mute); }
+.advbar span { position: absolute; top: 0; bottom: 0; border-radius: 3px; transition: left .3s ease, width .3s ease; }
+.gcharts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.dim { opacity: .35; }
+
+/* ---------------------------------------------------------------- 3. PU-aware scoring */
+.fuse { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.pbars { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.prior { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+select { font: 14px/1.3 var(--sans); padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); max-width: 100%; }
+.kv { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; color: var(--ink2); }
+.kv b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.big { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sens { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; color: var(--mute); }
+.sens span { border: 1px solid var(--line2); border-radius: 6px; padding: 2px 7px; }
+.sens span.on { border-color: var(--accent); color: var(--ink); font-weight: 700; }
+.llm { display: grid; gap: 4px; }
+.wts { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.heat { position: relative; width: 100%; line-height: 0; }
+.heat canvas { position: absolute; left: 0; top: 0; image-rendering: auto; border-radius: 6px; }
+.heat svg { position: relative; display: block; }
+.readout { font-size: 14px; color: var(--ink2); display: grid; gap: 4px; }
+.readout b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.nextrow { display: flex; justify-content: flex-end; }
+
+@media (max-width: 900px) {
+  .prof, .ggrid, .fuse, .prior, .wts, .cols { grid-template-columns: minmax(0, 1fr); }
+  .stages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .io { grid-template-columns: minmax(0, 1fr); }
+  .io .arr { transform: rotate(90deg); justify-self: center; line-height: 1; }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .vocab { grid-template-columns: minmax(0, 1fr); }
+  h1 { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  .rolls, .gcharts, .pbars { grid-template-columns: minmax(0, 1fr); }
+  .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flegend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stmts li { grid-template-columns: 20px minmax(0, 1fr); }
+  .stmts .raw { grid-column: 2; }
+  .stmts .tx { grid-column: 2; }
+  .seg button { padding: 8px 10px; font-size: 13.5px; }
+  .seg button b { margin-right: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .psec, .pdone { animation: none; }
+  .tools [data-state="run"] .st { animation: none; }
+  .advbar span { transition: none; }
+}
+
+/* Links back to the homepage (public copy) */
+.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; margin-bottom: -4px; }
+.crumbs a { color: var(--accent); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 640px) { .keys { display: none; } }  /* keyboard hints are no use on phones */
+/* Embedded on a paper page (?embed): no page title or link row; the paper page shows through */
+html.embed { color-scheme: light dark !important; overflow: hidden; }
+html.embed body { background: transparent; }
+html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
+html.embed .top, html.embed .crumbs { display: none; }
+</style>
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/conference/targetsage/">TargetSage paper page</a><a href="/walkthroughs/targetsage/">TargetSage walkthrough</a></nav>
+  <header class="top">
+    <p class="kick">TargetSage · NeurIPS 2026 · try it</p>
+    <h1>How TargetSage works, one module at a time</h1>
+    <p class="lede">Run the agent that writes a gene’s evidence profile, train the reasoning policy with GRPO, then set up the positive–unlabeled scorer. The toys run live in your browser with the paper’s formulas; boxes marked <span class="ptag">Paper</span> quote the paper’s own numbers.</p>
+  </header>
+
+  <div class="seg main" role="group" aria-label="Module">
+    <button type="button" data-view="prof" aria-pressed="true"><b>1</b>Agentic profiling</button>
+    <button type="button" data-view="grpo" aria-pressed="false"><b>2</b>Guided reasoning</button>
+    <button type="button" data-view="pu" aria-pressed="false"><b>3</b>PU-aware scoring</button>
+  </div>
+
+  <!-- ============================================================ 1. agentic profiling -->
+  <section class="view" id="v-prof" aria-label="Module 1: agentic profiling">
+    <p class="intro">Before anything is learned, an LLM agent writes every gene a profile in plain text. It rewrites the gene’s numbers as statements, fetches what the numbers miss, and checks the result. Run its six tools on an example gene, then change the gene’s situation and watch the profile change.</p>
+    <div class="prof">
+      <div class="card">
+        <div class="toolbar">
+          <button type="button" class="btn primary" id="pNext">Run tool 1</button>
+          <button type="button" class="btn" id="pAll">Run all</button>
+          <button type="button" class="btn" id="pReset">Reset</button>
+        </div>
+        <ol class="tools" id="tools" aria-label="The agent's six tools; select one to run up to it"></ol>
+        <fieldset class="opts checks">
+          <legend class="lab">Change the gene’s situation</legend>
+          <label><input type="checkbox" id="oUni" checked><span>It has a UniProt entry <span class="mute">(85% of genes do)</span></span></label>
+          <label><input type="checkbox" id="oOT" checked><span>It has Open Targets tractability data <span class="mute">(72% do)</span></span></label>
+          <label><input type="checkbox" id="oPM" checked><span>The agent wants more literature, so it queries PubMed</span></label>
+          <label><input type="checkbox" id="oFC" checked><span>The fact-checker is switched on</span></label>
+        </fieldset>
+      </div>
+      <div class="card">
+        <div class="phead"><p class="lab">Evidence profile of gene g</p><span class="pill">example gene · schematic text</span></div>
+        <div class="sv" id="stripBox"><svg id="strip" role="img" aria-label="The 482 structured features of the gene, grouped by the 15 source databases"></svg></div>
+        <div class="flegend" id="flegend"></div>
+        <p class="fcap" id="fcap"></p>
+        <div class="psecs" id="psecs"></div>
+        <div class="pdone" id="pdone" hidden></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="lab">Across all 19,032 genes <span class="ptag">Paper</span></p>
+      <div class="facts">
+        <div>
+          <p>How often each source has something to say</p>
+          <div class="covs">
+            <div class="cov"><span>Structured features</span><div class="tk"><span style="width:100%"></span></div><span class="tx">nearly all genes</span></div>
+            <div class="cov"><span>NCBI Gene</span><div class="tk"><span style="width:100%"></span></div><span class="tx">nearly all genes</span></div>
+            <div class="cov"><span>UniProt</span><div class="tk"><span style="width:85%"></span></div><span class="tx">85%</span></div>
+            <div class="cov"><span>Open Targets</span><div class="tk"><span style="width:72%"></span></div><span class="tx">72%</span></div>
+            <div class="cov"><span>PubMed</span><div class="tk"></div><span class="tx">fetched only when more literature is needed</span></div>
+          </div>
+        </div>
+        <div>
+          <p>What the fact-checker found</p>
+          <p><b class="big">1</b> gene whose profile gave away its label: a PubMed abstract called it “FDA approved”. The sentence was removed.</p>
+          <p><b class="big">385</b> genes (2.0%) with statements that disagree across sources, such as different localizations. They are kept and flagged.</p>
+        </div>
+        <div>
+          <p>Why plain text</p>
+          <p>The structured features are fixed columns; a profile is just text. A new database can be added to the profile without changing the model that reads it.</p>
+          <p class="mute">Appendix C; Table 5 lists the 15 databases behind the 482 features.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ 2. guided reasoning -->
+  <section class="view" id="v-grpo" aria-label="Module 2: guided reasoning" hidden>
+    <p class="intro">A small language model reads each gene’s profile together with the task and writes a rationale plus scores for 23 attributes. Nobody labels good reasoning, so TargetSage rewards a rationale by what it does downstream: does the gene’s new reading make the target ranking better? Step through one GRPO update on a toy, then let it train.</p>
+    <div class="card">
+      <p class="lab">What the policy writes, for every gene and task</p>
+      <div class="io">
+        <div class="box"><b>Input</b><span>the gene’s evidence profile (module 1)</span><span>the task, for example “approved antibody targets”</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div class="box pol"><b>Policy π<sub>θ</sub></b><span>Qwen2.5-1.5B-Instruct with LoRA adapters, trained by GRPO</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div class="box"><b>Output</b><ol><li>a step-by-step rationale, kept so a person can audit it</li><li>scores in [0, 1] for 23 attributes, the explicit features</li><li>the rationale as a vector: embedded, then compressed to 256 numbers, the implicit features</li></ol></div>
+      </div>
+      <div class="vocab">
+        <div class="funnel">
+          <div><b>2,261</b>candidate attributes the agent surfaced across all genes</div>
+          <div><b>28</b>mentioned for at least 5% of genes</div>
+          <div><b>23</b>after merging naming variants (five RVIS names become one)</div>
+        </div>
+        <div>
+          <p class="note" style="margin-bottom:8px">The 23 attributes the policy scores. The toy below follows the three in bold.</p>
+          <div class="chips" id="vocab"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="phead"><p class="lab">One GRPO update, on a toy</p><span class="pill">step <b id="gStep">0</b> · toy gene g, 600 toy genes, 2 toy tasks</span></div>
+      <ol class="stages" id="stages">
+        <li><b>1 Sample</b>4 rollouts</li>
+        <li><b>2 Swap</b>into row g</li>
+        <li><b>3 Score</b>frozen scorers</li>
+        <li><b>4 Reward</b>Adjusted F1</li>
+        <li><b>5 Advantage</b>vs the group</li>
+        <li><b>6 Update</b>the policy</li>
+      </ol>
+      <p class="cap" id="gCap" aria-live="polite"></p>
+      <div class="toolbar">
+        <button type="button" class="btn primary" id="gNext">Next stage</button>
+        <button type="button" class="btn" id="gStepBtn">Whole step</button>
+        <button type="button" class="btn" id="gTrain">Train 30 steps</button>
+        <button type="button" class="btn" id="gReset">Reset</button>
+      </div>
+      <div class="range" style="max-width:520px"><label for="gKL">KL weight</label><input type="range" id="gKL" min="0" max="1" step="0.05" value="0.3"><output id="gKLo">0.30</output></div>
+      <div class="ggrid">
+        <div>
+          <p class="lab">Policy for gene g: its distribution of scores</p>
+          <div class="sv"><svg id="polSvg" role="img" aria-label="For each attribute, the policy's distribution of scores now (solid) and before GRPO (dashed), with the sampled rollouts"></svg></div>
+        </div>
+        <div class="rolls" id="rolls"></div>
+      </div>
+      <div>
+        <p class="lab">Swap and score: four matrices, one changed row each</p>
+        <div class="sv"><svg id="flowSvg" role="img" aria-label="Each rollout's scores replace row g of the attribute matrix; frozen scorers re-rank all 600 genes; where gene g lands in each task's ranking"></svg></div>
+      </div>
+      <div class="gcharts">
+        <div><p class="lab">Reward per step (group mean)</p><div class="sv"><svg id="rwSvg" role="img" aria-label="Mean reward of each step's four rollouts"></svg></div></div>
+        <div><p class="lab">The policy’s typical score per step</p><div class="sv"><svg id="rdSvg" role="img" aria-label="The policy's median score for each attribute after each step"></svg></div></div>
+      </div>
+      <p class="note">Rewards move only in the second or third decimal, because one gene shifts among 600. GRPO divides by the group’s spread, so what counts is which rollouts beat the other three. With the KL weight at 0 the policy runs to the extremes; the KL term holds it near the model it started from.</p>
+    </div>
+    <div class="paper">
+      <p><span class="ptag">Paper</span> Policy: Qwen2.5-1.5B-Instruct with LoRA (rank 32), trained by GRPO straight from the instruct model, with no supervised reasoning traces. G = 4 rollouts per gene at temperature 0.8; learning rate 5 × 10<sup>−5</sup>; clipped surrogate objective with KL regularization; one RTX 3090. The reward averages Adjusted F1 over all 15 tasks, from frozen module-3 scorers fitted once before any RL update (Sec. 3.3, Appendix F).</p>
+      <div class="hbars" id="attrAbl"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ 3. PU-aware scoring -->
+  <section class="view" id="v-pu" aria-label="Module 3: PU-aware scoring" hidden>
+    <p class="intro">Module 3 turns the three views of a gene into one score, and it learns without ever calling an unlabeled gene a negative. It has four parts.</p>
+    <div class="seg sub" role="group" aria-label="Part">
+      <button type="button" data-sub="fuse" aria-pressed="true"><b>A</b>Fuse the views</button>
+      <button type="button" data-sub="prior" aria-pressed="false"><b>B</b>Class prior</button>
+      <button type="button" data-sub="wts" aria-pressed="false"><b>C</b>Unlabeled weights</button>
+      <button type="button" data-sub="loss" aria-pressed="false"><b>D</b>Non-negative loss</button>
+    </div>
+
+    <div class="card" data-part="fuse">
+      <h2>A. Gated fusion: each gene gets its own mix of the three views</h2>
+      <p class="eq"><i>h</i><sup><i>m</i></sup> = σ(<i>W</i><sub><i>m</i></sub> <i>u</i><sup><i>m</i></sup> + <i>b</i><sub><i>m</i></sub>),&nbsp; α = softmax(<i>W</i><sub><i>g</i></sub> [<i>h</i><sup>bio</sup>; <i>h</i><sup>attr</sup>; <i>h</i><sup>emb</sup>]),&nbsp; <i>h</i><sup>fuse</sup> = Σ<sub><i>m</i></sub> α<sup><i>m</i></sup> <i>h</i><sup><i>m</i></sup></p>
+      <p class="note">The 482 structured features, the 23 attribute scores and the 256-number rationale vector are each projected to 256 dimensions. A gate reads all three and outputs three weights that sum to 1. Drag the point in the triangle to choose a mix; the bars show how much each view contributes to each fused dimension.</p>
+      <div class="fuse">
+        <div class="sv"><svg id="fuseSvg" role="img" aria-label="Sixteen of the 256 dimensions of each projected view and of the fused vector"></svg></div>
+        <div style="display:grid;gap:12px">
+          <div class="sv"><svg id="triSvg" tabindex="0" role="slider" aria-label="Gate weights: drag inside the triangle; arrow keys move the point" aria-valuetext=""></svg></div>
+          <div class="radios" id="fOps" role="radiogroup" aria-label="How the views are combined"></div>
+          <p class="note" id="fOpNote"></p>
+        </div>
+      </div>
+      <div class="pbars">
+        <div class="paper"><p><span class="ptag">Paper</span> How the views are combined, macro Adjusted F1 over 15 tasks (Table 7a)</p><div class="hbars" id="fOpBars"></div></div>
+        <div class="paper"><p><span class="ptag">Paper</span> Which views go in (Table 6). Untick a view to drop it.</p>
+          <div class="checks" id="fViews" style="grid-template-columns:repeat(3,auto);justify-content:start;column-gap:16px"></div>
+          <div class="hbars" id="fViewBars"></div></div>
+      </div>
+      <p class="foot">The 16-dimension vectors are toy stand-ins: a sparse structured view, a smooth attribute view and a noisy embedding view.</p>
+      <div class="nextrow"><button type="button" class="btn" data-go="prior">Next: the class prior →</button></div>
+    </div>
+
+    <div class="card" data-part="prior" hidden>
+      <h2>B. Class prior: how many targets hide among the unlabeled genes?</h2>
+      <p class="eq">π<sub><i>t</i></sub> = α π<sub><i>t</i>,data</sub> + (1 − α) π<sub><i>t</i>,LLM</sub>,&nbsp;&nbsp; π<sub><i>t</i>,LLM</sub> = <i>m</i>* · |<i>P</i><sub><i>t</i></sub>| / <i>n</i></p>
+      <p class="note">PU learning needs π, the true fraction of targets. The observed rate |P|/n is only a lower bound. TargetSage blends two estimates: the scorer’s own mean score on the unlabeled genes, and an LLM’s judgement of how much larger the true rate is. Pick one of the paper’s 15 tasks.</p>
+      <div class="prior">
+        <div style="display:grid;gap:12px">
+          <label class="kv" for="bTask"><span>Task</span></label>
+          <select id="bTask"></select>
+          <div class="kv" id="bFacts"></div>
+          <div class="paper" style="background:transparent">
+            <p><b>Ask an LLM for a multiplier, not a probability.</b> Each query gives the task name, n = 19,032, |P| and |P|/n, and asks for (<i>m</i><sub>min</sub>, <i>m</i><sub>med</sub>, <i>m</i><sub>max</sub>) between 1.0 and 3.5, with non-round values. Ten queries; <i>m</i>* is the median of the ten medians.</p>
+            <div class="toolbar"><button type="button" class="btn" id="bAsk">Ask 10 times (simulated)</button><span class="mute" style="font-size:13px">answers are simulated here; the paper used GPT-4o</span></div>
+            <div class="sv"><svg id="llmSvg" role="img" aria-label="Ten simulated answers: each run's range and median multiplier, and the median of the medians"></svg></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:12px">
+          <div class="range"><label for="bM"><i>m</i>*</label><input type="range" id="bM" min="1" max="3.5" step="0.01" value="1.8"><output id="bMo"></output></div>
+          <div class="range"><label for="bD">π<sub>data</sub></label><input type="range" id="bD" min="0" max="5" step="0.05" value="1.6"><output id="bDo"></output></div>
+          <p class="note" style="font-size:13px;margin-top:-6px">π<sub>data</sub> is the trained scorer’s mean score over the unlabeled genes; set it here as a multiple of |P|/n.</p>
+          <div class="range"><label for="bA">α</label><input type="range" id="bA" min="0" max="1" step="0.05" value="0.6"><output id="bAo"></output></div>
+          <div class="sens" id="bSens"></div>
+          <div class="sv"><svg id="lineSvg" role="img" aria-label="The observed rate, the two estimates and their blend on one scale"></svg></div>
+          <div class="readout" id="bOut" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="paper"><p><span class="ptag">Paper</span> α = 0.6 in every experiment. Appendix I: macro Adjusted F1 is stable for α from 0.2 to 0.8 and peaks at 0.6; at either end, where one estimate is used alone, it drops by 6–8%. Neither source suffices alone: the scorer’s own estimate gets noisy on tasks with few positives. π<sub>LLM</sub> is computed once per task, before training.</p></div>
+      <div class="nextrow"><button type="button" class="btn" data-go="wts">Next: weighting the unlabeled genes →</button></div>
+    </div>
+
+    <div class="card" data-part="wts" hidden>
+      <h2>C. Weights: which unlabeled genes look like targets?</h2>
+      <p class="eq"><i>w</i><sub><i>j</i></sub> = β <i>D</i>(<i>h</i><sub><i>j</i></sub>) + (1 − β) cos(<i>z</i><sub><i>j</i></sub>, <i>z̄</i><sub><i>P</i></sub>)</p>
+      <p class="note">Each unlabeled gene gets a soft weight from two signals: the scorer’s confidence D, and how closely its rationale vector points the same way as the average rationale of the known targets. Unlabeled genes enter the loss with this weight. Tap a point to see its numbers.</p>
+      <div class="wts">
+        <div class="sv"><svg id="wSvg" role="img" aria-label="Toy rationale embedding: known targets, and unlabeled genes coloured by weight"></svg></div>
+        <div style="display:grid;gap:12px">
+          <div class="range"><label for="cB">β</label><input type="range" id="cB" min="0" max="1" step="0.05" value="0.6"><output id="cBo"></output></div>
+          <div class="sens" id="cSens"></div>
+          <div class="readout" id="cOut" aria-live="polite"></div>
+          <label class="checks"><span style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" class="reveal"><span>Show which unlabeled points are hidden targets (only a toy can know)</span></span></label>
+          <div class="readout" id="cStats"></div>
+        </div>
+      </div>
+      <div class="paper"><p><span class="ptag">Paper</span> β = 0.6. Appendix I: β = 1 trusts only the scorer, which then reinforces its own confident mistakes on the unlabeled genes (−12.6% of the best macro Adjusted F1); β = 0 uses only the resemblance (−11.7%).</p></div>
+      <p class="foot">Toy: a 2-D stand-in for the 256-dimension rationale vectors, 12 known targets and 78 unlabeled genes, 14 of which are hidden targets. D is a small scorer after a class-balanced warm-up.</p>
+      <div class="nextrow"><button type="button" class="btn" data-go="loss">Next: the non-negative loss →</button></div>
+    </div>
+
+    <div class="card" data-part="loss" hidden>
+      <h2>D. The nnPU loss: a risk can’t be negative</h2>
+      <p class="eq"><i>L</i> = π <i>R</i><span class="ss"><span>+</span><i>P</i></span> + max(0, <i>R</i><span class="ss"><span>−</span><i>U</i></span> − π <i>R</i><span class="ss"><span>−</span><i>P</i></span>)</p>
+      <p class="note">R<span class="ss"><span>+</span><span>P</span></span> is the loss for calling the known targets positive. The unlabeled genes are a mix, so the loss on the true negatives is estimated as R<span class="ss"><span>−</span><span>U</span></span> − π R<span class="ss"><span>−</span><span>P</span></span>: the loss for calling every unlabeled gene negative, minus the part that the hidden targets among them account for. A flexible scorer can push this estimate below zero, which no real risk can be. nnPU clips it at zero. Train the toy scorer both ways.</p>
+      <div class="wts">
+        <div class="heat" id="heatBox"><canvas id="heatCv" aria-hidden="true"></canvas><svg id="heatSvg" role="img" aria-label="The toy scorer's output over the embedding plane, with the known and unlabeled points"></svg></div>
+        <div style="display:grid;gap:12px">
+          <div class="radios" role="radiogroup" aria-label="Loss">
+            <label><input type="radio" name="dObj" value="nnpu" checked><span>nnPU: clip at 0</span></label>
+            <label><input type="radio" name="dObj" value="upu"><span>uPU: no clip</span></label>
+          </div>
+          <div class="range"><label for="dPi">π</label><input type="range" id="dPi" min="0.05" max="0.4" step="0.01" value="0.18"><output id="dPio"></output></div>
+          <div class="toolbar"><button type="button" class="btn primary" id="dTrain">Train</button><button type="button" class="btn" id="dReset">Reset</button></div>
+          <div class="sv"><svg id="riskSvg" role="img" aria-label="The negative-risk estimate over training steps for each loss"></svg></div>
+          <div class="readout" id="dOut" aria-live="polite"></div>
+          <label class="checks"><span style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" class="reveal"><span>Show the hidden targets</span></span></label>
+        </div>
+      </div>
+      <div class="paper"><p><span class="ptag">Paper</span> Macro Adjusted F1 by objective (Table 7b): class-balanced BCE 9.1, uPU 10.5, nnPU 11.1. uPU keeps up on tasks with moderate positive rates, but its risk estimate turns negative when positives are very rare, which drags Pan-Cancer and T1–T3 Cancer below nnPU; the clip steadies those tasks. Training: 10 epochs of class-balanced BCE, then 25 of nnPU.</p></div>
+      <p class="foot">Toy: the points of part C; logistic loss; a scorer on 81 Gaussian features trained by full-batch gradient descent, 100 warm-up steps of class-balanced BCE, then 500 steps of the chosen loss (when the estimate dips below zero, nnPU steps back, as in Kiryo et al. 2017). In this toy both losses rank the hidden targets about the same; the difference is the estimate itself. The toy loss leaves out the weights of part C.</p>
+    </div>
+  </section>
+
+  <p class="foot">Toys, not results: the gene in module 1 is an example with schematic text; the GRPO and PU toys are small simulations computed in this page with the paper’s formulas (Eqs. 1–5, Appendices C–F). TargetSage: Duan et al., NeurIPS 2026.</p>
+</div>
+
+<script id="data" type="application/json">{"grpo":{"n":600,"X":[[0.57,0.589,0.536,0.494,0.354],[0.813,0.611,0.261,0.643,0.351],[0.532,0.722,0.493,0.62,0.529],[0.323,0.98,0.331,0.205,0.138],[0.302,0.575,0.02,0.507,0.578],[0.518,0.329,0.469,0.092,0.298],[0.606,0.303,0.249,0.587,0.02],[0.459,0.261,0.163,0.739,0.165],[0.265,0.653,0.611,0.02,0.356],[0.129,0.579,0.026,0.02,0.401],[0.859,0.604,0.362,0.393,0.673],[0.232,0.55,0.408,0.02,0.204],[0.285,0.832,0.965,0.117,0.65],[0.313,0.731,0.333,0.078,0.289],[0.635,0.714,0.02,0.152,0.445],[0.307,0.373,0.021,0.35,0.453],[0.367,0.445,0.33,0.767,0.363],[0.515,0.247,0.454,0.356,0.245],[0.23,0.378,0.599,0.155,0.02],[0.488,0.528,0.435,0.489,0.02],[0.214,0.263,0.256,0.461,0.393],[0.424,0.381,0.386,0.478,0.215],[0.602,0.917,0.451,0.2,0.854],[0.408,0.472,0.341,0.352,0.035],[0.274,0.207,0.397,0.237,0.237],[0.372,0.258,0.02,0.449,0.763],[0.418,0.492,0.13,0.259,0.216],[0.52,0.68,0.309,0.661,0.02],[0.02,0.492,0.631,0.32,0.276],[0.088,0.685,0.213,0.45,0.196],[0.039,0.573,0.159,0.924,0.791],[0.429,0.285,0.118,0.335,0.609],[0.454,0.718,0.504,0.525,0.02],[0.494,0.418,0.232,0.512,0.62],[0.419,0.89,0.226,0.699,0.772],[0.361,0.391,0.068,0.412,0.639],[0.472,0.481,0.258,0.31,0.481],[0.582,0.4,0.179,0.02,0.201],[0.517,0.456,0.202,0.107,0.076],[0.454,0.602,0.425,0.229,0.661],[0.243,0.472,0.15,0.383,0.289],[0.496,0.749,0.324,0.424,0.489],[0.546,0.596,0.183,0.848,0.269],[0.041,0.83,0.671,0.243,0.681],[0.479,0.525,0.02,0.694,0.335],[0.472,0.771,0.527,0.681,0.031],[0.665,0.753,0.02,0.359,0.425],[0.505,0.482,0.683,0.7,0.84],[0.601,0.98,0.526,0.02,0.967],[0.385,0.817,0.347,0.241,0.756],[0.446,0.622,0.171,0.149,0.674],[0.401,0.472,0.02,0.421,0.711],[0.792,0.496,0.771,0.358,0.317],[0.54,0.478,0.101,0.707,0.795],[0.321,0.57,0.633,0.547,0.741],[0.282,0.284,0.207,0.712,0.52],[0.695,0.524,0.331,0.64,0.514],[0.277,0.391,0.369,0.568,0.404],[0.522,0.849,0.518,0.56,0.049],[0.485,0.668,0.529,0.053,0.02],[0.66,0.85,0.343,0.02,0.02],[0.277,0.98,0.98,0.492,0.815],[0.541,0.61,0.109,0.509,0.5],[0.49,0.92,0.417,0.292,0.498],[0.746,0.591,0.278,0.292,0.774],[0.719,0.642,0.088,0.417,0.301],[0.47,0.324,0.488,0.424,0.425],[0.706,0.532,0.134,0.476,0.42],[0.624,0.804,0.419,0.504,0.391],[0.172,0.615,0.02,0.145,0.161],[0.488,0.44,0.339,0.728,0.378],[0.257,0.517,0.396,0.292,0.445],[0.212,0.367,0.488,0.062,0.636],[0.139,0.38,0.342,0.492,0.385],[0.124,0.226,0.571,0.374,0.319],[0.615,0.739,0.73,0.398,0.048],[0.79,0.736,0.98,0.174,0.98],[0.472,0.494,0.301,0.342,0.934],[0.656,0.246,0.02,0.02,0.435],[0.457,0.468,0.139,0.118,0.02],[0.354,0.92,0.513,0.139,0.194],[0.238,0.248,0.441,0.439,0.02],[0.603,0.414,0.497,0.131,0.02],[0.613,0.421,0.751,0.119,0.514],[0.834,0.677,0.98,0.98,0.896],[0.294,0.26,0.313,0.273,0.207],[0.396,0.569,0.043,0.02,0.467],[0.186,0.35,0.02,0.979,0.527],[0.678,0.444,0.246,0.544,0.537],[0.592,0.271,0.291,0.226,0.576],[0.554,0.622,0.264,0.231,0.294],[0.509,0.417,0.021,0.724,0.651],[0.424,0.397,0.472,0.66,0.26],[0.381,0.737,0.502,0.04,0.493],[0.669,0.586,0.162,0.714,0.583],[0.328,0.98,0.02,0.744,0.284],[0.629,0.601,0.19,0.02,0.301],[0.51,0.533,0.248,0.025,0.482],[0.255,0.542,0.304,0.5,0.378],[0.168,0.98,0.234,0.071,0.854],[0.307,0.768,0.525,0.47,0.515],[0.446,0.46,0.219,0.243,0.533],[0.198,0.581,0.222,0.02,0.763],[0.735,0.413,0.98,0.546,0.478],[0.679,0.651,0.257,0.273,0.02],[0.561,0.416,0.428,0.414,0.447],[0.119,0.405,0.451,0.03,0.057],[0.02,0.606,0.395,0.938,0.718],[0.626,0.79,0.071,0.084,0.535],[0.748,0.689,0.603,0.522,0.625],[0.375,0.668,0.02,0.542,0.65],[0.557,0.526,0.307,0.459,0.69],[0.401,0.031,0.506,0.103,0.399],[0.716,0.483,0.273,0.98,0.558],[0.605,0.475,0.051,0.98,0.612],[0.345,0.624,0.17,0.02,0.301],[0.622,0.87,0.528,0.02,0.52],[0.795,0.669,0.374,0.02,0.246],[0.43,0.165,0.106,0.288,0.281],[0.825,0.521,0.269,0.372,0.6],[0.194,0.468,0.367,0.073,0.198],[0.636,0.66,0.696,0.568,0.02],[0.456,0.503,0.212,0.122,0.093],[0.962,0.13,0.388,0.551,0.761],[0.462,0.332,0.71,0.163,0.288],[0.296,0.45,0.341,0.163,0.458],[0.776,0.101,0.572,0.02,0.564],[0.603,0.489,0.02,0.911,0.757],[0.542,0.456,0.197,0.287,0.432],[0.302,0.729,0.693,0.02,0.153],[0.728,0.489,0.199,0.02,0.447],[0.433,0.387,0.097,0.253,0.05],[0.624,0.487,0.31,0.297,0.579],[0.446,0.516,0.187,0.02,0.414],[0.235,0.708,0.231,0.244,0.549],[0.026,0.319,0.285,0.238,0.295],[0.809,0.056,0.094,0.241,0.183],[0.5,0.98,0.17,0.297,0.157],[0.225,0.664,0.463,0.568,0.195],[0.391,0.519,0.135,0.099,0.684],[0.65,0.98,0.265,0.285,0.185],[0.157,0.28,0.02,0.724,0.293],[0.905,0.351,0.02,0.485,0.542],[0.404,0.422,0.661,0.29,0.502],[0.38,0.609,0.069,0.477,0.02],[0.478,0.417,0.606,0.209,0.249],[0.53,0.668,0.772,0.468,0.98],[0.726,0.439,0.615,0.865,0.622],[0.635,0.773,0.119,0.02,0.23],[0.543,0.604,0.26,0.227,0.054],[0.677,0.174,0.055,0.021,0.49],[0.269,0.503,0.636,0.728,0.02],[0.228,0.278,0.817,0.293,0.302],[0.577,0.481,0.119,0.603,0.313],[0.366,0.509,0.451,0.416,0.442],[0.023,0.963,0.049,0.218,0.299],[0.335,0.461,0.155,0.45,0.113],[0.577,0.182,0.422,0.427,0.02],[0.871,0.53,0.689,0.98,0.779],[0.727,0.272,0.377,0.892,0.272],[0.351,0.879,0.439,0.476,0.478],[0.432,0.651,0.295,0.838,0.266],[0.127,0.827,0.02,0.242,0.56],[0.291,0.426,0.038,0.263,0.565],[0.521,0.295,0.69,0.517,0.311],[0.566,0.566,0.114,0.98,0.562],[0.488,0.228,0.23,0.205,0.175],[0.662,0.311,0.257,0.239,0.131],[0.02,0.352,0.666,0.376,0.584],[0.455,0.477,0.55,0.306,0.663],[0.421,0.197,0.602,0.061,0.2],[0.242,0.087,0.542,0.02,0.32],[0.442,0.797,0.877,0.254,0.257],[0.301,0.396,0.02,0.186,0.082],[0.535,0.469,0.02,0.702,0.423],[0.381,0.627,0.398,0.023,0.6],[0.678,0.596,0.446,0.431,0.74],[0.268,0.373,0.457,0.111,0.535],[0.703,0.416,0.282,0.356,0.02],[0.529,0.835,0.02,0.777,0.646],[0.806,0.763,0.156,0.099,0.603],[0.423,0.66,0.17,0.528,0.299],[0.35,0.846,0.066,0.806,0.295],[0.477,0.124,0.628,0.826,0.146],[0.357,0.535,0.236,0.384,0.844],[0.242,0.452,0.347,0.426,0.739],[0.453,0.117,0.256,0.02,0.468],[0.437,0.578,0.262,0.346,0.286],[0.32,0.641,0.254,0.262,0.476],[0.373,0.563,0.143,0.428,0.537],[0.255,0.142,0.635,0.482,0.57],[0.479,0.466,0.02,0.503,0.729],[0.181,0.554,0.231,0.03,0.7],[0.789,0.462,0.339,0.209,0.727],[0.456,0.568,0.869,0.277,0.483],[0.639,0.613,0.02,0.704,0.428],[0.209,0.801,0.02,0.226,0.244],[0.519,0.559,0.192,0.694,0.636],[0.423,0.98,0.02,0.02,0.708],[0.647,0.556,0.02,0.306,0.167],[0.625,0.57,0.205,0.02,0.099],[0.534,0.671,0.924,0.293,0.811],[0.68,0.498,0.29,0.02,0.732],[0.151,0.447,0.02,0.263,0.749],[0.719,0.766,0.325,0.266,0.398],[0.439,0.077,0.243,0.185,0.484],[0.21,0.152,0.465,0.811,0.44],[0.592,0.937,0.297,0.337,0.305],[0.458,0.664,0.831,0.497,0.444],[0.782,0.624,0.02,0.879,0.98],[0.302,0.576,0.664,0.02,0.303],[0.546,0.571,0.138,0.32,0.98],[0.175,0.321,0.301,0.098,0.29],[0.277,0.456,0.686,0.709,0.199],[0.822,0.305,0.209,0.02,0.14],[0.296,0.75,0.284,0.111,0.725],[0.607,0.644,0.679,0.98,0.872],[0.766,0.564,0.642,0.174,0.574],[0.643,0.594,0.568,0.58,0.556],[0.627,0.488,0.384,0.67,0.077],[0.02,0.28,0.378,0.471,0.048],[0.353,0.863,0.317,0.319,0.507],[0.602,0.648,0.609,0.612,0.73],[0.291,0.48,0.466,0.479,0.474],[0.816,0.636,0.783,0.528,0.405],[0.5,0.775,0.769,0.81,0.371],[0.205,0.756,0.257,0.316,0.434],[0.564,0.651,0.205,0.02,0.528],[0.841,0.684,0.244,0.311,0.134],[0.316,0.469,0.239,0.773,0.023],[0.563,0.792,0.246,0.165,0.092],[0.273,0.71,0.254,0.743,0.318],[0.333,0.71,0.293,0.234,0.331],[0.474,0.251,0.252,0.353,0.255],[0.554,0.648,0.02,0.02,0.303],[0.522,0.653,0.357,0.02,0.02],[0.737,0.68,0.902,0.244,0.494],[0.85,0.02,0.02,0.492,0.921],[0.233,0.134,0.598,0.02,0.184],[0.076,0.572,0.629,0.197,0.624],[0.563,0.321,0.382,0.505,0.33],[0.489,0.593,0.209,0.075,0.446],[0.162,0.495,0.087,0.02,0.585],[0.798,0.689,0.203,0.214,0.98],[0.31,0.399,0.708,0.131,0.33],[0.167,0.295,0.871,0.586,0.534],[0.536,0.619,0.498,0.564,0.369],[0.58,0.455,0.339,0.169,0.136],[0.925,0.271,0.56,0.502,0.616],[0.142,0.106,0.619,0.462,0.168],[0.194,0.98,0.69,0.21,0.454],[0.396,0.437,0.243,0.085,0.396],[0.363,0.461,0.178,0.174,0.19],[0.652,0.108,0.814,0.459,0.973],[0.673,0.301,0.02,0.695,0.526],[0.546,0.477,0.712,0.296,0.46],[0.361,0.577,0.504,0.128,0.253],[0.594,0.669,0.02,0.244,0.523],[0.61,0.356,0.216,0.485,0.413],[0.319,0.608,0.307,0.071,0.217],[0.56,0.745,0.439,0.02,0.303],[0.535,0.404,0.559,0.485,0.426],[0.49,0.495,0.105,0.61,0.924],[0.381,0.139,0.684,0.587,0.253],[0.461,0.341,0.327,0.266,0.37],[0.74,0.225,0.532,0.394,0.98],[0.905,0.646,0.435,0.054,0.733],[0.272,0.471,0.494,0.02,0.524],[0.419,0.835,0.251,0.586,0.547],[0.339,0.547,0.05,0.426,0.426],[0.516,0.673,0.771,0.165,0.48],[0.02,0.614,0.321,0.813,0.453],[0.231,0.551,0.43,0.151,0.703],[0.619,0.289,0.724,0.095,0.251],[0.536,0.849,0.212,0.612,0.603],[0.458,0.49,0.107,0.026,0.434],[0.597,0.13,0.025,0.063,0.633],[0.184,0.39,0.51,0.02,0.608],[0.526,0.282,0.02,0.347,0.626],[0.494,0.751,0.664,0.02,0.31],[0.193,0.725,0.398,0.234,0.482],[0.553,0.824,0.263,0.02,0.299],[0.291,0.959,0.257,0.445,0.162],[0.38,0.375,0.338,0.471,0.041],[0.578,0.12,0.224,0.718,0.619],[0.241,0.315,0.417,0.294,0.02],[0.946,0.593,0.82,0.561,0.767],[0.906,0.02,0.077,0.377,0.073],[0.412,0.385,0.043,0.02,0.798],[0.646,0.683,0.038,0.184,0.255],[0.608,0.333,0.02,0.325,0.085],[0.196,0.484,0.266,0.404,0.02],[0.176,0.321,0.382,0.495,0.369],[0.358,0.87,0.603,0.367,0.903],[0.021,0.912,0.02,0.219,0.291],[0.457,0.299,0.98,0.392,0.608],[0.505,0.334,0.446,0.255,0.336],[0.76,0.537,0.588,0.405,0.843],[0.544,0.655,0.434,0.579,0.634],[0.723,0.601,0.313,0.02,0.611],[0.386,0.649,0.483,0.235,0.442],[0.727,0.721,0.02,0.654,0.842],[0.561,0.769,0.2,0.28,0.98],[0.56,0.91,0.387,0.32,0.371],[0.422,0.561,0.259,0.495,0.142],[0.647,0.428,0.376,0.364,0.252],[0.302,0.512,0.193,0.431,0.904],[0.601,0.98,0.452,0.174,0.265],[0.68,0.704,0.065,0.225,0.02],[0.409,0.679,0.045,0.392,0.811],[0.578,0.811,0.227,0.98,0.528],[0.301,0.789,0.203,0.433,0.168],[0.446,0.98,0.303,0.798,0.389],[0.528,0.366,0.304,0.42,0.605],[0.632,0.576,0.4,0.399,0.507],[0.838,0.69,0.415,0.281,0.064],[0.783,0.704,0.02,0.342,0.608],[0.51,0.453,0.02,0.152,0.365],[0.376,0.195,0.02,0.225,0.02],[0.211,0.476,0.44,0.448,0.758],[0.408,0.388,0.325,0.955,0.199],[0.56,0.509,0.122,0.438,0.353],[0.398,0.76,0.144,0.303,0.863],[0.507,0.676,0.908,0.192,0.812],[0.431,0.292,0.088,0.31,0.793],[0.02,0.373,0.02,0.349,0.721],[0.443,0.569,0.4,0.296,0.299],[0.521,0.765,0.02,0.562,0.652],[0.43,0.515,0.525,0.02,0.386],[0.239,0.573,0.446,0.564,0.474],[0.464,0.212,0.248,0.136,0.82],[0.552,0.424,0.482,0.02,0.576],[0.819,0.36,0.961,0.028,0.297],[0.669,0.565,0.637,0.264,0.198],[0.191,0.466,0.94,0.02,0.766],[0.444,0.339,0.365,0.752,0.618],[0.483,0.295,0.8,0.441,0.054],[0.36,0.563,0.02,0.02,0.846],[0.178,0.383,0.258,0.358,0.335],[0.764,0.754,0.684,0.937,0.98],[0.671,0.548,0.385,0.394,0.537],[0.667,0.46,0.02,0.309,0.772],[0.638,0.704,0.599,0.442,0.476],[0.459,0.266,0.729,0.093,0.863],[0.729,0.704,0.98,0.332,0.837],[0.4,0.364,0.02,0.32,0.354],[0.058,0.664,0.364,0.173,0.633],[0.809,0.371,0.388,0.15,0.082],[0.462,0.316,0.168,0.02,0.02],[0.102,0.129,0.67,0.494,0.144],[0.347,0.52,0.603,0.283,0.362],[0.481,0.611,0.02,0.98,0.937],[0.358,0.22,0.558,0.612,0.564],[0.7,0.878,0.02,0.684,0.628],[0.773,0.506,0.389,0.766,0.98],[0.721,0.275,0.356,0.528,0.152],[0.501,0.915,0.116,0.241,0.639],[0.305,0.425,0.263,0.432,0.13],[0.095,0.812,0.449,0.308,0.021],[0.607,0.02,0.329,0.032,0.02],[0.59,0.955,0.167,0.433,0.484],[0.154,0.548,0.294,0.072,0.318],[0.369,0.507,0.514,0.628,0.212],[0.679,0.575,0.207,0.384,0.161],[0.303,0.268,0.02,0.413,0.197],[0.535,0.7,0.497,0.488,0.906],[0.059,0.599,0.683,0.167,0.273],[0.361,0.574,0.83,0.403,0.449],[0.602,0.389,0.668,0.266,0.476],[0.215,0.266,0.827,0.348,0.37],[0.162,0.581,0.157,0.98,0.562],[0.172,0.677,0.352,0.242,0.712],[0.378,0.535,0.546,0.02,0.094],[0.135,0.465,0.098,0.157,0.505],[0.432,0.398,0.02,0.319,0.361],[0.568,0.654,0.139,0.118,0.299],[0.765,0.807,0.078,0.208,0.98],[0.373,0.474,0.48,0.378,0.346],[0.781,0.329,0.044,0.433,0.068],[0.568,0.98,0.54,0.304,0.395],[0.41,0.184,0.02,0.157,0.544],[0.56,0.559,0.538,0.278,0.544],[0.762,0.484,0.159,0.352,0.422],[0.76,0.777,0.98,0.545,0.142],[0.608,0.477,0.38,0.02,0.949],[0.354,0.162,0.402,0.638,0.593],[0.623,0.271,0.02,0.528,0.324],[0.498,0.528,0.02,0.459,0.606],[0.489,0.501,0.678,0.02,0.49],[0.507,0.369,0.354,0.494,0.294],[0.822,0.39,0.341,0.658,0.273],[0.212,0.183,0.406,0.236,0.629],[0.439,0.2,0.627,0.337,0.506],[0.233,0.376,0.032,0.24,0.213],[0.63,0.363,0.212,0.357,0.575],[0.68,0.476,0.361,0.441,0.046],[0.729,0.262,0.576,0.024,0.02],[0.383,0.829,0.02,0.158,0.405],[0.688,0.144,0.306,0.98,0.749],[0.611,0.686,0.02,0.65,0.208],[0.492,0.62,0.5,0.182,0.309],[0.514,0.834,0.269,0.22,0.1],[0.495,0.793,0.251,0.327,0.446],[0.51,0.236,0.13,0.538,0.038],[0.432,0.582,0.186,0.22,0.459],[0.545,0.667,0.02,0.324,0.229],[0.159,0.704,0.19,0.679,0.215],[0.587,0.616,0.309,0.98,0.98],[0.186,0.393,0.088,0.358,0.566],[0.438,0.777,0.043,0.359,0.02],[0.154,0.487,0.76,0.073,0.98],[0.564,0.411,0.424,0.248,0.376],[0.741,0.55,0.98,0.19,0.98],[0.205,0.42,0.857,0.522,0.141],[0.298,0.375,0.498,0.311,0.288],[0.457,0.538,0.02,0.98,0.564],[0.748,0.98,0.528,0.518,0.02],[0.311,0.579,0.846,0.02,0.29],[0.546,0.53,0.5,0.69,0.721],[0.444,0.421,0.677,0.419,0.376],[0.716,0.586,0.55,0.593,0.673],[0.534,0.271,0.437,0.059,0.02],[0.557,0.614,0.607,0.232,0.426],[0.489,0.57,0.02,0.427,0.525],[0.338,0.532,0.187,0.382,0.394],[0.131,0.612,0.242,0.026,0.02],[0.284,0.474,0.593,0.653,0.313],[0.718,0.651,0.98,0.689,0.737],[0.221,0.625,0.108,0.16,0.33],[0.521,0.629,0.141,0.02,0.921],[0.168,0.515,0.02,0.502,0.787],[0.394,0.695,0.285,0.629,0.403],[0.526,0.477,0.257,0.98,0.154],[0.62,0.779,0.301,0.02,0.538],[0.505,0.491,0.796,0.02,0.445],[0.659,0.777,0.743,0.591,0.662],[0.336,0.567,0.111,0.669,0.615],[0.299,0.508,0.202,0.02,0.412],[0.676,0.308,0.729,0.553,0.921],[0.278,0.644,0.317,0.4,0.413],[0.424,0.588,0.387,0.307,0.475],[0.105,0.525,0.094,0.137,0.519],[0.682,0.599,0.604,0.04,0.534],[0.6,0.542,0.267,0.047,0.43],[0.304,0.327,0.603,0.445,0.546],[0.102,0.274,0.194,0.13,0.02],[0.353,0.645,0.585,0.513,0.765],[0.51,0.552,0.021,0.02,0.693],[0.691,0.827,0.456,0.358,0.653],[0.829,0.928,0.424,0.434,0.439],[0.503,0.685,0.704,0.02,0.555],[0.411,0.647,0.481,0.378,0.137],[0.407,0.632,0.256,0.068,0.27],[0.394,0.537,0.395,0.451,0.02],[0.178,0.385,0.611,0.588,0.57],[0.274,0.02,0.553,0.291,0.574],[0.437,0.672,0.422,0.205,0.796],[0.123,0.636,0.02,0.812,0.793],[0.189,0.523,0.386,0.614,0.336],[0.701,0.542,0.057,0.338,0.634],[0.319,0.715,0.026,0.02,0.98],[0.616,0.704,0.332,0.657,0.02],[0.676,0.555,0.711,0.593,0.266],[0.485,0.465,0.406,0.775,0.98],[0.622,0.639,0.582,0.61,0.219],[0.418,0.68,0.868,0.145,0.02],[0.488,0.969,0.143,0.808,0.803],[0.433,0.329,0.385,0.342,0.783],[0.43,0.618,0.427,0.332,0.725],[0.479,0.335,0.205,0.192,0.469],[0.486,0.423,0.626,0.855,0.908],[0.375,0.98,0.459,0.524,0.22],[0.669,0.431,0.459,0.347,0.751],[0.479,0.49,0.493,0.751,0.577],[0.372,0.397,0.25,0.545,0.02],[0.642,0.693,0.265,0.035,0.548],[0.254,0.429,0.389,0.744,0.155],[0.455,0.174,0.32,0.585,0.241],[0.753,0.544,0.264,0.638,0.43],[0.469,0.685,0.02,0.02,0.168],[0.742,0.51,0.296,0.24,0.573],[0.734,0.547,0.02,0.528,0.584],[0.354,0.372,0.025,0.248,0.21],[0.424,0.322,0.186,0.116,0.238],[0.344,0.515,0.308,0.45,0.706],[0.385,0.281,0.352,0.532,0.762],[0.369,0.423,0.089,0.475,0.682],[0.618,0.31,0.02,0.267,0.533],[0.538,0.465,0.187,0.191,0.412],[0.415,0.676,0.02,0.563,0.818],[0.307,0.505,0.056,0.058,0.625],[0.98,0.745,0.528,0.542,0.586],[0.812,0.587,0.583,0.98,0.125],[0.74,0.485,0.125,0.02,0.397],[0.221,0.325,0.619,0.381,0.591],[0.309,0.532,0.688,0.467,0.484],[0.705,0.272,0.285,0.453,0.522],[0.237,0.666,0.376,0.185,0.321],[0.243,0.234,0.363,0.131,0.885],[0.447,0.224,0.474,0.453,0.887],[0.311,0.334,0.02,0.074,0.73],[0.691,0.166,0.778,0.404,0.688],[0.489,0.531,0.102,0.855,0.567],[0.633,0.35,0.396,0.182,0.547],[0.495,0.414,0.386,0.884,0.328],[0.517,0.636,0.02,0.02,0.674],[0.724,0.055,0.471,0.319,0.02],[0.742,0.458,0.278,0.02,0.356],[0.387,0.582,0.59,0.411,0.488],[0.086,0.718,0.566,0.631,0.531],[0.256,0.536,0.58,0.14,0.188],[0.673,0.371,0.052,0.326,0.917],[0.362,0.7,0.463,0.027,0.167],[0.316,0.699,0.542,0.283,0.02],[0.368,0.963,0.577,0.194,0.912],[0.778,0.951,0.414,0.307,0.406],[0.47,0.466,0.297,0.247,0.427],[0.383,0.791,0.454,0.21,0.488],[0.746,0.552,0.385,0.259,0.656],[0.238,0.3,0.107,0.099,0.451],[0.583,0.654,0.643,0.374,0.54],[0.451,0.778,0.607,0.244,0.834],[0.489,0.026,0.491,0.053,0.167],[0.395,0.783,0.02,0.66,0.605],[0.673,0.339,0.02,0.827,0.738],[0.257,0.839,0.318,0.382,0.658],[0.073,0.558,0.02,0.383,0.681],[0.343,0.54,0.02,0.307,0.189],[0.526,0.796,0.744,0.274,0.302],[0.913,0.441,0.02,0.297,0.207],[0.444,0.939,0.02,0.697,0.88],[0.286,0.311,0.142,0.061,0.353],[0.413,0.385,0.197,0.372,0.12],[0.302,0.285,0.648,0.965,0.511],[0.301,0.619,0.291,0.296,0.245],[0.477,0.493,0.033,0.02,0.425],[0.519,0.672,0.046,0.246,0.299],[0.327,0.732,0.554,0.307,0.02],[0.68,0.671,0.024,0.774,0.564],[0.444,0.729,0.341,0.651,0.579],[0.932,0.731,0.98,0.415,0.356],[0.356,0.489,0.404,0.164,0.483],[0.534,0.354,0.281,0.313,0.539],[0.542,0.304,0.142,0.476,0.343],[0.593,0.659,0.567,0.386,0.123],[0.296,0.396,0.34,0.382,0.464],[0.587,0.305,0.403,0.304,0.246],[0.345,0.331,0.564,0.546,0.307],[0.48,0.459,0.301,0.02,0.134],[0.61,0.55,0.38,0.02,0.46],[0.765,0.45,0.428,0.535,0.538],[0.37,0.291,0.517,0.337,0.514],[0.237,0.612,0.238,0.346,0.536],[0.489,0.043,0.649,0.769,0.462],[0.707,0.434,0.551,0.8,0.285],[0.6,0.712,0.919,0.314,0.608],[0.599,0.553,0.141,0.662,0.706],[0.082,0.742,0.063,0.572,0.231],[0.763,0.519,0.02,0.497,0.131],[0.696,0.616,0.02,0.28,0.492],[0.685,0.505,0.275,0.677,0.542],[0.294,0.408,0.228,0.609,0.399],[0.735,0.573,0.288,0.446,0.792],[0.687,0.695,0.356,0.644,0.932],[0.713,0.091,0.735,0.057,0.02],[0.416,0.327,0.258,0.568,0.559],[0.413,0.063,0.02,0.132,0.4],[0.722,0.301,0.02,0.088,0.02],[0.622,0.228,0.81,0.225,0.664],[0.389,0.392,0.575,0.531,0.146],[0.294,0.429,0.592,0.179,0.495],[0.515,0.685,0.136,0.345,0.263],[0.189,0.741,0.255,0.347,0.268],[0.578,0.323,0.02,0.372,0.61],[0.493,0.386,0.338,0.121,0.222],[0.149,0.615,0.145,0.057,0.182],[0.553,0.355,0.707,0.525,0.075],[0.704,0.404,0.066,0.02,0.76],[0.512,0.107,0.88,0.456,0.386],[0.194,0.636,0.446,0.714,0.306],[0.339,0.54,0.127,0.02,0.607],[0.63,0.29,0.468,0.02,0.697],[0.709,0.215,0.954,0.02,0.521],[0.386,0.268,0.335,0.324,0.132],[0.692,0.576,0.02,0.065,0.208],[0.404,0.387,0.02,0.676,0.181],[0.768,0.236,0.868,0.254,0.588],[0.623,0.419,0.26,0.031,0.938],[0.785,0.662,0.268,0.203,0.032],[0.541,0.743,0.73,0.02,0.348],[0.193,0.762,0.575,0.626,0.042],[0.136,0.515,0.107,0.339,0.98],[0.41,0.543,0.758,0.091,0.334],[0.097,0.551,0.929,0.042,0.48],[0.443,0.628,0.553,0.436,0.327],[0.87,0.613,0.123,0.647,0.765],[0.02,0.296,0.567,0.02,0.398],[0.424,0.342,0.02,0.526,0.281],[0.526,0.414,0.26,0.616,0.291],[0.351,0.637,0.2,0.02,0.444]],"labA":[43,47,48,76,84,103,145,146,158,201,217,222,236,253,255,266,270,279,293,295,297,323,334,336,344,347,367,383,398,410],"labB":[1,16,30,42,47,64,67,84,91,100,113,114,127,147,158,159,164,176,209,216,237,254,262,265,286,309,310,320,339,351],"wA":[1.076,0.503,3.811,-0.186,1.926],"bA":-6.452,"wB":[1.718,-0.347,-0.142,3.58,1.849],"bB":-6.26,"g":222,"sigma":0.7,"eta":0.3,"G":4,"attrs":["antibody","small molecule","disease association"],"ref":{"reward0":0.93039,"fA0":0.948754,"fB0":0.912025,"rankA0":52,"rankB0":66,"probe":[0.93,0.12,0.82],"probeReward":0.967593}},"pu":{"zP":[[1.235,0.851],[1.13,0.399],[1.062,0.361],[1.257,1.247],[1.047,0.502],[1.42,0.873],[1.274,0.384],[1.223,1.002],[0.724,0.564],[0.512,0.248],[0.534,0.648],[0.753,0.841]],"zU":[[-0.277,-0.993],[1.013,0.695],[-0.69,-0.231],[-0.804,-1.057],[-0.628,-0.372],[0.451,0.295],[-0.222,0.183],[0.991,1.498],[-1.269,0.08],[1.294,0.667],[1.276,0.762],[-1.158,0.092],[0.403,-0.542],[0.126,0.202],[-0.341,-0.901],[-0.402,-0.718],[1.524,0.282],[-1.547,-1.587],[-0.743,-0.262],[-0.314,0.241],[0.509,0.847],[-0.489,-0.307],[-0.758,-0.157],[0.263,0.639],[1.637,0.431],[1.561,0.783],[0.315,-0.027],[-0.478,-0.845],[-1.598,0.352],[-0.449,-1.561],[-0.412,-0.354],[-0.892,0.156],[0.31,-0.153],[-0.412,0.305],[-0.771,-0.3],[-0.665,-0.375],[-0.498,0.316],[-0.223,-0.487],[0.087,-1.557],[0.641,-0.635],[-0.162,-0.186],[0.619,-1.18],[-0.504,-0.942],[-0.374,-0.473],[-0.251,1.409],[-0.369,0.246],[-1.104,0.074],[-0.604,0.574],[0.769,0.767],[-0.274,-1.238],[0.653,0.556],[1.216,0.781],[-0.852,-0.391],[1.222,1.074],[-0.119,-0.247],[-0.595,-0.42],[0.514,0.32],[-0.382,-0.112],[0.514,-0.27],[-0.948,-0.599],[-0.184,-0.763],[-0.541,0.904],[-0.303,-0.576],[0.792,-0.632],[0.278,0.533],[-1.331,-0.727],[-0.383,0.305],[-1.856,0.43],[-0.579,-0.792],[0.569,-0.517],[-0.512,-0.605],[-0.958,0.383],[-1.588,0.367],[1.751,0.15],[-1.141,-1.014],[-1.089,-0.218],[-1.292,-0.719],[0.862,0.43]],"hid":[1,7,9,10,16,24,25,48,50,51,53,64,73,77],"pi":0.18,"K":9,"s":0.32,"lo":[-2.156,-1.887],"hi":[2.051,1.798],"warm":100,"steps":600,"lr":1.0,"lam":0.0001,"ref":{"bce":{"negRisk100":0.025548,"negRiskEnd":-0.064042,"negRiskMin":-0.064042,"D0":0.006282},"upu":{"negRisk100":0.025548,"negRiskEnd":-0.446565,"negRiskMin":-0.446565,"D0":0.006088},"nnpu":{"negRisk100":0.025548,"negRiskEnd":0.000792,"negRiskMin":-0.006263,"D0":0.04464},"warm":{"D0":0.043006,"piData":0.195997,"w0":-0.274424}}},"fuse":{"bio":[0.19,0.2,0.86,0.23,0.19,0.21,0.22,0.19,0.24,0.78,0.21,0.22,0.21,0.91,0.24,0.26],"attr":[0.37,0.49,0.67,0.68,0.69,0.69,0.52,0.31,0.17,0.09,0.1,0.02,0.08,0.27,0.33,0.51],"emb":[0.8,0.3,0.59,0.36,0.67,0.66,0.3,0.73,0.61,0.63,0.72,0.45,0.68,0.76,0.22,0.74]}}</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, parent, text) => { const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sig = z => 1 / (1 + Math.exp(-z));
+  const logit = p => Math.log(p / (1 - p));
+  const sp = x => x > 30 ? x : x < -30 ? Math.exp(x) : Math.log1p(Math.exp(x));
+  const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+  const num = (v, d) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(d);
+  const pct = v => (v * 100).toFixed(v < 0.1 ? 2 : 1) + '%';
+  const grp = v => Math.round(v).toLocaleString('en-US');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const cssv = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  function rng32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const gauss = r => { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); };
+  // Fit an SVG to its box: 1 unit = 1 CSS pixel. Returns the width.
+  function fit(svg, h) { const w = Math.max(260, Math.floor(svg.parentNode.getBoundingClientRect().width));
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('width', w); svg.setAttribute('height', h); svg.textContent = ''; return w; }
+  const T = (p, x, y, s, o = {}) => el('text', Object.assign({ x, y, 'font-size': o.fs || 12, style: `fill:var(${o.c || '--ink2'})${o.w ? ';font-weight:' + o.w : ''}`, 'text-anchor': o.a || 'start' }, o.attrs || {}), p, s);
+  const Tsub = (p, x, y, base, sub, o = {}) => { const t = T(p, x, y, base, o); el('tspan', { dy: 4, 'font-size': (o.fs || 12) * 0.78 }, t, sub); return t; };
+  const visible = node => node.offsetParent !== null;
+  const drawers = [];                  // redraw functions, called on resize and theme change for whatever is on screen
+  const redrawAll = () => drawers.forEach(f => f());
+
+  // ============================================================ tabs
+  document.querySelectorAll('.seg.main button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.seg.main button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    ['prof', 'grpo', 'pu'].forEach(v => { $('v-' + v).hidden = v !== b.dataset.view; });
+    redrawAll();
+  }));
+  const showPart = name => {
+    document.querySelectorAll('.seg.sub button').forEach(x => x.setAttribute('aria-pressed', x.dataset.sub === name ? 'true' : 'false'));
+    document.querySelectorAll('[data-part]').forEach(c => { c.hidden = c.dataset.part !== name; });
+    redrawAll();
+  };
+  document.querySelectorAll('.seg.sub button').forEach(b => b.addEventListener('click', () => showPart(b.dataset.sub)));
+  document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => { showPart(b.dataset.go);
+    document.querySelector('.seg.sub').scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); }));
+
+  // ============================================================ 1. agentic profiling
+  // Table 5 of the paper: the 15 databases behind the 482 structured features
+  const CATS = [['Genomic constraint', '--c1'], ['Phenotype & disease', '--c2'], ['Druggability', '--c3'], ['Network & function', '--c4']];
+  const FEAT = [[0, 'ExAC', 19, 'CNV, intolerance, gene size'], [0, 'Mouse Genes', 4, 'mouse essential gene orthologs'], [0, 'Genic Intol.', 6, 'RVIS and MTR scores'],
+    [0, 'gnomAD', 15, 'mutation constraint metrics'], [1, 'GWAS', 6, 'disease and trait alleles'], [1, 'MGI', 1, 'mouse–human phenotypes'], [1, 'OMIM', 1, 'curated disease associations'],
+    [2, 'Pharos', 8, 'target development levels'], [2, 'DGIdb', 1, 'gene–drug interaction types'], [2, 'CTDbase', 307, 'chemical–gene interactions'],
+    [3, 'Reactome', 2, 'pathways and processes'], [3, 'InWeb', 4, 'protein interaction network statistics'], [3, 'STRING', 10, 'functional associations'],
+    [3, 'InterPro', 97, 'protein families and domains'], [3, 'GTEx', 1, 'tissue expression']];
+  const dbStart = {}; { let s = 0; FEAT.forEach(f => { dbStart[f[1]] = s; s += f[2]; }); }
+  // Schematic statements for the example gene (no real gene): which feature cells they come from, the raw value, the statement
+  const CTD = [12, 31, 47, 66, 90, 118, 141, 170, 198, 233, 260, 291];
+  const STAT = [['Mouse Genes', [1], '1', 'essential in mouse'],
+    ['gnomAD', [3], 'pLI 0.99', 'highly loss-of-function intolerant (pLI = 0.99)'],
+    ['gnomAD', [8], 'o/e LoF 0.12', 'observed/expected loss-of-function ratio: 0.12'],
+    ['GWAS', [2], '3', 'variants linked to 3 traits in GWAS'],
+    ['DGIdb', [0], '9', '9 types of drug–gene interaction in DGIdb'],
+    ['CTDbase', CTD, '41 of 307 nonzero', 'interacts with 41 chemicals in CTD'],
+    ['InterPro', [40], '1', 'has a protein kinase domain']];
+  const TOOLS = [
+    { id: 'feat', c: '--s-feat', name: 'Structured Feature Reader', adds: 'rewrites the informative numbers as value-paired statements', cov: '482 features from 15 databases' },
+    { id: 'ncbi', c: '--s-ncbi', name: 'NCBI Gene', adds: 'gene summary: function and disease context', cov: 'nearly all genes' },
+    { id: 'uni', c: '--s-uni', name: 'UniProt', adds: 'curated function, subcellular location, tissue specificity', cov: '85% of genes' },
+    { id: 'pm', c: '--s-pm', name: 'PubMed', adds: 'recent abstracts: mechanism and therapy', cov: 'only when more literature is needed' },
+    { id: 'ot', c: '--s-ot', name: 'Open Targets', adds: 'tractability (small molecule, antibody, PROTAC) and safety', cov: '72% of genes' },
+    { id: 'fc', c: '--s-fc', name: 'Fact-checker', adds: 'removes sentences that give away the label, flags disagreements', cov: 'every profile' }];
+  const SEC = {
+    ncbi: [['Encodes a protein kinase that relays growth-factor signals.'], ['Reported in the cytoplasm.', 'conf'], ['Altered in several cancers.']],
+    uni: [['Function: phosphorylates adaptor proteins after ligand binding.'], ['Subcellular location: cell membrane, single-pass.', 'conf'], ['Tissue specificity: highest in epithelia.']],
+    pm: [['2023 abstract: knocking the gene down slowed tumour growth in mouse xenografts.'], ['2024 abstract: an FDA-approved inhibitor of this kinase extends survival.', 'leak']],
+    ot: [['Tractability: small molecule, yes (binding pocket); antibody, yes (extracellular domain); PROTAC, no data.'], ['Safety: no known liabilities listed.']] };
+  let ran = 0, running = -1, timer = null;
+  const opt = { uni: true, ot: true, pm: true, fc: true };
+  const toolState = i => {
+    if (i === running) return 'run';
+    if (i >= ran) return 'wait';
+    const t = TOOLS[i].id;
+    if (t === 'pm' && !opt.pm) return 'skip';
+    if (t === 'fc' && !opt.fc) return 'off';
+    return 'done';
+  };
+  $('tools').innerHTML = TOOLS.map((t, i) => `<li><button type="button" data-i="${i}" style="--sc:var(${t.c})">
+      <span class="tn">${i + 1}</span><span class="tt"><b>${t.name}</b><small>${t.adds}</small><em>${t.cov}</em></span><span class="st" aria-hidden="true"></span></button></li>`).join('');
+  const toolBtns = [...$('tools').querySelectorAll('button')];
+  const STATE_TXT = { wait: 'not run yet', run: 'running', done: 'done', skip: 'skipped', off: 'switched off' };
+  function renderTools() {
+    toolBtns.forEach((b, i) => { const s = toolState(i); b.dataset.state = s; b.setAttribute('aria-label', `Tool ${i + 1}, ${TOOLS[i].name}: ${STATE_TXT[s]}`); });
+    const nb = $('pNext');
+    nb.disabled = ran >= 6 || running >= 0;
+    nb.textContent = ran >= 6 ? 'All six tools have run' : `Run tool ${ran + 1}: ${TOOLS[ran].name}`;
+    $('pAll').disabled = ran >= 6 || running >= 0;
+  }
+  function drawStrip() {
+    const svg = $('strip'); if (!visible(svg)) return;
+    const W = fit(svg, 86), gap = 3, x0 = 0, cw = (W - gap * (FEAT.length - 1)) / 482;
+    const lit = new Map(); if (ran >= 1) STAT.forEach((s, si) => s[1].forEach(k => lit.set(dbStart[s[0]] + k, si)));
+    const r = rng32(7); let x = x0, idx = 0; const catSpan = CATS.map(() => [Infinity, -Infinity]);
+    FEAT.forEach(([c, name, n]) => {
+      const g = el('g', {}, svg); el('title', {}, g, `${name}: ${n} feature${n > 1 ? 's' : ''} (${FEAT.find(f => f[1] === name)[3]})`);
+      catSpan[c][0] = Math.min(catSpan[c][0], x);
+      for (let k = 0; k < n; k++, idx++) {
+        const on = lit.has(idx), v = r();
+        el('rect', { x: x + k * cw, y: 26, width: Math.max(cw, 0.6), height: 34, style: on ? 'fill:var(--ink)' : `fill:var(${CATS[c][1]});opacity:${(0.28 + 0.5 * v).toFixed(2)}` }, g);
+      }
+      x += n * cw; catSpan[c][1] = x; x += gap;
+    });
+    // category labels above, ticks below
+    CATS.forEach(([name, col], c) => { const [a, b] = catSpan[c], w = b - a;
+      el('rect', { x: a, y: 18, width: w, height: 3, rx: 1.5, style: `fill:var(${col})` }, svg);
+      const lab = w > 150 ? name : w > 70 ? name.split(' ')[0] : '';
+      if (lab) T(svg, a, 12, lab, { fs: 11.5, c: '--ink2', w: 700 }); });
+    if (ran >= 1) {   // numbered markers under the lit cells (one per statement), spread so they never overlap
+      const xs = STAT.map(s => { const k = dbStart[s[0]] + s[1][0], db = FEAT.findIndex(f => f[1] === s[0]); return k * cw + db * gap + cw / 2; });
+      const mk = xs.slice(); for (let i = 1; i < mk.length; i++) mk[i] = Math.max(mk[i], mk[i - 1] + 19);
+      const over = mk[mk.length - 1] - (W - 9); if (over > 0) for (let i = mk.length - 1; i >= 0; i--) { mk[i] -= over; if (i && mk[i] - mk[i - 1] >= 19) break; }
+      for (let i = mk.length - 2; i >= 0; i--) mk[i] = Math.min(mk[i], mk[i + 1] - 19);
+      for (let i = 0; i < mk.length; i++) mk[i] = Math.max(mk[i], 9 + 19 * i);
+      STAT.forEach((s, si) => {
+        el('path', { d: `M${xs[si]},60 L${xs[si]},63 L${mk[si]},68`, style: 'stroke:var(--ink);stroke-width:1;fill:none' }, svg);
+        el('circle', { cx: mk[si], cy: 77, r: 8, style: 'fill:var(--ink)' }, svg);
+        T(svg, mk[si], 81, String(si + 1), { fs: 10.5, c: '--panel', a: 'middle', w: 700 }); });
+    } else T(svg, 0, 80, '482 numbers for gene g, in 15 blocks', { fs: 12, c: '--mute' });
+  }
+  $('flegend').innerHTML = CATS.map(([name, col], c) => `<div><b><i style="background:var(${col})"></i>${name}</b>${FEAT.filter(f => f[0] === c).map(f => `${f[1]} ${f[2]}`).join(' · ')}</div>`).join('');
+  drawers.push(drawStrip);
+  function sentHTML(src) {
+    const fcOn = opt.fc && ran >= 6;
+    return SEC[src].map(([t, kind]) => {
+      let cls = 'sent', badge = '';
+      if (kind === 'leak' && ran >= 6) { cls += opt.fc ? ' leak removed' : ' leak live'; badge = opt.fc ? '<span class="badge bad">removed: gives away the label</span>' : '<span class="badge bad">label leak</span>'; }
+      if (kind === 'conf' && fcOn && opt.uni) { cls += ' conf flag'; badge = '<span class="badge warn">flagged: sources disagree</span>'; }
+      return `<span class="${cls}">${esc(t)}</span>${badge}`;
+    }).join(' ');
+  }
+  function renderProfile() {
+    const out = [];
+    const sec = (i, inner, sub) => `<section class="psec" style="--sc:var(${TOOLS[i].c})"><header><span class="stag">${TOOLS[i].name}</span><span>${sub}</span></header>${inner}</section>`;
+    if (ran >= 1) out.push(sec(0, `<ol class="stmts">${STAT.map((s, si) => `<li><span class="k">${si + 1}</span><span class="raw">${esc(s[0])}: ${esc(s[2])}</span><span class="tx">${esc(s[3])}</span></li>`).join('')}</ol>`, 'tool 1 · the informative numbers, rewritten'));
+    if (ran >= 2) out.push(sec(1, `<p>${sentHTML('ncbi')}</p>`, 'tool 2'));
+    if (ran >= 3) out.push(sec(2, opt.uni ? `<p>${sentHTML('uni')}</p>` : '<p class="none">No UniProt entry for this gene, as for 15% of genes. The profile goes on without it.</p>', 'tool 3'));
+    if (ran >= 4) out.push(sec(3, opt.pm ? `<p>${sentHTML('pm')}</p>` : '<p class="none">Not queried: the agent fetches abstracts only when it needs more literature.</p>', 'tool 4'));
+    if (ran >= 5) out.push(sec(4, opt.ot ? `<p>${sentHTML('ot')}</p>` : '<p class="none">No Open Targets tractability for this gene, as for 28% of genes.</p>', 'tool 5'));
+    const leak = opt.pm, conflict = opt.uni;
+    if (ran >= 6) {
+      const lines = !opt.fc ? ['Switched off: nothing is removed or flagged.'] : [
+        leak ? 'Removed 1 sentence that states the label (an approved drug).' : 'No sentence gives away the label.',
+        conflict ? 'Flagged 1 disagreement: NCBI Gene says cytoplasm, UniProt says cell membrane. Both stay in, marked for the reasoning step.' : 'No disagreements between sources.'];
+      out.push(sec(5, `<p>${lines.join(' ')}</p>`, 'tool 6'));
+    }
+    $('psecs').innerHTML = out.join('');
+    $('fcap').textContent = ran >= 1 ? 'Tool 1 keeps the informative entries and writes each with its meaning (the numbered cells).' : 'Before the agent runs, the gene is 482 numbers. To a language model a bare 0.99 means nothing.';
+    const done = $('pdone'); done.hidden = ran < 6;
+    if (ran >= 6) {
+      const n = STAT.length + 3 + (opt.uni ? 3 : 0) + (opt.pm ? 2 : 0) + (opt.ot ? 2 : 0) - (opt.fc && leak ? 1 : 0);
+      const srcs = 2 + (opt.uni ? 1 : 0) + (opt.pm ? 1 : 0) + (opt.ot ? 1 : 0);
+      const alarm = !opt.fc && leak;
+      done.className = 'pdone' + (alarm ? ' alarm' : '');
+      done.innerHTML = alarm ? '<b>Label leak.</b><span>The profile still says the gene has an approved drug. A model trained on it could read the answer off the profile instead of reasoning toward it.</span>'
+        : `<b>Profile ready: ${n} statements from ${srcs} sources${opt.fc && leak ? ', 1 removed' : ''}${opt.fc && conflict ? ', 1 flagged' : ''}.</b><span>Module 2 reads this text together with the task.</span>`;
+    }
+  }
+  function renderProf() { renderTools(); renderProfile(); drawStrip(); }
+  function runTo(target) {
+    if (running >= 0 || ran > target) return;
+    const stepOne = () => {
+      if (ran > target) { running = -1; renderProf(); return; }
+      running = ran; renderProf();
+      timer = setTimeout(() => { ran += 1; running = -1; renderProf(); if (ran <= target) timer = setTimeout(stepOne, reduce ? 0 : 160); }, reduce ? 0 : 520);
+    };
+    stepOne();
+  }
+  $('pNext').addEventListener('click', () => runTo(ran));
+  $('pAll').addEventListener('click', () => runTo(5));
+  $('pReset').addEventListener('click', () => { clearTimeout(timer); ran = 0; running = -1; renderProf(); });
+  $('tools').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) runTo(+b.dataset.i); });
+  [['oUni', 'uni'], ['oOT', 'ot'], ['oPM', 'pm'], ['oFC', 'fc']].forEach(([id, k]) => $(id).addEventListener('change', e => { opt[k] = e.target.checked; renderProf(); }));
+  renderProf();
+
+  // ============================================================ 2. guided reasoning (GRPO toy)
+  const VOCAB = ['disease association', 'essential gene', 'loss of function tolerance', 'loss of function constraint', 'observed expected lof ratio', 'rvis score',
+    'gwas associations', 'protein protein interactions', 'chemical gene interactions', 'drug interaction types', 'known antibodies', 'antibody', 'antibody availability',
+    'small molecule', 'tractable modalities', 'overall therapeutic potential', 'functional characterization', 'protein domains', 'protein length',
+    'expression tissue specificity', 'expression specificity', 'expression broadly expressed', 'alternative splicing'];
+  const GD = DATA.grpo, NG = GD.n, g = GD.g, ATT = GD.attrs, SIG = GD.sigma, ETA = GD.eta, NR = GD.G;
+  $('vocab').innerHTML = VOCAB.map(v => `<span class="chip${ATT.includes(v) ? ' on' : ''}">${v}</span>`).join('');
+  const isA = new Set(GD.labA), isB = new Set(GD.labB);
+  const dot = (w, x) => w.reduce((s, wi, i) => s + wi * x[i], 0);
+  const pA = GD.X.map(x => sig(dot(GD.wA, x) + GD.bA)), pB = GD.X.map(x => sig(dot(GD.wB, x) + GD.bB));
+  // sums over every gene but g, so that a new reading of g costs O(1) to score
+  let SA = 0, SAl = 0, SB = 0, SBl = 0;
+  for (let i = 0; i < NG; i++) if (i !== g) { SA += pA[i]; SB += pB[i]; if (isA.has(i)) SAl += pA[i]; if (isB.has(i)) SBl += pB[i]; }
+  const othersA = pA.filter((_, i) => i !== g).sort((a, b) => b - a), othersB = pB.filter((_, i) => i !== g).sort((a, b) => b - a);
+  const rankIn = (sorted, p) => { let lo = 0, hi = sorted.length; while (lo < hi) { const m = (lo + hi) >> 1; if (sorted[m] > p) lo = m + 1; else hi = m; } return lo + 1; };
+  const knownRanksA = GD.labA.filter(i => i !== g).map(i => rankIn(othersA, pA[i])), knownRanksB = GD.labB.map(i => rankIn(othersB, pB[i]));
+  function evalReading(a) {
+    const x = [GD.X[g][0], GD.X[g][1], a[0], a[1], a[2]];
+    const ga = sig(dot(GD.wA, x) + GD.bA), gb = sig(dot(GD.wB, x) + GD.bB);
+    const fA = Math.pow((SAl + (isA.has(g) ? ga : 0)) / GD.labA.length, 2) / ((SA + ga) / NG);
+    const fB = Math.pow((SBl + (isB.has(g) ? gb : 0)) / GD.labB.length, 2) / ((SB + gb) / NG);
+    return { ga, gb, fA, fB, r: (fA + fB) / 2, rkA: rankIn(othersA, ga), rkB: rankIn(othersB, gb) };
+  }
+  const a0 = GD.X[g].slice(2), mu0 = a0.map(logit), base = evalReading(a0);
+  let mu = mu0.slice(), gstep = 0, stage = 0, rolls = [], hist = [], gr = rng32(2026), training = false;
+  const PH = [['an extracellular domain antibodies can reach', 'antibody access is unclear', 'no epitope antibodies could reach'],
+    ['a pocket a small molecule could bind', 'pocket evidence is weak', 'no druggable pocket'],
+    ['strong disease association', 'some disease evidence', 'little disease evidence']];
+  const phrase = (j, v) => PH[j][v >= 0.66 ? 0 : v >= 0.4 ? 1 : 2];
+  const chain = a => `“Reads the profile: ${phrase(0, a[0])}; ${phrase(1, a[1])}; ${phrase(2, a[2])}.”`;
+  function sample() {
+    rolls = Array.from({ length: NR }, () => { const a = mu.map(m => clamp(Math.round(sig(m + SIG * gauss(gr)) * 100) / 100, 0.01, 0.99)); return { a }; });
+    score();
+  }
+  function score() {
+    rolls.forEach(R => Object.assign(R, evalReading(R.a)));
+    const rs = rolls.map(R => R.r), m = mean(rs), sd = Math.sqrt(mean(rs.map(r => (r - m) ** 2)));
+    rolls.forEach(R => { R.adv = (R.r - m) / (sd + 1e-8); });
+  }
+  function update() {
+    const lam = +$('gKL').value;
+    const grad = mu.map((m, j) => mean(rolls.map(R => R.adv * (logit(R.a[j]) - m) / (SIG * SIG))));
+    mu = mu.map((m, j) => m + ETA * grad[j] - ETA * lam * (m - mu0[j]));
+    gstep += 1; hist.push({ r: mean(rolls.map(R => R.r)), a: mu.map(sig) });
+  }
+  const CAPS = [
+    'Press Next stage. The policy has not yet sampled anything for gene g; the dashed curves show how it reads the gene before GRPO.',
+    'Sample: the policy writes 4 rollouts for gene g (the paper samples at temperature 0.8). Each is a rationale plus 23 attribute scores; the toy shows three. Drag any score to write your own rollout.',
+    'Swap: each rollout’s scores replace row g of the attribute matrix. The result is 4 matrices that differ in one row.',
+    'Score: frozen proxy scorers, fitted once before GRPO, re-score all 600 genes in each matrix. Only gene g’s score changes, and with it g’s place in each task’s ranking.',
+    'Reward: Adjusted F1 per task, averaged over the tasks (Eq. 1). Gene g is a known target in task A, so ranking it higher helps there; in task B it is unlabeled, so ranking it higher costs a little.',
+    'Advantage: subtract the group’s mean reward and divide by its spread (Eq. 12). Rollouts that beat their group get a positive advantage.',
+    'Update: rollouts with positive advantage become more likely and the others less likely; the KL term pulls the policy back toward where it started. Press Next stage to sample again.'];
+  function renderStages() {
+    document.querySelectorAll('#stages li').forEach((li, i) => { li.className = i + 1 === stage ? 'now' : i + 1 < stage ? 'done' : ''; });
+    $('gCap').textContent = CAPS[stage];
+    $('gStep').textContent = gstep;
+    $('gNext').disabled = training; $('gStepBtn').disabled = training; $('gReset').disabled = training;
+    $('gTrain').textContent = training ? 'Stop' : 'Train 30 steps';
+  }
+  function buildRolls() {
+    $('rolls').innerHTML = Array.from({ length: NR }, (_, k) => `<div class="roll" style="--rc:var(--r${k + 1})" data-k="${k}">
+      <div class="rh"><b>Rollout ${k + 1}</b><span class="mute" data-f="adv"></span></div>
+      <p class="chain" data-f="chain"></p>
+      ${ATT.map((a, j) => `<label class="sl"><span>${a}</span><input type="range" min="1" max="99" step="1" data-j="${j}" aria-label="Rollout ${k + 1}: ${a} score"><output data-f="v${j}"></output></label>`).join('')}
+      <div class="rs"><div data-f="sA"></div><div data-f="sB"></div><div class="rw" data-f="rw"></div><div class="advbar"><span data-f="ab"></span></div></div></div>`).join('');
+    $('rolls').addEventListener('input', e => {
+      const t = e.target; if (!t.matches('input[type="range"]')) return;
+      const k = +t.closest('.roll').dataset.k, j = +t.dataset.j;
+      if (!rolls.length || stage < 1 || stage > 5) return;
+      rolls[k].a[j] = +t.value / 100; score(); renderRolls(); drawPolicy(); drawFlow();
+    });
+  }
+  function renderRolls() {
+    document.querySelectorAll('.roll').forEach((card, k) => {
+      const R = rolls[k], f = name => card.querySelector(`[data-f="${name}"]`);
+      const has = R && stage >= 1;
+      card.querySelectorAll('input').forEach((inp, j) => { inp.disabled = !has || stage > 5 || training; inp.value = has ? Math.round(R.a[j] * 100) : 50; });
+      ATT.forEach((_, j) => { f('v' + j).textContent = has ? R.a[j].toFixed(2) : '–'; });
+      f('chain').textContent = has ? chain(R.a) : 'not sampled yet';
+      f('sA').innerHTML = has && stage >= 3 ? `task A: g scores <b>${R.ga.toFixed(2)}</b>, rank <b>${R.rkA}</b>` : 'task A: –';
+      f('sB').innerHTML = has && stage >= 3 ? `task B: g scores <b>${R.gb.toFixed(2)}</b>, rank <b>${R.rkB}</b>` : 'task B: –';
+      f('rw').innerHTML = has && stage >= 4 ? `r = ½(${R.fA.toFixed(3)} + ${R.fB.toFixed(3)}) = <b>${R.r.toFixed(4)}</b>` : 'reward: –';
+      f('adv').textContent = has && stage >= 5 ? `advantage ${num(R.adv, 2)}` : '';
+      const bar = f('ab'), v = has && stage >= 5 ? clamp(R.adv, -2, 2) / 2 : 0;
+      bar.style.left = (50 + Math.min(0, v) * 50) + '%'; bar.style.width = Math.abs(v) * 50 + '%';
+      bar.style.background = v >= 0 ? 'var(--known)' : 'var(--bad)';
+    });
+  }
+  function drawPolicy() {
+    const svg = $('polSvg'); if (!visible(svg)) return;
+    const rowH = 76, W = fit(svg, rowH * 3 + 26), L = 8, Rr = W - 10;
+    const X = v => L + (Rr - L) * v;
+    const pdf = (a, m) => Math.exp(-((logit(a) - m) ** 2) / (2 * SIG * SIG)) / (a * (1 - a));
+    ATT.forEach((name, j) => {
+      const y0 = j * rowH + 18, yb = y0 + 44;
+      const cur = sig(mu[j]);
+      T(svg, L, y0 - 2, name, { fs: 12.5, c: '--ink', w: 700 });
+      T(svg, Rr, y0 - 2, `${a0[j].toFixed(2)} → ${cur.toFixed(2)}`, { fs: 12, c: '--ink2', a: 'end' });
+      const xs = Array.from({ length: 121 }, (_, i) => 0.004 + 0.992 * i / 120);
+      const mx = Math.max(...xs.map(a => pdf(a, mu[j])), ...xs.map(a => pdf(a, mu0[j])));
+      const path = m => xs.map((a, i) => `${i ? 'L' : 'M'}${X(a).toFixed(1)},${(yb - 36 * pdf(a, m) / mx).toFixed(1)}`).join('');
+      el('path', { d: path(mu[j]) + `L${X(xs[120])},${yb}L${X(xs[0])},${yb}Z`, style: 'fill:var(--accent);opacity:.16' }, svg);
+      el('path', { d: path(mu[j]), style: 'fill:none;stroke:var(--accent);stroke-width:1.8' }, svg);
+      el('path', { d: path(mu0[j]), style: 'fill:none;stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 3' }, svg);
+      el('line', { x1: L, x2: Rr, y1: yb, y2: yb, style: 'stroke:var(--line);stroke-width:1' }, svg);
+      [0, 0.5, 1].forEach(v => T(svg, X(v), yb + 13, String(v), { fs: 10.5, c: '--mute', a: v === 0 ? 'start' : v === 1 ? 'end' : 'middle' }));
+      if (rolls.length && stage >= 1) rolls.forEach((R, k) => {
+        el('circle', { cx: X(R.a[j]), cy: yb - 4 - (k % 2) * 9, r: 5.5, style: `fill:var(--r${k + 1});stroke:var(--panel);stroke-width:1.2` }, svg);
+        T(svg, X(R.a[j]), yb - 1 - (k % 2) * 9, String(k + 1), { fs: 8.5, c: '--panel', a: 'middle', w: 700 });
+      });
+    });
+  }
+  function drawFlow() {
+    const svg = $('flowSvg'); if (!visible(svg)) return;
+    const wide = svg.parentNode.getBoundingClientRect().width >= 700;
+    const H = wide ? 204 : 420, W = fit(svg, H);
+    const show2 = rolls.length && stage >= 2, show3 = rolls.length && stage >= 3;
+    // four stacked copies of the matrix
+    const mW = wide ? 196 : Math.min(250, W - 70), rows = ['gene 1', 'gene 2', '⋮', 'gene g', '⋮', 'gene 600'], cell = (mW - 64) / 3, rh = 19;
+    const mx0 = 4, my0 = 18;
+    T(svg, mx0, 11, 'attribute matrix, 600 × 23 (3 shown)', { fs: 11.5, c: '--mute' });
+    for (let k = NR - 1; k >= 0; k--) {
+      const ox = mx0 + k * 12, oy = my0 + k * 9, gp = el('g', { class: show2 ? '' : (k ? 'dim' : '') }, svg);
+      el('rect', { x: ox, y: oy, width: mW, height: rows.length * rh + 6, rx: 6, style: `fill:var(--panel);stroke:${show2 ? `var(--r${k + 1})` : 'var(--line)'};stroke-width:1.2` }, gp);
+      if (k === 0 || !show2) {
+        rows.forEach((nm, i) => {
+          const y = oy + 4 + i * rh, isg = nm === 'gene g';
+          T(gp, ox + 8, y + 14, nm, { fs: 11, c: isg ? '--ink' : '--mute', w: isg ? 700 : 400 });
+          if (nm === '⋮') return;
+          for (let j = 0; j < 3; j++) {
+            const v = isg ? (show2 ? rolls[0].a[j] : a0[j]) : [0.32, 0.58, 0.21, 0, 0.44, 0.27][i] + j * 0.08;
+            el('rect', { x: ox + 58 + j * cell, y: y + 2, width: cell - 4, height: rh - 4, rx: 3, style: `fill:${isg && show2 ? 'var(--r1)' : 'var(--accent)'};opacity:${(0.15 + 0.75 * v).toFixed(2)}` }, gp);
+            if (isg) T(gp, ox + 58 + j * cell + (cell - 4) / 2, y + 14, (show2 ? rolls[0].a[j] : a0[j]).toFixed(2), { fs: 10, c: '--ink', a: 'middle', w: 700 });
+          }
+        });
+      } else {
+        const y = oy + 4 + 3 * rh;
+        el('rect', { x: ox + 58, y: y + 2, width: mW - 64, height: rh - 4, rx: 3, style: `fill:var(--r${k + 1});opacity:.55` }, gp);
+      }
+    }
+    // frozen scorer box
+    const sx = wide ? mx0 + mW + 3 * 12 + 26 : 4, sy = wide ? 52 : my0 + rows.length * rh + 6 + 3 * 9 + 20, sw = wide ? 112 : W - 8, shh = wide ? 70 : 40;
+    const sg = el('g', { class: show3 ? '' : 'dim' }, svg);
+    el('rect', { x: sx, y: sy, width: sw, height: shh, rx: 8, style: 'fill:var(--soft);stroke:var(--mute);stroke-width:1.2;stroke-dasharray:5 3' }, sg);
+    const lx = wide ? sx + sw / 2 : sx + 18, ly = wide ? sy + 20 : sy + shh / 2;   // lock icon
+    el('rect', { x: lx - 6, y: ly - 3, width: 12, height: 9, rx: 2, style: 'fill:var(--ink2)' }, sg);
+    el('path', { d: `M${lx - 3.8},${ly - 3} v-3 a3.8,3.8 0 0 1 7.6,0 v3`, style: 'fill:none;stroke:var(--ink2);stroke-width:1.8' }, sg);
+    if (wide) { T(sg, sx + sw / 2, sy + 44, 'frozen scorers', { fs: 12, c: '--ink', a: 'middle', w: 700 }); T(sg, sx + sw / 2, sy + 60, 'task A · task B', { fs: 11, c: '--mute', a: 'middle' }); }
+    else T(sg, sx + 34, sy + 25, 'frozen scorers for tasks A and B', { fs: 12, c: '--ink' });
+    if (wide) el('path', { d: `M${sx - 22},${sy + shh / 2}h16`, style: 'stroke:var(--mute);stroke-width:1.4;fill:none' }, svg);
+    // ranking strips (log scale on rank)
+    const rx0 = wide ? sx + sw + 34 : 30, rx1 = W - 12, ry = wide ? [66, 150] : [sy + shh + 60, sy + shh + 142];
+    if (wide) el('path', { d: `M${sx + sw + 6},${sy + shh / 2}h16`, style: 'stroke:var(--mute);stroke-width:1.4;fill:none' }, svg);
+    const RX = r => rx0 + (rx1 - rx0) * Math.log(r) / Math.log(NG);
+    [['task A', knownRanksA, 'rkA', base.rkA], ['task B', knownRanksB, 'rkB', base.rkB]].forEach(([name, kr, key, r0], t) => {
+      const y = ry[t], gp = el('g', { class: show3 ? '' : 'dim' }, svg);
+      T(gp, rx0, y - 44, `${name}: rank of every gene (1 = top)`, { fs: 11.5, c: '--ink2', w: 700 });
+      el('line', { x1: rx0, x2: rx1, y1: y, y2: y, style: 'stroke:var(--line);stroke-width:2' }, gp);
+      kr.forEach(r => el('line', { x1: RX(r), x2: RX(r), y1: y - 5, y2: y + 5, style: 'stroke:var(--known);stroke-width:1.2;opacity:.75' }, gp));
+      [1, 10, 100, 600].forEach(v => T(gp, RX(v), y + 18, String(v), { fs: 10.5, c: '--mute', a: v === 1 ? 'start' : v === 600 ? 'end' : 'middle' }));
+      el('path', { d: `M${RX(r0)},${y - 15} l5,5 l-5,5 l-5,-5 z`, style: 'fill:none;stroke:var(--ink2);stroke-width:1.4' }, gp);
+      if (show3) {
+        const placed = [];
+        rolls.forEach((R, k) => { const x = RX(R[key]); let lvl = 0; while (lvl < 2 && placed.some(p => p.l === lvl && Math.abs(p.x - x) < 13)) lvl++; placed.push({ x, l: lvl });
+          const cy = y - 13 - lvl * 13;
+          el('circle', { cx: x, cy, r: 6, style: `fill:var(--r${k + 1});stroke:var(--panel);stroke-width:1.2` }, gp);
+          T(gp, x, cy + 3.5, String(k + 1), { fs: 9, c: '--panel', a: 'middle', w: 700 }); });
+      }
+    });
+    const ly2 = ry[1] + 34;
+    el('line', { x1: rx0, x2: rx0 + 10, y1: ly2 - 4, y2: ly2 - 4, style: 'stroke:var(--known);stroke-width:2' }, svg);
+    T(svg, rx0 + 14, ly2, 'known targets', { fs: 11, c: '--mute' });
+    el('path', { d: `M${rx0 + 110},${ly2 - 9} l5,5 l-5,5 l-5,-5 z`, style: 'fill:none;stroke:var(--ink2);stroke-width:1.3' }, svg);
+    T(svg, rx0 + 120, ly2, 'gene g before GRPO', { fs: 11, c: '--mute' });
+  }
+  function drawCharts() {
+    const s1 = $('rwSvg'), s2 = $('rdSvg'); if (!visible(s1)) return;
+    const H = 170;
+    [[s1, 'r'], [s2, 'a']].forEach(([svg, kind]) => {
+      const W = fit(svg, H), L = 46, R = W - (kind === 'a' ? 92 : 12), top = 10, bot = H - 26;
+      const N = Math.max(10, hist.length), X = i => L + (R - L) * i / N;
+      let lo, hi;
+      if (kind === 'r') { const v = [base.r, ...hist.map(h => h.r)]; lo = Math.min(...v); hi = Math.max(...v); const pad = Math.max(0.004, (hi - lo) * 0.15); lo -= pad; hi += pad; }
+      else { lo = 0; hi = 1; }
+      const Y = v => bot - (bot - top) * (v - lo) / (hi - lo);
+      const ticks = kind === 'a' ? [0, 0.5, 1] : [lo, (lo + hi) / 2, hi];
+      ticks.forEach(v => { el('line', { x1: L, x2: R, y1: Y(v), y2: Y(v), style: 'stroke:var(--line2);stroke-width:1' }, svg);
+        T(svg, L - 6, Y(v) + 4, kind === 'a' ? String(v) : v.toFixed(3), { fs: 10.5, c: '--mute', a: 'end' }); });
+      el('line', { x1: L, x2: R, y1: bot, y2: bot, style: 'stroke:var(--line);stroke-width:1' }, svg);
+      T(svg, L, H - 6, 'step 0', { fs: 10.5, c: '--mute' }); T(svg, R, H - 6, `step ${N}`, { fs: 10.5, c: '--mute', a: 'end' });
+      if (kind === 'r') {
+        el('line', { x1: L, x2: R, y1: Y(base.r), y2: Y(base.r), style: 'stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 3' }, svg);
+        T(svg, R, Y(base.r) - 5, 'reading before GRPO', { fs: 10.5, c: '--mute', a: 'end' });
+        if (hist.length) {
+          el('path', { d: hist.map((h, i) => `${i ? 'L' : 'M'}${X(i + 1).toFixed(1)},${Y(h.r).toFixed(1)}`).join(''), style: 'fill:none;stroke:var(--accent);stroke-width:1.8' }, svg);
+          hist.forEach((h, i) => el('circle', { cx: X(i + 1), cy: Y(h.r), r: 2.6, style: 'fill:var(--accent)' }, svg));
+        } else T(svg, (L + R) / 2, top + 22, 'no steps yet', { fs: 12, c: '--mute', a: 'middle' });
+      } else {
+        const ends = [];
+        ATT.forEach((name, j) => {
+          const pts = [a0[j], ...hist.map(h => h.a[j])];
+          el('path', { d: pts.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(''), style: `fill:none;stroke:var(--ink2);stroke-width:1.6;stroke-dasharray:${['', '5 3', '1.5 3'][j]}` }, svg);
+          ends.push({ y: Y(pts[pts.length - 1]), name, x: X(pts.length - 1) });
+        });
+        ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 13);
+        ends.forEach(e => T(svg, R + 6, e.y + 4, e.name === 'disease association' ? 'disease' : e.name, { fs: 11, c: '--ink2' }));
+      }
+    });
+  }
+  function drawGrpo() { drawPolicy(); drawFlow(); drawCharts(); }
+  drawers.push(drawGrpo);
+  function renderGrpo() { renderStages(); renderRolls(); drawGrpo(); }
+  function nextStage() {
+    if (stage === 0 || stage === 6) { sample(); stage = 1; }
+    else if (stage === 5) { update(); stage = 6; }
+    else stage += 1;
+    renderGrpo();
+  }
+  function wholeStep() { if (stage === 0 || stage === 6) sample(); update(); stage = 6; }
+  $('gNext').addEventListener('click', nextStage);
+  $('gStepBtn').addEventListener('click', () => { wholeStep(); renderGrpo(); });
+  let trainTimer = null;
+  $('gTrain').addEventListener('click', () => {
+    if (training) { training = false; clearTimeout(trainTimer); renderGrpo(); return; }
+    training = true; let left = 30;
+    const tick = () => { if (!training) return; wholeStep(); left -= 1; if (left <= 0) training = false; renderGrpo(); if (training) trainTimer = setTimeout(tick, reduce ? 0 : 140); };
+    tick();
+  });
+  $('gReset').addEventListener('click', () => { mu = mu0.slice(); gstep = 0; stage = 0; rolls = []; hist = []; gr = rng32(2026); renderGrpo(); });
+  $('gKL').addEventListener('input', e => { $('gKLo').textContent = (+e.target.value).toFixed(2); });
+  buildRolls(); renderGrpo();
+  // paper: attribute extraction ablation (Table 7c)
+  const hbars = (node, rows, on, max) => { node.innerHTML = rows.map(([name, v], i) => `<div class="hbar${i === on ? ' on' : ''}"><span>${name}</span><div class="tk"><span style="width:${(100 * (v - max[0]) / (max[1] - max[0])).toFixed(1)}%"></span></div><b>${v.toFixed(1)}</b></div>`).join(''); };
+  $('attrAbl').insertAdjacentHTML('beforebegin', '<p>Which attributes the scorer gets, macro Adjusted F1 over 15 tasks (Table 7c):</p>');
+  hbars($('attrAbl'), [['12 fixed attributes, prompted', 10.2], ['agent’s 23, no GRPO', 10.5], ['agent’s 23 + GRPO', 11.1]], 2, [8.5, 11.5]);
+
+  // ============================================================ 3A. gated fusion
+  const FU = DATA.fuse, MODS = [['bio', '--m-bio', 'structured, from 482 features'], ['attr', '--m-attr', 'attributes, from 23 scores'], ['emb', '--m-emb', 'rationale, from 256 numbers']];
+  let alpha = [1 / 3, 1 / 3, 1 / 3], fop = 'gated';
+  const views = { bio: true, attr: true, emb: true };
+  const OPS = [['gated', 'Gated', 11.1, 'Gated (TargetSage): the gate reads this gene’s three projected vectors and outputs its own mix. Drag the point: each gene lands somewhere different.'],
+    ['sum', 'Summation', 10.7, 'Summation: the same equal mix for every gene, whatever its views say.'],
+    ['concat', 'Concatenation', 10.7, 'Concatenation: no mixing weights. One learned linear map reads all three vectors side by side, the same map for every gene.'],
+    ['attn', 'Attention', 9.7, 'Attention: one learned query vector scores each view on its own, then the scores are normalized. The weights vary by gene too.']];
+  $('fOps').innerHTML = OPS.map(([k, name]) => `<label><input type="radio" name="fop" value="${k}"${k === fop ? ' checked' : ''}><span>${name}</span></label>`).join('');
+  $('fViews').innerHTML = MODS.map(([k, , d]) => `<label><input type="checkbox" value="${k}" checked><span>${k === 'bio' ? 'Bio' : k === 'attr' ? 'Explicit' : 'Implicit'}</span></label>`).join('');
+  const VIEWF1 = { 'bio': 10.7, 'attr': 10.8, 'emb': 10.7, 'bio+attr': 10.8, 'bio+emb': 10.9, 'attr+emb': 10.9, 'bio+attr+emb': 11.1 };
+  const VNAME = { 'bio': 'Bio only', 'attr': 'Explicit only', 'emb': 'Implicit only', 'bio+attr': 'Bio + Explicit', 'bio+emb': 'Bio + Implicit', 'attr+emb': 'Explicit + Implicit', 'bio+attr+emb': 'all three' };
+  function normAlpha() {
+    const on = MODS.map(([k]) => views[k]);
+    if (fop === 'sum' || fop === 'concat') { const c = on.filter(Boolean).length; alpha = on.map(o => o ? 1 / c : 0); return; }
+    let a = alpha.map((v, i) => on[i] ? Math.max(0, v) : 0); const s = a.reduce((x, y) => x + y, 0);
+    alpha = s > 1e-9 ? a.map(v => v / s) : on.map(o => o ? 1 / on.filter(Boolean).length : 0);
+  }
+  function drawFuse() {
+    const svg = $('fuseSvg'); if (!visible(svg)) return;
+    const rowH = 64, H = rowH * 4 + 14, W = fit(svg, H), L = 4, R = W - 4, d = 16, bw = (R - L) / d;
+    const keys = ['bio', 'attr', 'emb'];
+    keys.forEach((k, m) => {
+      const y0 = m * rowH, on = views[k];
+      const gp = el('g', { class: on ? '' : 'dim' }, svg);
+      T(gp, L, y0 + 13, `h`, { fs: 13, c: '--ink', w: 700, attrs: { 'font-style': 'italic', 'font-family': 'Tinos, serif' } });
+      T(gp, L + 9, y0 + 8, k, { fs: 9.5, c: '--ink' });
+      T(gp, L + 30, y0 + 13, MODS[m][2] + (fop !== 'concat' && on ? ` · weight ${alpha[m].toFixed(2)}` : ''), { fs: 11.5, c: '--ink2' });
+      FU[k].forEach((v, i) => el('rect', { x: L + i * bw + 1, y: y0 + 18 + 38 * (1 - v), width: bw - 2, height: 38 * v, rx: 1.5, style: `fill:var(${MODS[m][1]})` }, gp));
+      el('line', { x1: L, x2: R, y1: y0 + 56, y2: y0 + 56, style: 'stroke:var(--line);stroke-width:1' }, gp);
+    });
+    const y0 = 3 * rowH + 6;
+    if (fop === 'concat') {
+      T(svg, L, y0 + 13, 'the three vectors side by side, read by one learned linear map', { fs: 11.5, c: '--ink' });
+      const bw3 = (R - L) / (3 * d);
+      keys.forEach((k, m) => FU[k].forEach((v, i) => views[k] && el('rect', { x: L + (m * d + i) * bw3 + 0.5, y: y0 + 18 + 38 * (1 - v), width: Math.max(1, bw3 - 1), height: 38 * v, style: `fill:var(${MODS[m][1]})` }, svg)));
+    } else {
+      T(svg, L, y0 + 13, 'h', { fs: 13, c: '--ink', w: 700, attrs: { 'font-style': 'italic', 'font-family': 'Tinos, serif' } });
+      T(svg, L + 9, y0 + 8, 'fuse', { fs: 9.5, c: '--ink' });
+      T(svg, L + 36, y0 + 13, '= Σ weight × h, stacked by view', { fs: 11.5, c: '--ink2' });
+      for (let i = 0; i < d; i++) { let acc = 0;
+        keys.forEach((k, m) => { const v = alpha[m] * FU[k][i]; if (v <= 0) return;
+          el('rect', { x: L + i * bw + 1, y: y0 + 56 - 38 * (acc + v), width: bw - 2, height: 38 * v, style: `fill:var(${MODS[m][1]})` }, svg); acc += v; }); }
+    }
+    el('line', { x1: L, x2: R, y1: y0 + 56, y2: y0 + 56, style: 'stroke:var(--line);stroke-width:1' }, svg);
+  }
+  const TRI = { W: 0, P: [] };
+  function drawTri() {
+    const svg = $('triSvg'); if (!visible(svg)) return;
+    const bw = Math.max(260, Math.floor(svg.parentNode.getBoundingClientRect().width)), side = Math.min(bw - 90, 230), h = side * Math.sqrt(3) / 2, top = 22;
+    const W = fit(svg, Math.round(top + h + 30)), cx = W / 2;
+    const P = [[cx, top], [cx - side / 2, top + h], [cx + side / 2, top + h]]; TRI.P = P;
+    const live = fop === 'gated' || fop === 'attn';
+    el('path', { d: `M${P[0]}L${P[1]}L${P[2]}Z`, style: `fill:var(--soft);stroke:var(--line);stroke-width:1.5;opacity:${fop === 'concat' ? 0.4 : 1}` }, svg);
+    ['bio', 'attr', 'emb'].forEach((k, m) => { const [x, y] = P[m];
+      el('circle', { cx: x, cy: y, r: 5, style: `fill:var(${MODS[m][1]});opacity:${views[k] ? 1 : 0.3}` }, svg);
+      T(svg, x + (m === 0 ? 0 : m === 1 ? -8 : 8), y + (m === 0 ? -9 : 18), k === 'bio' ? 'bio 1.0' : k === 'attr' ? 'attr 1.0' : 'emb 1.0', { fs: 11, c: '--ink2', a: m === 0 ? 'middle' : m === 1 ? 'end' : 'start' }); });
+    if (fop !== 'concat') {
+      const x = alpha[0] * P[0][0] + alpha[1] * P[1][0] + alpha[2] * P[2][0], y = alpha[0] * P[0][1] + alpha[1] * P[1][1] + alpha[2] * P[2][1];
+      el('circle', { cx: x, cy: y, r: live ? 10 : 8, style: `fill:var(--ink);stroke:var(--panel);stroke-width:2;cursor:${live ? 'grab' : 'default'}` }, svg);
+    } else T(svg, cx, top + h * 0.62, 'no weights', { fs: 12, c: '--mute', a: 'middle' });
+    svg.setAttribute('aria-valuetext', fop === 'concat' ? 'no weights' : `bio ${alpha[0].toFixed(2)}, attr ${alpha[1].toFixed(2)}, emb ${alpha[2].toFixed(2)}`);
+  }
+  function triPick(ev) {
+    if (!(fop === 'gated' || fop === 'attn')) return;
+    const svg = $('triSvg'), r = svg.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top, [A, B, C] = TRI.P;
+    const det = (B[1] - C[1]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[1] - C[1]);
+    const l1 = ((B[1] - C[1]) * (x - C[0]) + (C[0] - B[0]) * (y - C[1])) / det, l2 = ((C[1] - A[1]) * (x - C[0]) + (A[0] - C[0]) * (y - C[1])) / det;
+    alpha = [l1, l2, 1 - l1 - l2]; normAlpha(); drawTri(); drawFuse();
+  }
+  { const svg = $('triSvg'); let drag = false;
+    svg.addEventListener('pointerdown', e => { drag = true; svg.setPointerCapture(e.pointerId); triPick(e); });
+    svg.addEventListener('pointermove', e => { if (drag) triPick(e); });
+    ['pointerup', 'pointercancel'].forEach(t => svg.addEventListener(t, () => { drag = false; }));
+    svg.addEventListener('keydown', e => {
+      if (!(fop === 'gated' || fop === 'attn')) return;
+      const m = { ArrowUp: 0, ArrowLeft: 1, ArrowRight: 2 }[e.key]; if (m === undefined && e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      if (e.key === 'ArrowDown') { alpha = alpha.map((v, i) => i === 0 ? v - 0.05 : v + 0.025); } else alpha = alpha.map((v, i) => i === m ? v + 0.05 : v - 0.025);
+      normAlpha(); drawTri(); drawFuse(); }); }
+  function renderFuseText() {
+    $('fOpNote').textContent = OPS.find(o => o[0] === fop)[3];
+    hbars($('fOpBars'), OPS.map(o => [o[1], o[2]]), OPS.findIndex(o => o[0] === fop), [8.5, 11.5]);
+    const key = ['bio', 'attr', 'emb'].filter(k => views[k]).join('+'), order = Object.keys(VIEWF1);
+    hbars($('fViewBars'), order.map(k => [VNAME[k], VIEWF1[k]]), order.indexOf(key), [8.5, 11.5]);
+  }
+  $('fOps').addEventListener('change', e => { fop = e.target.value; normAlpha(); renderFuseText(); drawTri(); drawFuse(); });
+  $('fViews').addEventListener('change', e => {
+    const k = e.target.value; views[k] = e.target.checked;
+    if (!Object.values(views).some(Boolean)) { views[k] = true; e.target.checked = true; }
+    normAlpha(); renderFuseText(); drawTri(); drawFuse(); });
+  drawers.push(() => { drawFuse(); drawTri(); });
+  renderFuseText();
+
+  // ============================================================ 3B. class prior
+  const N = 19032;
+  const TASKS = [['PHAROS', [['Clinical Targets', 700], ['Clinical & Chemical', 2562]]],
+    ['Druggability triage', [['Top-Tier Targets', 1399], ['High-Confidence', 2048]]],
+    ['Cancer druggability', [['Cancer-Relevant', 319], ['Type-Specific', 297], ['Pan-Cancer', 195], ['T1 Cancer', 156], ['T1–T2 Cancer', 620], ['T1–T3 Cancer', 1066]]],
+    ['Drug modality', [['Small-Molecule (Approved)', 777], ['Small-Molecule (Clinical+)', 1103], ['Antibody (Approved)', 69], ['Antibody (Clinical+)', 279], ['PROTAC', 269]]]];
+  const TL = []; $('bTask').innerHTML = TASKS.map(([cat, ts]) => `<optgroup label="${cat}">${ts.map(([name, p]) => { TL.push([name, p]); return `<option value="${TL.length - 1}">${name} (|P| = ${grp(p)})</option>`; }).join('')}</optgroup>`).join('');
+  let asked = null, askCount = 0;
+  const offRound = v => { let x = Math.round(v * 100) / 100; if (Math.abs(x * 10 - Math.round(x * 10)) < 1e-9) x += x >= 3.4 ? -0.03 : 0.03; return clamp(Math.round(x * 100) / 100, 1, 3.5); };
+  function ask() {
+    const t = +$('bTask').value, r = rng32(1000 + 37 * t + 7919 * askCount++);
+    const c = 1.35 + 1.2 * r();
+    asked = Array.from({ length: 10 }, () => { const med = offRound(clamp(c + 0.24 * gauss(r), 1.02, 3.45));
+      return [offRound(Math.max(1, med - 0.12 - 0.4 * r())), med, offRound(Math.min(3.5, med + 0.15 + 0.55 * r()))]; });
+    const meds = asked.map(a => a[1]).sort((a, b) => a - b);
+    $('bM').value = ((meds[4] + meds[5]) / 2).toFixed(2);
+    renderPrior();
+  }
+  function drawLLM() {
+    const svg = $('llmSvg'); if (!visible(svg)) return;
+    const rows = asked ? 10 : 0, H = asked ? 26 + rows * 15 + 22 : 46, W = fit(svg, H), L = 54, R = W - 10, X = v => L + (R - L) * (v - 1) / 2.5;
+    [1, 1.5, 2, 2.5, 3, 3.5].forEach(v => { el('line', { x1: X(v), x2: X(v), y1: 12, y2: H - 18, style: 'stroke:var(--line2);stroke-width:1' }, svg);
+      T(svg, X(v), H - 4, v.toFixed(1), { fs: 10.5, c: '--mute', a: 'middle' }); });
+    if (!asked) { T(svg, L, 30, 'no answers yet: press “Ask 10 times”, or set m* by hand', { fs: 12, c: '--mute' }); return; }
+    asked.forEach(([a, m, b], i) => { const y = 18 + i * 15;
+      T(svg, L - 8, y + 4, `run ${i + 1}`, { fs: 10.5, c: '--mute', a: 'end' });
+      el('line', { x1: X(a), x2: X(b), y1: y, y2: y, style: 'stroke:var(--m-attr);stroke-width:3;stroke-linecap:round;opacity:.45' }, svg);
+      el('circle', { cx: X(m), cy: y, r: 3.6, style: 'fill:var(--m-attr)' }, svg); });
+    const ms = +$('bM').value;
+    el('line', { x1: X(ms), x2: X(ms), y1: 8, y2: H - 18, style: 'stroke:var(--ink);stroke-width:1.6' }, svg);
+    T(svg, X(ms) + 5, 10, `m* = ${ms.toFixed(2)}, median of the 10 medians`, { fs: 11, c: '--ink', a: X(ms) > W - 220 ? 'end' : 'start', w: 700 });
+  }
+  function renderPrior() {
+    const [tname, P] = TL[+$('bTask').value], ell = P / N;
+    const m = +$('bM').value, dk = +$('bD').value, a = +$('bA').value;
+    const piL = m * ell, piD = dk * ell, pi = a * piD + (1 - a) * piL;
+    $('bMo').textContent = m.toFixed(2); $('bDo').textContent = pct(piD); $('bAo').textContent = a.toFixed(2);
+    $('bFacts').innerHTML = `<span>|P| = <b>${grp(P)}</b> known</span><span>|U| = <b>${grp(N - P)}</b> unlabeled</span><span>|P| / n = <b>${pct(ell)}</b>, a lower bound</span>`;
+    $('bSens').innerHTML = [[a > 0.19 && a < 0.81, 'α from 0.2 to 0.8: stable'], [Math.abs(a - 0.6) < 0.001, 'α = 0.6: best'], [a < 0.001 || a > 0.999, 'one estimate alone: 6–8% lower']]
+      .map(([on, s]) => `<span class="${on ? 'on' : ''}">${s}</span>`).join('') + '<span class="mute" style="border:0;padding-left:0">Appendix I</span>';
+    $('bOut').innerHTML = `<div>π<sub>LLM</sub> = ${m.toFixed(2)} × ${pct(ell)} = <b>${pct(piL)}</b> &nbsp; π<sub>data</sub> = <b>${pct(piD)}</b></div>
+      <div>π = ${a.toFixed(2)} × ${pct(piD)} + ${(1 - a).toFixed(2)} × ${pct(piL)} = <b class="big">${pct(pi)}</b></div>
+      <div>So about <b>${grp(pi * N)}</b> of the 19,032 genes would be targets: <b>${grp(Math.max(0, pi * N - P))}</b> still hidden among the ${grp(N - P)} unlabeled genes.</div>`;
+    drawLine(ell, piL, piD, pi); drawLLM();
+  }
+  function drawLine(ell, piL, piD, pi) {
+    const svg = $('lineSvg'); if (!visible(svg)) return;
+    const H = 96, W = fit(svg, H), L = 8, R = W - 10, mx = Math.max(3.6 * ell, piD, piL) * 1.06, X = v => L + (R - L) * v / mx, y = 58;
+    el('rect', { x: X(ell), y: y - 7, width: X(3.5 * ell) - X(ell), height: 14, rx: 4, style: 'fill:var(--m-attr);opacity:.14' }, svg);
+    T(svg, X(3.5 * ell), y + 24, 'LLM range: 1× to 3.5× |P|/n', { fs: 10.5, c: '--mute', a: 'end' });
+    el('line', { x1: L, x2: R, y1: y, y2: y, style: 'stroke:var(--line);stroke-width:2' }, svg);
+    T(svg, L, y + 24, '0', { fs: 10.5, c: '--mute' });
+    const marks = [[ell, '|P|/n', '--mute', 0], [piL, 'π LLM', '--m-attr', 1], [piD, 'π data', '--m-bio', 1], [pi, 'π', '--ink', 2]];
+    const up = [];
+    marks.forEach(([v, s, c, kind]) => { const x = X(v);
+      if (kind === 2) { el('path', { d: `M${x},${y - 3} l-6,-10 h12 z`, style: 'fill:var(--ink)' }, svg); }
+      else el('circle', { cx: x, cy: y, r: kind ? 5 : 4, style: `fill:var(${c});stroke:var(--panel);stroke-width:1.5` }, svg);
+      let lvl = 0; while (up.some(u => u.l === lvl && Math.abs(u.x - x) < 64)) lvl++; up.push({ x, l: lvl });
+      T(svg, clamp(x, L + 24, R - 24), y - 18 - lvl * 14, s, { fs: 11.5, c: c, a: 'middle', w: kind === 2 ? 700 : 400 }); });
+  }
+  ['bTask', 'bM', 'bD', 'bA'].forEach(id => $(id).addEventListener('input', () => { if (id === 'bTask') asked = null; renderPrior(); }));
+  $('bAsk').addEventListener('click', ask);
+  drawers.push(renderPrior);
+  renderPrior();
+
+  // ============================================================ 3C/3D. the PU toy: warm-up scorer, weights, nnPU training
+  const PU = DATA.pu, ZP = PU.zP, ZU = PU.zU, HID = new Set(PU.hid), nP = ZP.length, nU = ZU.length;
+  const Kc = PU.K, CEN = [];
+  for (let i = 0; i < Kc; i++) for (let j = 0; j < Kc; j++) CEN.push([PU.lo[0] + (PU.hi[0] - PU.lo[0]) * j / (Kc - 1), PU.lo[1] + (PU.hi[1] - PU.lo[1]) * i / (Kc - 1)]);
+  const phi = z => CEN.map(c => Math.exp(-((z[0] - c[0]) ** 2 + (z[1] - c[1]) ** 2) / (2 * PU.s * PU.s)));
+  const FP = ZP.map(phi), FUm = ZU.map(phi), NF = CEN.length;
+  const fval = (w, b, f) => { let s = b; for (let i = 0; i < NF; i++) s += w[i] * f[i]; return s; };
+  function gdStep(st, mode, pi) {
+    const { w } = st, gw = new Float64Array(NF); let gb = 0;
+    const fp = FP.map(f => fval(w, st.b, f)), fu = FUm.map(f => fval(w, st.b, f));
+    const add = (F, coef) => F.forEach((f, i) => { const c = coef[i]; for (let q = 0; q < NF; q++) gw[q] += c * f[q]; gb += c; });
+    if (mode === 'bce') { add(FP, fp.map(v => -0.5 * sig(-v) / nP)); add(FUm, fu.map(v => 0.5 * sig(v) / nU)); }
+    else {
+      const neg = mean(fu.map(sp)) - pi * mean(fp.map(sp));
+      const posC = fp.map(v => -pi * sig(-v) / nP), negP = fp.map(v => -pi * sig(v) / nP), negU = fu.map(v => sig(v) / nU);
+      if (mode === 'upu' || neg >= 0) { add(FP, posC.map((c, i) => c + negP[i])); add(FUm, negU); }
+      else { add(FP, negP.map(c => -c)); add(FUm, negU.map(c => -c)); }        // nnPU: step back along the negative-risk gradient
+    }
+    for (let q = 0; q < NF; q++) w[q] -= PU.lr * (gw[q] + PU.lam * w[q]);
+    st.b -= PU.lr * gb;
+    const fp2 = FP.map(f => fval(w, st.b, f)), fu2 = FUm.map(f => fval(w, st.b, f));
+    return { pos: pi * mean(fp2.map(v => sp(-v))), neg: mean(fu2.map(sp)) - pi * mean(fp2.map(sp)) };
+  }
+  const newState = () => ({ w: new Float64Array(NF), b: 0 });
+  // warm-up scorer (class-balanced BCE), shared by C (weights) and D (start of training)
+  const warm = newState(), warmHist = [];
+  for (let t = 0; t < PU.warm; t++) warmHist.push(gdStep(warm, 'bce', PU.pi));
+  const Dw = FUm.map(f => sig(fval(warm.w, warm.b, f)));
+  const zbar = [mean(ZP.map(z => z[0])), mean(ZP.map(z => z[1]))], nb = Math.hypot(zbar[0], zbar[1]);
+  const COS = ZU.map(z => (z[0] * zbar[0] + z[1] * zbar[1]) / (Math.hypot(z[0], z[1]) * nb));
+  let reveal = false, sel = -1;
+  document.querySelectorAll('.reveal').forEach(cb => cb.addEventListener('change', e => { reveal = e.target.checked;
+    document.querySelectorAll('.reveal').forEach(x => { x.checked = reveal; }); drawW(); renderW(); drawHeat(); }));
+  const ext = (() => { const all = ZP.concat(ZU); return [Math.min(...all.map(z => z[0])) - 0.25, Math.max(...all.map(z => z[0])) + 0.25, Math.min(...all.map(z => z[1])) - 0.25, Math.max(...all.map(z => z[1])) + 0.25]; })();
+  function plane(W, Hmax) {     // equal-aspect mapping of the toy plane into W x H
+    const sx = (W - 8) / (ext[1] - ext[0]), sy = (Hmax - 8) / (ext[3] - ext[2]), s = Math.min(sx, sy);
+    const H = Math.round((ext[3] - ext[2]) * s + 8), ox = (W - (ext[1] - ext[0]) * s) / 2;
+    return { H, X: x => ox + (x - ext[0]) * s, Y: y => H - 4 - (y - ext[2]) * s, s, ox };
+  }
+  const wOf = (j, beta) => beta * Dw[j] + (1 - beta) * COS[j];
+  function drawW() {
+    const svg = $('wSvg'); if (!visible(svg)) return;
+    const bw = svg.parentNode.getBoundingClientRect().width, pl = plane(bw, Math.min(440, bw * 0.78)), W = fit(svg, pl.H), beta = +$('cB').value;
+    el('rect', { x: 0, y: 0, width: W, height: pl.H, rx: 8, style: 'fill:var(--soft)' }, svg);
+    const ox = pl.X(0), oy = pl.Y(0);
+    el('line', { x1: 0, x2: W, y1: oy, y2: oy, style: 'stroke:var(--line);stroke-width:1' }, svg);
+    el('line', { x1: ox, x2: ox, y1: 0, y2: pl.H, style: 'stroke:var(--line);stroke-width:1' }, svg);
+    const k = Math.min(zbar[0] > 0 ? (ext[1] - 0.05) / zbar[0] : (ext[0] + 0.05) / zbar[0], zbar[1] > 0 ? (ext[3] - 0.05) / zbar[1] : (ext[2] + 0.05) / zbar[1]);
+    el('line', { x1: ox, y1: oy, x2: pl.X(zbar[0] * k), y2: pl.Y(zbar[1] * k), style: 'stroke:var(--known);stroke-width:1.5;stroke-dasharray:5 4' }, svg);
+    Tsub(svg, pl.X(zbar[0] * 1.9) + 6, pl.Y(zbar[1] * 1.9) + 16, 'direction of z̄', 'P', { fs: 11, c: '--known' });
+    ZU.forEach((z, j) => { const w = wOf(j, beta), t = clamp(w, 0, 1);
+      el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 3.2 + 4.2 * t, 'data-j': j,
+        style: `fill:var(--hidden);fill-opacity:${(0.08 + 0.85 * t).toFixed(2)};stroke:var(--hidden);stroke-width:${j === sel ? 2.4 : 1};stroke-opacity:${(0.35 + 0.65 * t).toFixed(2)}` }, svg);
+      if (reveal && HID.has(j)) el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 10.5, style: 'fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:2 2' }, svg); });
+    ZP.forEach(z => el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 5.5, style: 'fill:var(--known);stroke:var(--panel);stroke-width:1.2' }, svg));
+    el('path', { d: `M${pl.X(zbar[0]) - 6},${pl.Y(zbar[1])}h12M${pl.X(zbar[0])},${pl.Y(zbar[1]) - 6}v12`, style: 'stroke:var(--ink);stroke-width:2' }, svg);
+    if (sel >= 0) { const z = ZU[sel]; el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 13, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, svg);
+      el('line', { x1: ox, y1: oy, x2: pl.X(z[0]), y2: pl.Y(z[1]), style: 'stroke:var(--ink2);stroke-width:1.2' }, svg); }
+    // legend
+    const lg = el('g', {}, svg), ly = 16;
+    el('circle', { cx: 14, cy: ly - 4, r: 5, style: 'fill:var(--known)' }, lg); T(lg, 24, ly, 'known target', { fs: 11.5, c: '--ink2' });
+    el('circle', { cx: 112, cy: ly - 4, r: 5, style: 'fill:var(--hidden);fill-opacity:.5;stroke:var(--hidden)' }, lg); T(lg, 122, ly, 'unlabeled (bigger, darker = higher w)', { fs: 11.5, c: '--ink2' });
+    Tsub(svg, pl.X(zbar[0]) + 8, pl.Y(zbar[1]) - 8, 'z̄', 'P', { fs: 11.5, c: '--ink', w: 700 });
+    svg.onclick = e => { const r = svg.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      let best = -1, bd = 22; ZU.forEach((z, j) => { const d = Math.hypot(pl.X(z[0]) - x, pl.Y(z[1]) - y); if (d < bd) { bd = d; best = j; } });
+      if (best >= 0) { sel = best; drawW(); renderW(); } };
+  }
+  function renderW() {
+    const beta = +$('cB').value; $('cBo').textContent = beta.toFixed(2);
+    $('cSens').innerHTML = [[0, 'β = 0: −11.7%'], [0.6, 'β = 0.6: best'], [1, 'β = 1: −12.6%']].map(([v, s]) => `<span class="${Math.abs(beta - v) < 0.001 ? 'on' : ''}">${s}</span>`).join('') + '<span class="mute" style="border:0;padding-left:0">Appendix I</span>';
+    if (sel < 0) { let best = 0; ZU.forEach((_, j) => { if (wOf(j, 0.6) > wOf(best, 0.6)) best = j; }); sel = best; }
+    const j = sel, w = wOf(j, beta);
+    $('cOut').innerHTML = `<div>Selected unlabeled gene: scorer confidence D = <b>${Dw[j].toFixed(2)}</b>, cos to z̄<sub>P</sub> = <b>${num(COS[j], 2)}</b></div>
+      <div>w = ${beta.toFixed(2)} × ${Dw[j].toFixed(2)} + ${(1 - beta).toFixed(2)} × ${num(COS[j], 2)} = <b class="big">${num(w, 2)}</b></div>`;
+    const hw = mean([...HID].map(i => wOf(i, beta))), ow = mean(ZU.map((_, i) => i).filter(i => !HID.has(i)).map(i => wOf(i, beta)));
+    $('cStats').innerHTML = reveal ? `<div>Mean weight: hidden targets <b>${num(hw, 2)}</b>, other unlabeled genes <b>${num(ow, 2)}</b>${HID.has(j) ? '. The selected gene is a hidden target.' : '.'}</div>` : '';
+  }
+  $('cB').addEventListener('input', () => { renderW(); drawW(); });
+  drawers.push(() => { drawW(); renderW(); });
+
+  let dSt = null, dHist = { nnpu: null, upu: null }, dRun = null, dStep = 0, dLast = 'nnpu';
+  const dObj = () => document.querySelector('input[name="dObj"]:checked').value;
+  function dResetRuns() { dHist = { nnpu: null, upu: null }; dSt = null; dStep = 0; if (dRun) cancelAnimationFrame(dRun); dRun = null; renderD(); }
+  function dStart() {
+    if (dRun) { cancelAnimationFrame(dRun); dRun = null; renderD(); return; }
+    const mode = dObj(), pi = +$('dPi').value; dLast = mode;
+    dSt = { w: Float64Array.from(warm.w), b: warm.b }; dStep = PU.warm;
+    // the warm-up is shared; replay its risk curve at this run's prior so the plot starts where the run starts
+    const pre = []; { const s = newState(); for (let t = 0; t < PU.warm; t++) pre.push(gdStep(s, 'bce', pi)); }
+    dHist[mode] = pre.slice();
+    const per = reduce ? PU.steps : 8;
+    const frame = () => {
+      for (let i = 0; i < per && dStep < PU.steps; i++, dStep++) dHist[mode].push(gdStep(dSt, mode, pi));
+      if (dStep % 24 < per || dStep >= PU.steps) drawHeat();
+      drawRisk(); renderDOut();
+      if (dStep < PU.steps) dRun = requestAnimationFrame(frame); else { dRun = null; renderD(); }
+    };
+    dRun = requestAnimationFrame(frame); renderD();
+  }
+  function renderDOut() {
+    const mode = dObj(), h = dHist[mode];
+    if (!h) { $('dOut').innerHTML = `<div>Press Train: 100 warm-up steps of class-balanced BCE, then 500 steps of ${mode === 'nnpu' ? 'nnPU' : 'uPU'}.</div>`; return; }
+    const last = h[h.length - 1];
+    $('dOut').innerHTML = `<div>${mode === 'nnpu' ? 'nnPU' : 'uPU'}, step ${h.length}: π R<span class="ss"><span>+</span><span>P</span></span> = <b>${last.pos.toFixed(3)}</b></div>
+      <div>R<span class="ss"><span>−</span><span>U</span></span> − π R<span class="ss"><span>−</span><span>P</span></span> = <b>${num(last.neg, 3)}</b>${mode === 'nnpu' ? ` → max(0, ·) = <b>${Math.max(0, last.neg).toFixed(3)}</b>` : last.neg < 0 ? ' <span class="badge bad">below zero</span>' : ''}</div>`;
+  }
+  function renderD() {
+    $('dPio').textContent = (+$('dPi').value).toFixed(2);
+    $('dTrain').textContent = dRun ? 'Stop' : 'Train';
+    drawRisk(); drawHeat(); renderDOut();
+  }
+  function drawRisk() {
+    const svg = $('riskSvg'); if (!visible(svg)) return;
+    const H = 190, W = fit(svg, H), L = 44, R = W - 8, top = 10, bot = H - 26, X = t => L + (R - L) * t / PU.steps;
+    const vals = [0.05, -0.05]; ['nnpu', 'upu'].forEach(k => dHist[k] && dHist[k].forEach(h => vals.push(h.neg)));
+    let lo = Math.min(...vals), hi = Math.max(...vals.filter(v => v < 0.6)); const pad = (hi - lo) * 0.08; lo -= pad; hi = Math.min(hi + pad, 0.6);
+    const Y = v => bot - (bot - top) * (clamp(v, lo, hi) - lo) / (hi - lo);
+    el('rect', { x: X(0), y: top, width: X(PU.warm) - X(0), height: bot - top, style: 'fill:var(--soft)' }, svg);
+    T(svg, X(PU.warm / 2), top + 13, 'warm-up', { fs: 10.5, c: '--mute', a: 'middle' });
+    el('line', { x1: L, x2: R, y1: Y(0), y2: Y(0), style: 'stroke:var(--ink2);stroke-width:1.2' }, svg);
+    T(svg, L - 6, Y(0) + 4, '0', { fs: 10.5, c: '--mute', a: 'end' });
+    [lo, hi].forEach(v => T(svg, L - 6, Y(v) + 4, num(v, 2), { fs: 10.5, c: '--mute', a: 'end' }));
+    T(svg, L, H - 6, 'step 0', { fs: 10.5, c: '--mute' }); T(svg, R, H - 6, `step ${PU.steps}`, { fs: 10.5, c: '--mute', a: 'end' });
+    [['upu', '--bad', 'uPU'], ['nnpu', '--accent', 'nnPU']].forEach(([k, c, name]) => { const h = dHist[k]; if (!h) return;
+      el('path', { d: h.map((p, i) => `${i ? 'L' : 'M'}${X(i + 1).toFixed(1)},${Y(p.neg).toFixed(1)}`).join(''), style: `fill:none;stroke:var(${c});stroke-width:2` }, svg);
+      const e = h[h.length - 1]; T(svg, Math.min(X(h.length), R - 4), Y(e.neg) + (k === 'upu' ? 16 : -7), name, { fs: 11.5, c, a: 'end', w: 700 }); });
+    T(svg, R, top + 13, 'estimated risk on the true negatives', { fs: 10.5, c: '--mute', a: 'end' });
+  }
+  function drawHeat() {
+    const svg = $('heatSvg'); if (!visible(svg)) return;
+    const box = $('heatBox'), bw = box.getBoundingClientRect().width, pl = plane(bw, Math.min(440, bw * 0.78));
+    const W = fit(svg, pl.H), cv = $('heatCv'), st = dSt || warm;
+    const gx = 72, gy = Math.max(24, Math.round(gx * pl.H / W));
+    cv.width = gx; cv.height = gy; cv.style.width = W + 'px'; cv.style.height = pl.H + 'px';
+    const ctx = cv.getContext('2d'), img = ctx.createImageData(gx, gy);
+    const hex = s => { const m = s.replace('#', ''); return [0, 2, 4].map(i => parseInt(m.slice(i, i + 2), 16)); };
+    const c0 = hex(cssv('--heat0') || '#F6F8FA'), c1 = hex(cssv('--heat1') || '#2B6F8A');
+    for (let iy = 0; iy < gy; iy++) for (let ix = 0; ix < gx; ix++) {
+      const px = (ix + 0.5) * W / gx, py = (iy + 0.5) * pl.H / gy, zx = ext[0] + (px - pl.ox) / pl.s, zy = ext[2] + (pl.H - 4 - py) / pl.s;
+      const v = sig(fval(st.w, st.b, phi([zx, zy]))), o = 4 * (iy * gx + ix);
+      for (let c = 0; c < 3; c++) img.data[o + c] = Math.round(c0[c] + (c1[c] - c0[c]) * v);
+      img.data[o + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    ZU.forEach((z, j) => { el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 3.6, style: 'fill:var(--panel);stroke:var(--ink2);stroke-width:1.2' }, svg);
+      if (reveal && HID.has(j)) el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 8.5, style: 'fill:none;stroke:var(--hidden);stroke-width:1.6' }, svg); });
+    ZP.forEach(z => el('circle', { cx: pl.X(z[0]), cy: pl.Y(z[1]), r: 5.5, style: 'fill:var(--known);stroke:var(--panel);stroke-width:1.2' }, svg));
+    const lg = el('g', {}, svg);
+    el('rect', { x: 6, y: 6, width: 248, height: 22, rx: 5, style: 'fill:var(--panel);opacity:.85' }, lg);
+    el('circle', { cx: 18, cy: 17, r: 5, style: 'fill:var(--known)' }, lg); T(lg, 28, 21, 'known', { fs: 11.5, c: '--ink2' });
+    el('circle', { cx: 80, cy: 17, r: 3.6, style: 'fill:var(--panel);stroke:var(--ink2);stroke-width:1.2' }, lg); T(lg, 90, 21, 'unlabeled', { fs: 11.5, c: '--ink2' });
+    T(lg, 160, 21, 'shade = score', { fs: 11.5, c: '--ink2' });
+    const which = !dSt ? 'after the warm-up' : `${dLast === 'upu' ? 'uPU' : 'nnPU'}, step ${dStep}`;
+    el('rect', { x: 6, y: pl.H - 28, width: 190, height: 22, rx: 5, style: 'fill:var(--panel);opacity:.85' }, svg);
+    T(svg, 14, pl.H - 13, 'scorer shown: ' + which, { fs: 11.5, c: '--ink2' });
+  }
+  document.querySelectorAll('input[name="dObj"]').forEach(r => r.addEventListener('change', () => { if (dRun) { cancelAnimationFrame(dRun); dRun = null; } renderD(); }));
+  $('dPi').addEventListener('input', dResetRuns);
+  $('dTrain').addEventListener('click', dStart);
+  $('dReset').addEventListener('click', dResetRuns);
+  drawers.push(() => { drawRisk(); drawHeat(); });
+  renderD();
+
+  // ============================================================ resize and theme
+  let raf = 0; const again = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(redrawAll); };
+  new ResizeObserver(again).observe(document.querySelector('.wrap'));
+  const mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', again);
+  new MutationObserver(again).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  window.__ts = { DATA, evalReading, base, get rolls() { return rolls; }, get hist() { return hist; }, get warmHist() { return warmHist; }, get dHist() { return dHist; }, Dw, COS };
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement, setTheme = t => { root.dataset.theme = t === 'light' ? 'light' : 'dark'; };
+  addEventListener('storage', e => { if (e.key === 'theme') setTheme(e.newValue); });
+  if (!root.classList.contains('embed') || parent === window) return;
+  try { const pr = parent.document.documentElement; setTheme(pr.dataset.theme);
+    new MutationObserver(() => setTheme(pr.dataset.theme)).observe(pr, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) { /* not same-origin */ }
+  let last = -1;
+  const post = () => { const h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h !== last) { last = h; parent.postMessage({ type: 'walkthrough-height', height: h }, location.origin); } };
+  new ResizeObserver(() => requestAnimationFrame(post)).observe(document.body);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(post);
+})();
+</script>
