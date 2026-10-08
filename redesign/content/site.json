@@ -442,6 +442,10 @@
           "url": "https://github.com/aicb-ZhangLabs/Impeller"
         },
         {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/impeller/"
+        },
+        {
           "label": "Cite",
           "url": "/publication/journal/impeller-a-path-based-heterogeneous-graph-learning-method-for-spatial-transcriptomic-data-imputation/cite.bib"
         },
