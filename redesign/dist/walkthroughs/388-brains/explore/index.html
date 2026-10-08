@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>388 brains playground · Ziheng Duan</title>
+<meta name="description" content="Two ideas from Emani et al. (Science 2024) to try: why expression QTLs are measured cell type by cell type, and how a linear genotype-to-cell-type-to-risk model is read.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="388 brains playground · Ziheng Duan">
+<meta property="og:description" content="Two ideas from Emani et al. (Science 2024) to try: why expression QTLs are measured cell type by cell type, and how a linear genotype-to-cell-type-to-risk model is read.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zihengduan.cn/walkthroughs/388-brains/explore/">
+<link rel="canonical" href="https://zihengduan.cn/walkthroughs/388-brains/explore/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261008-2">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}if(/[?&]embed(?:[=&]|$)/.test(location.search))document.documentElement.classList.add("embed")</script>
+<style>
+/* Shared look of the "explore" pages (same tokens as the TargetSage explorer). Figures are drawn by script at the width
+   they are shown (1 SVG unit = 1 px); colours are CSS variables that SVG reads through style="fill:var(..)". */
+:root {
+  --bg: #EDF1F4; --panel: #FFFFFF; --ink: #1B2630; --ink2: #4B5966; --mute: #6F7F8C; --line: #D3DCE3; --line2: #E5EBEF;
+  --accent: #2B5A6E; --accent-ink: #FFFFFF; --chip: #E2EAF0; --track: #EAEFF3; --soft: #F4F7F9;
+  --good: #2E7D5B; --bad: #B83A2E; --bad-bg: #FBEBE9; --warn: #9A6210; --warn-bg: #FCF1DE; --hi: #D9822B;
+  --k1: #3F7CB8; --k2: #D2832B; --k3: #4E9A6B; --k4: #C9A227; --k5: #8C6BBF; --k6: #B5684A; --k7: #3E9AA8; --k8: #C25A8A;
+  --heat0: #F6F8FA; --heat1: #2B6F8A;
+  --sans: "Arimo", "Noto Sans Math", "Liberation Sans", Arial, Helvetica, sans-serif;
+  --serif: "Tinos", "Noto Sans Math", "Liberation Serif", "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740; --line2: #22303A;
+    --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --track: #22303A; --soft: #1B2830;
+    --good: #6CC49A; --bad: #F08A7E; --bad-bg: #3A1F1C; --warn: #E8B45C; --warn-bg: #352A17; --hi: #F0A659;
+    --k1: #7FB2E5; --k2: #EBA65C; --k3: #7CC79A; --k4: #E3C55A; --k5: #B79BE6; --k6: #E0957A; --k7: #6FC6D2; --k8: #E58BB5;
+    --heat0: #172128; --heat1: #7FC0D8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740; --line2: #22303A;
+  --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --track: #22303A; --soft: #1B2830;
+  --good: #6CC49A; --bad: #F08A7E; --bad-bg: #3A1F1C; --warn: #E8B45C; --warn-bg: #352A17; --hi: #F0A659;
+  --k1: #7FB2E5; --k2: #EBA65C; --k3: #7CC79A; --k4: #E3C55A; --k5: #B79BE6; --k6: #E0957A; --k7: #6FC6D2; --k8: #E58BB5;
+  --heat0: #172128; --heat1: #7FC0D8; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 40px; display: grid; gap: 16px; }
+.top { display: grid; gap: 6px; }
+.kick { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
+h1 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+h2 { margin: 0; font-size: 18px; line-height: 1.3; }
+.lede, .intro { margin: 0; color: var(--ink2); max-width: 78ch; }
+.view { display: grid; gap: 16px; min-width: 0; }
+.seg { display: flex; flex-wrap: wrap; gap: 4px; background: var(--chip); padding: 4px; border-radius: 10px; justify-self: start; max-width: 100%; }
+.seg button { font: 600 14px/1.2 var(--sans); padding: 9px 14px; border: 0; border-radius: 7px; background: transparent; color: var(--ink2); cursor: pointer; }
+.seg button b { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 7px; border-radius: 50%; background: var(--line); color: var(--ink2); font-size: 12px; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+.seg button[aria-pressed="true"] b { background: var(--accent); color: var(--accent-ink); }
+.seg.small button { font-size: 13.5px; padding: 7px 11px; }
+button:focus-visible, input:focus-visible, select:focus-visible, svg:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.lab { margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--mute); }
+.pill { font-size: 12px; color: var(--mute); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.ptag { display: inline-block; font: 700 10.5px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent); border-radius: 4px; padding: 3px 5px; vertical-align: 1px; }
+.mute { color: var(--mute); }
+.note { margin: 0; font-size: 14px; color: var(--ink2); max-width: 80ch; }
+.foot { margin: 0; font-size: 12.5px; color: var(--mute); max-width: 100ch; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font: 600 13.5px/1 var(--sans); padding: 9px 13px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--mute); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--panel); }
+.btn:disabled { opacity: .45; cursor: default; }
+.sv { width: 100%; min-width: 0; line-height: 0; position: relative; }
+.sv svg { display: block; overflow: visible; }
+.sv svg text { font-family: var(--sans); }
+.eq { margin: 0; font: 17px/1.6 var(--serif); color: var(--ink); overflow-wrap: anywhere; }
+.eq i { font-style: italic; }
+.eq sub, .eq sup { font-size: 70%; }
+.ss { display: inline-flex; flex-direction: column; vertical-align: 0.52em; font-size: 70%; line-height: 1; margin-left: 1px; }
+.ss > * { font-style: normal; }
+.paper { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 12px; background: var(--soft); font-size: 14px; color: var(--ink2); display: grid; gap: 6px; align-content: start; }
+.paper p { margin: 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.cols.wide-left { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+.stack { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.range { display: grid; grid-template-columns: minmax(2.2em, auto) minmax(0, 1fr) 3.4em; gap: 10px; align-items: center; font-size: 14px; }
+.range output { font-variant-numeric: tabular-nums; text-align: right; font-weight: 700; }
+.ticks { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--mute); margin-top: -8px; padding-left: calc(2.2em + 10px); padding-right: calc(3.4em + 10px); }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; flex: none; }
+.checks { display: grid; gap: 8px; font-size: 14px; }
+.checks label, .radios label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.checks label input, .radios label input { margin-top: 2px; }
+.radios { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; }
+.hbars { display: grid; gap: 5px; font-size: 13px; }
+.hbar { display: grid; grid-template-columns: minmax(0, 10.5em) minmax(0, 1fr) 3.2em; gap: 8px; align-items: center; color: var(--ink2); }
+.hbar .tk { height: 9px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.hbar .tk span { display: block; height: 100%; background: var(--mute); opacity: .55; border-radius: 3px; }
+.hbar.on { color: var(--ink); font-weight: 700; }
+.hbar.on .tk span { background: var(--accent); opacity: 1; }
+.hbar b { font-variant-numeric: tabular-nums; text-align: right; }
+.kv { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; color: var(--ink2); }
+.kv b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.big { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.readout { font-size: 14px; color: var(--ink2); display: grid; gap: 4px; }
+.readout b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line2); border-radius: 10px; padding: 9px 11px; display: grid; gap: 2px; align-content: start; }
+.stat span { font-size: 12.5px; color: var(--mute); }
+.stat b { font-size: 22px; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--ink2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+.nextrow { display: flex; justify-content: flex-end; }
+.cap { margin: 0; min-height: 3em; font-size: 14.5px; color: var(--ink); max-width: 90ch; }
+.dim { opacity: .35; }
+@media (max-width: 900px) {
+  .cols, .cols.wide-left { grid-template-columns: minmax(0, 1fr); }
+  h1 { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  .seg button { padding: 8px 10px; font-size: 13.5px; }
+  .seg button b { margin-right: 5px; }
+}
+
+select { font: 14px/1.3 var(--sans); padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); max-width: 100%; }
+.shares { display: flex; height: 16px; border-radius: 4px; overflow: hidden; }
+.shares span { display: block; height: 100%; }
+.sal { display: grid; gap: 5px; font-size: 13px; }
+.salr { display: grid; grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) 3em; gap: 8px; align-items: center; }
+.salr .tk { position: relative; height: 10px; background: var(--track); border-radius: 3px; }
+.salr .tk span { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+.salr .tk::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--mute); }
+.salr b { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Links back to the homepage (public copy) */
+.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; margin-bottom: -4px; }
+.crumbs a { color: var(--accent); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 640px) { .keys { display: none; } }  /* keyboard hints are no use on phones */
+/* Embedded on a paper page (?embed): no page title or link row; the paper page shows through */
+html.embed { color-scheme: light dark !important; overflow: hidden; }
+html.embed body { background: transparent; }
+html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
+html.embed .top, html.embed .crumbs { display: none; }
+</style>
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/">388 brains paper page</a><a href="/walkthroughs/388-brains/">388 brains walkthrough</a></nav>
+  <header class="top">
+    <p class="kick">388 human brains · Science 2024 · try it</p>
+    <h1>Why the brain is read cell type by cell type</h1>
+    <p class="lede">Emani et al. profiled single nuclei from the prefrontal cortex of 388 adults (brainSCOPE, PsychENCODE) and built, for 28 cell types, maps of regulatory elements, expression QTLs, gene networks, and a model linking genotype to disorders through cell types. Two of its ideas on simulated data; boxes marked <span class="ptag">Paper</span> quote the paper.</p>
+  </header>
+
+  <div class="seg main" role="group" aria-label="Idea">
+    <button type="button" data-view="dil" aria-pressed="true"><b>1</b>Cell-type eQTLs</button>
+    <button type="button" data-view="net" aria-pressed="false"><b>2</b>Genotype to risk, by cell type</button>
+  </div>
+
+  <!-- ============================================================ 1. dilution -->
+  <section class="view" id="v-dil" aria-label="Cell-type eQTLs">
+    <div class="card">
+      <h2>An eQTL that acts in one cell type is diluted in bulk tissue</h2>
+      <p class="eq"><i>y</i><sub>bulk</sub> = Σ<sub><i>k</i></sub> <i>s</i><sub><i>k</i></sub> <i>y</i><sub><i>k</i></sub> &nbsp;⇒&nbsp; effect in bulk ≈ <i>s</i><sub><i>a</i></sub> × effect in cell type <i>a</i></p>
+      <p class="note">An expression QTL is a variant whose alleles shift a gene’s expression. Measured in one cell type, the shift is plain. Bulk tissue mixes all cell types, each in proportion <i>s</i><sub><i>k</i></sub>, so a shift confined to cell type <i>a</i> shrinks by its share. Pick where the variant acts and how many people you have; each dot is one simulated person.</p>
+      <div class="cols wide-left">
+        <div class="sv"><svg id="dSvg" role="img" aria-label="Expression by genotype in the chosen cell type and in bulk tissue, one dot per person"></svg></div>
+        <div class="stack">
+          <label class="kv" for="dType"><span>The variant acts in</span></label>
+          <select id="dType"></select>
+          <div class="shares" id="dShares" role="img" aria-label="Cell-type shares of the toy tissue"></div>
+          <div class="legend" id="dLeg"></div>
+          <div class="range"><label for="dB">effect</label><input type="range" id="dB" min="0" max="1" step="0.05" value="0.5"><output id="dBo"></output></div>
+          <div class="range"><label for="dN">people</label><input type="range" id="dN" min="100" max="2000" step="4" value="388"><output id="dNo"></output></div>
+          <div class="toolbar"><button type="button" class="btn" id="dRe">Draw other people</button></div>
+          <div class="stats" id="dStats"></div>
+        </div>
+      </div>
+      <div class="sv"><svg id="dPow" role="img" aria-label="Expected strength of evidence against the number of people, in the cell type and in bulk"></svg></div>
+      <div class="paper"><p><span class="ptag">Paper</span> About 85,000 single-cell eQTLs and 690 eGenes per cell type, about 1.4 million over all cell types; about 47% appear in more than one cell type. About 30% overlap known bulk-tissue eQTLs: their direction agrees, but the effect is larger in the cell type than in bulk, which the authors explain as a dilution effect. More than two-thirds are not found in bulk, despite the much larger bulk sample sizes (Fig. 4).</p></div>
+      <p class="foot">Toy: genotypes 0/1/2 with allele frequency 0.3; each cell type’s expression has person-to-person spread 1 plus measurement noise that grows as the cell type gets rarer (fewer nuclei); effect in units of that spread per allele. Shares are illustrative, not the paper’s. P values from least squares; the curve below shows the expected evidence.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ 2. genotype -> cell types -> risk -->
+  <section class="view" id="v-net" aria-label="Genotype to risk, by cell type" hidden>
+    <div class="card">
+      <h2>Follow a variant through cell-type genes to a disorder’s risk</h2>
+      <p class="eq">genotype → expression of gene <i>g</i> in cell type <i>c</i> (QTLs, regulatory networks) → risk;&nbsp; saliency = ∂ risk / ∂ <i>x</i><sub><i>g</i>,<i>c</i></sub></p>
+      <p class="note">The study’s integrative model has visible layers for genotypes, cell-type expression and networks, and a linear path to each disorder. Because it is linear, every gene in every cell type gets a readable importance, the gradient of the risk, and any node can be perturbed. Below is a six-node toy in that spirit: change a person’s genotype, or tap a node to knock that gene down in that cell type.</p>
+      <div class="cols wide-left">
+        <div class="sv"><svg id="nSvg" role="img" aria-label="Toy network: four variants, six gene-in-cell-type nodes and a risk score"></svg></div>
+        <div class="stack">
+          <div class="readout" id="nRisk" aria-live="polite"></div>
+          <div class="toolbar"><button type="button" class="btn" id="nZero">Average person</button><button type="button" class="btn" id="nRand">Random person</button><button type="button" class="btn" id="nClear">Undo knockdowns</button></div>
+          <p class="lab">Importance of each gene in each cell type</p>
+          <div class="sal" id="nSal"></div>
+          <div class="readout" id="nBulk"></div>
+        </div>
+      </div>
+      <div class="paper"><p><span class="ptag">Paper</span> LNCTP imputes cell-type expression from genotype with a mean correlation of 0.69 to observed expression across major cell types and about 0.78 in excitatory and inhibitory neurons, explaining 38% of the variance against 34% for a baseline without the networks. It prioritizes 64, 51, 108 and 34 gene–cell-type pairs for schizophrenia, bipolar disorder, autism and Alzheimer’s disease; RORA, for example, matters in many cell types for schizophrenia but is not prioritized from bulk data (Fig. 8).</p></div>
+      <p class="foot">Toy, hand-set: the real model is a conditional energy-based model plus a deep linear model, trained on the 388 individuals. Node values are in units of their population spread; a knockdown subtracts 1.5. The bulk comparison simulates 388 people from the same toy.</p>
+    </div>
+  </section>
+
+  <p class="foot">Toys, not results: simulated data that illustrate two ideas of the study. Study: Emani et al., Science 384, eadi5199 (2024).</p>
+</div>
+
+<script id="data" type="application/json">{"types":[["Excitatory neurons",0.4],["Inhibitory neurons",0.15],["Oligodendrocytes",0.2],["Astrocytes",0.12],["Microglia",0.05],["OPCs",0.08]],"net":{"snps":["SNP 1","SNP 2","SNP 3","SNP 4"],"maf":[0.3,0.35,0.25,0.4],"nodes":[["A","Mic","Microglia"],["C","Mic","Microglia"],["A","Oli","Oligodendrocytes"],["B","Exc","Excitatory neurons"],["D","Exc","Excitatory neurons"],["E","Ast","Astrocytes"]],"qtl":[[0,0,0.8],[1,2,0.7],[2,3,0.9],[3,5,0.6]],"grn":[[0,1,0.6],[3,4,-0.5]],"out":[0.2,0.6,0.0,0.3,-0.4,0.1],"bulkA":[[2,0.6],[0,0.05]]}}</script>
+<script>
+(() => {
+  // ---------------------------------------------------------------- shared helpers of the explore pages
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, parent, text) => { const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sig = z => 1 / (1 + Math.exp(-z));
+  const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+  const num = (v, d) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(d);
+  const pct = (v, d = 0) => (v * 100).toFixed(d) + '%';
+  const grp = v => Math.round(v).toLocaleString('en-US');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cssv = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  function rng32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const gauss = r => { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); };
+  const boxW = svg => Math.max(260, Math.floor(svg.parentNode.getBoundingClientRect().width));
+  // Fit an SVG to its box (1 unit = 1 CSS pixel) and clear it. Returns the width.
+  function fit(svg, h) { const w = boxW(svg); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('width', w); svg.setAttribute('height', h); svg.textContent = ''; return w; }
+  const T = (p, x, y, s, o = {}) => el('text', Object.assign({ x, y, 'font-size': o.fs || 12, style: `fill:var(${o.c || '--ink2'})${o.w ? ';font-weight:' + o.w : ''}${o.it ? ';font-style:italic' : ''}`, 'text-anchor': o.a || 'start' }, o.attrs || {}), p, s);
+  const Tsub = (p, x, y, base, sub, o = {}) => { const t = T(p, x, y, base, o); el('tspan', { dy: 4, 'font-size': (o.fs || 12) * 0.78 }, t, sub); return t; };
+  const visible = node => node.offsetParent !== null;
+  const hex = s => { const m = (s || '#000000').replace('#', ''); return [0, 2, 4].map(i => parseInt(m.slice(i, i + 2), 16)); };
+  const drawers = [];
+  const redrawAll = () => drawers.forEach(f => f());
+  const hbars = (node, rows, on, range) => { node.innerHTML = rows.map(([name, v, txt], i) => `<div class="hbar${i === on ? ' on' : ''}"><span>${name}</span><div class="tk"><span style="width:${clamp(100 * (v - range[0]) / (range[1] - range[0]), 0, 100).toFixed(1)}%"></span></div><b>${txt != null ? txt : v}</b></div>`).join(''); };
+  // tabs: buttons [data-view] in .seg.main switch sections #v-<view>; buttons [data-sub] in a .seg.sub switch [data-part]
+  function setupTabs(onChange) {
+    document.querySelectorAll('.seg.main button').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('.seg.main button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      document.querySelectorAll('section.view').forEach(v => { v.hidden = v.id !== 'v-' + b.dataset.view; });
+      redrawAll(); if (onChange) onChange(b.dataset.view);
+    }));
+  }
+  const watch = () => {
+    let raf = 0; const again = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(redrawAll); };
+    new ResizeObserver(again).observe(document.querySelector('.wrap'));
+    const mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', again);
+    new MutationObserver(again).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  };
+  // nearest item to a pointer event, in SVG pixel units
+  const pick = (svg, e, pts, maxd = 22) => { const r = svg.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let best = -1, bd = maxd; pts.forEach((p, i) => { const d = Math.hypot(p[0] - x, p[1] - y); if (d < bd) { bd = d; best = i; } }); return best; };
+  // ---------------------------------------------------------------- page code
+
+  setupTabs();
+  const TYPES = DATA.types, KC = ['--k1', '--k5', '--k3', '--k4', '--k8', '--k7'];
+  const erfc = x => { const t = 1 / (1 + 0.5 * Math.abs(x)), y = t * Math.exp(-x * x - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))); return x >= 0 ? y : 2 - y; };
+  const mlogp = z => -Math.log10(Math.max(1e-300, erfc(Math.abs(z) / Math.SQRT2)));
+  // ================================================================ 1. dilution
+  $('dType').innerHTML = TYPES.map(([n, s], k) => `<option value="${k}"${k === 4 ? ' selected' : ''}>${n} (${pct(s)} of nuclei)</option>`).join('');
+  $('dShares').innerHTML = TYPES.map(([n, s], k) => `<span style="width:${100 * s}%;background:var(${KC[k]})" title="${n}"></span>`).join('');
+  $('dLeg').innerHTML = TYPES.map(([n], k) => `<span><i style="background:var(${KC[k]});border-radius:2px"></i>${n}</span>`).join('');
+  const MAF = 0.3, CN = 0.02, TAU = 0.05;
+  let dSeed = 1, sim = null;
+  const sdOf = k => Math.sqrt(1 + CN / TYPES[k][1]);
+  function simulate() {
+    const a = +$('dType').value, b = +$('dB').value, N = +$('dN').value, r = rng32(4000 + dSeed);
+    const g = [], ya = [], yb = [];
+    for (let i = 0; i < N; i++) {
+      const gi = (r() < MAF ? 1 : 0) + (r() < MAF ? 1 : 0); g.push(gi);
+      let bulk = 0, own = 0;
+      TYPES.forEach(([, s], k) => { const y = 1 + (k === a ? b * gi : 0) + sdOf(k) * gauss(r); bulk += s * y; if (k === a) own = y; });
+      ya.push(own); yb.push(bulk + TAU * gauss(r));
+    }
+    const fitLS = y => { const mg = mean(g), my = mean(y); let sxy = 0, sxx = 0; g.forEach((x, i) => { sxy += (x - mg) * (y[i] - my); sxx += (x - mg) ** 2; });
+      const slope = sxy / sxx, res = y.map((v, i) => v - my - slope * (g[i] - mg)), s2 = res.reduce((s, v) => s + v * v, 0) / (N - 2), se = Math.sqrt(s2 / sxx);
+      return { slope, z: slope / se, lp: mlogp(slope / se), sd: Math.sqrt(y.reduce((s, v) => s + (v - my) ** 2, 0) / N) }; };
+    sim = { a, b, N, g, ya, yb, fa: fitLS(ya), fb: fitLS(yb) };
+  }
+  function drawDil() {
+    const svg = $('dSvg'); if (!visible(svg) || !sim) return;
+    const W0 = boxW(svg), H = 300, W = fit(svg, H), gap = 28, pw = (W - gap) / 2, top = 30, bot = H - 34;
+    [[sim.ya, sim.fa, `in ${TYPES[sim.a][0].toLowerCase()}`, 0], [sim.yb, sim.fb, 'in bulk tissue', 1]].forEach(([y, f, title, side]) => {
+      const x0 = side ? pw + gap : 0, my = mean(y), sd = f.sd || 1, lo = my - 3.2 * sd, hi = my + 3.2 * sd;
+      const X = gi => x0 + 30 + (pw - 40) * (gi + 0.5) / 3, Y = v => bot - (bot - top) * (clamp(v, lo, hi) - lo) / (hi - lo);
+      el('rect', { x: x0, y: top - 6, width: pw, height: bot - top + 12, rx: 8, style: 'fill:var(--soft)' }, svg);
+      T(svg, x0 + pw / 2, 16, title, { fs: 12.5, c: '--ink', a: 'middle', w: 700 });
+      const r = rng32(99), step = Math.max(1, Math.floor(sim.N / 500));
+      sim.g.forEach((gi, i) => { if (i % step) return; el('circle', { cx: X(gi) + (r() - 0.5) * (pw - 40) / 4.2, cy: Y(y[i]), r: 1.9, style: `fill:var(${side ? '--mute' : KC[sim.a]});opacity:.55` }, svg); });
+      [0, 1, 2].forEach(gi => { const ys = y.filter((_, i) => sim.g[i] === gi); if (!ys.length) return; const m = mean(ys);
+        el('line', { x1: X(gi) - 22, x2: X(gi) + 22, y1: Y(m), y2: Y(m), style: 'stroke:var(--ink);stroke-width:2.5' }, svg);
+        T(svg, X(gi), H - 16, `${['AA', 'Aa', 'aa'][gi]}`, { fs: 11.5, c: '--ink2', a: 'middle' }); });
+      T(svg, x0 + pw / 2, H - 2, 'genotype (copies of the allele: 0, 1, 2)', { fs: 10.5, c: '--mute', a: 'middle' });
+      T(svg, x0 + pw - 8, top + 12, `−log10 P = ${f.lp.toFixed(1)}`, { fs: 12, c: '--ink', a: 'end', w: 700 });
+    });
+  }
+  function renderDil() {
+    if (!sim) return;
+    $('dBo').textContent = (+$('dB').value).toFixed(2); $('dNo').textContent = $('dN').value;
+    const s = TYPES[sim.a][1];
+    $('dStats').innerHTML = `<div class="stat"><span>effect per allele, in the cell type</span><b>${num(sim.fa.slope, 2)}</b></div>
+      <div class="stat"><span>effect per allele, in bulk (≈ ${pct(s)} of it)</span><b>${num(sim.fb.slope, 3)}</b></div>
+      <div class="stat"><span>evidence, −log10 P: cell type / bulk</span><b>${sim.fa.lp.toFixed(1)} / ${sim.fb.lp.toFixed(1)}</b></div>`;
+  }
+  function drawPow() {
+    const svg = $('dPow'); if (!visible(svg) || !sim) return;
+    const H = 170, W = fit(svg, H), L = 44, R = W - 150, top = 12, bot = H - 28, Nmax = 5000, sg = Math.sqrt(2 * MAF * (1 - MAF));
+    const a = sim.a, b = sim.b, sb = Math.sqrt(TYPES.reduce((acc, [, s], k) => acc + s * s * sdOf(k) ** 2, 0) + TAU * TAU);
+    const zc = N => b * sg * Math.sqrt(N) / sdOf(a), zb = N => TYPES[a][1] * b * sg * Math.sqrt(N) / sb;
+    const ymax = 24, X = N => L + (R - L) * N / Nmax, Y = v => bot - (bot - top) * Math.min(v, ymax) / ymax;
+    [0, 1000, 2000, 3000, 4000, 5000].forEach(N => T(svg, X(N), H - 10, N ? grp(N) : '0', { fs: 10.5, c: '--mute', a: 'middle' }));
+    [0, Math.round(ymax / 2), Math.round(ymax)].forEach(v => { el('line', { x1: L, x2: R, y1: Y(v), y2: Y(v), style: 'stroke:var(--line2)' }, svg); T(svg, L - 6, Y(v) + 4, String(v), { fs: 10.5, c: '--mute', a: 'end' }); });
+    el('line', { x1: L, x2: R, y1: Y(5), y2: Y(5), style: 'stroke:var(--bad);stroke-dasharray:4 3;opacity:.7' }, svg);
+    T(svg, L + 6, Y(5) - 5, 'P = 0.00001', { fs: 10.5, c: '--bad' });
+    [[zc, KC[a], 'in the cell type'], [zb, '--mute', 'in bulk']].forEach(([zf, c, name]) => {
+      const pts = Array.from({ length: 101 }, (_, i) => { const N = 20 + i * (Nmax - 20) / 100; return [X(N), Y(mlogp(zf(N)))]; });
+      el('path', { d: pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(''), style: `fill:none;stroke:var(${c});stroke-width:2.2` }, svg);
+      T(svg, R + 6, pts[100][1] + (name === 'in bulk' ? 12 : 4), name, { fs: 11, c, w: 700 }); });
+    el('line', { x1: X(sim.N), x2: X(sim.N), y1: top, y2: bot, style: 'stroke:var(--ink);stroke-width:1;stroke-dasharray:2 3' }, svg);
+    T(svg, X(sim.N) + 4, bot - 6, `${sim.N} people`, { fs: 10.5, c: '--ink' });
+    T(svg, R, top + 2, 'expected −log10 P as the study grows (capped at 24)', { fs: 10.5, c: '--mute', a: 'end' });
+  }
+  const rerunD = () => { simulate(); drawDil(); renderDil(); drawPow(); };
+  ['dType', 'dB', 'dN'].forEach(id => $(id).addEventListener('input', rerunD));
+  $('dRe').addEventListener('click', () => { dSeed += 1; rerunD(); });
+  drawers.push(() => { drawDil(); renderDil(); drawPow(); });
+  simulate();
+
+  // ================================================================ 2. toy network
+  const NET = DATA.net, NN = NET.nodes.length, CTYPE = { Mic: '--k8', Oli: '--k3', Exc: '--k1', Ast: '--k4' };
+  let geno = NET.maf.map(m => 2 * m), kd = new Set(), nSel = -1;
+  const children = Array.from({ length: NN }, () => []); NET.grn.forEach(([a, b, w]) => children[a].push([b, w]));
+  function values(gv, knock) {
+    const v = new Array(NN).fill(0);
+    NET.qtl.forEach(([s, n, w]) => { v[n] += w * (gv[s] - 2 * NET.maf[s]); });
+    // nodes with GRN parents get their parents' contribution (parents come first in this toy)
+    NET.grn.forEach(([p, c, w]) => { v[c] += w * (knock.has(p) ? v[p] - 1.5 : v[p]); });
+    knock.forEach(n => { v[n] -= 1.5; });
+    return v;
+  }
+  const riskOf = v => v.reduce((s, x, i) => s + NET.out[i] * x, 0);
+  const sal = i => NET.out[i] + children[i].reduce((s, [c, w]) => s + w * NET.out[c], 0);
+  function layout(W) {
+    const wide = W >= 520, H = 340, xS = 30, xN = wide ? W * 0.47 : W * 0.5, xR = W - 44;
+    const ys = NET.snps.map((_, i) => 54 + i * 72), yn = NET.nodes.map((_, i) => 38 + i * 50);
+    return { H, xS, xN, xR, ys, yn, yR: 165 };
+  }
+  function drawNet() {
+    const svg = $('nSvg'); if (!visible(svg)) return;
+    const W0 = boxW(svg), Lo = layout(W0), W = fit(svg, Lo.H), v = values(geno, kd), v0 = values(geno, new Set()), risk = riskOf(v);
+    const col = x => x > 0.05 ? `var(--bad)` : x < -0.05 ? `var(--k1)` : 'var(--mute)';
+    // edges
+    NET.qtl.forEach(([s, n, w]) => el('path', { d: `M${Lo.xS + 22},${Lo.ys[s]} C${(Lo.xS + Lo.xN) / 2},${Lo.ys[s]} ${(Lo.xS + Lo.xN) / 2},${Lo.yn[n]} ${Lo.xN - 70},${Lo.yn[n]}`, style: `fill:none;stroke:var(--ink2);stroke-width:${1 + 3 * Math.abs(w)};opacity:.5` }, svg));
+    NET.grn.forEach(([a, b, w]) => el('path', { d: `M${Lo.xN + 70},${Lo.yn[a]} C${Lo.xN + 100},${Lo.yn[a]} ${Lo.xN + 100},${Lo.yn[b]} ${Lo.xN + 70},${Lo.yn[b]}`, style: `fill:none;stroke:${w > 0 ? 'var(--bad)' : 'var(--k1)'};stroke-width:${1 + 3 * Math.abs(w)};opacity:.75`, 'marker-end': '' }, svg));
+    NET.out.forEach((w, i) => { if (!w) return; el('path', { d: `M${Lo.xN + 70},${Lo.yn[i]} C${(Lo.xN + Lo.xR) / 2 + 30},${Lo.yn[i]} ${(Lo.xN + Lo.xR) / 2},${Lo.yR} ${Lo.xR - 30},${Lo.yR}`, style: `fill:none;stroke:${w > 0 ? 'var(--bad)' : 'var(--k1)'};stroke-width:${1 + 4 * Math.abs(w)};opacity:.45` }, svg); });
+    // SNPs
+    NET.snps.forEach((s, i) => { const y = Lo.ys[i];
+      el('rect', { x: Lo.xS - 22, y: y - 16, width: 44, height: 32, rx: 6, 'data-s': i, style: 'fill:var(--panel);stroke:var(--ink2);stroke-width:1.4;cursor:pointer' }, svg);
+      T(svg, Lo.xS, y - 1, s, { fs: 10.5, c: '--ink2', a: 'middle', attrs: { 'pointer-events': 'none' } }); T(svg, Lo.xS, y + 12, Number.isInteger(geno[i]) ? ['AA', 'Aa', 'aa'][geno[i]] : 'avg', { fs: 11.5, c: '--ink', a: 'middle', w: 700, attrs: { 'pointer-events': 'none' } }); });
+    // nodes
+    NET.nodes.forEach(([gname, ct, ctName], i) => { const y = Lo.yn[i], k = kd.has(i);
+      el('rect', { x: Lo.xN - 70, y: y - 17, width: 140, height: 34, rx: 7, 'data-n': i, style: `fill:var(--panel);stroke:var(${CTYPE[ct]});stroke-width:${i === nSel ? 3 : 2};cursor:pointer${k ? ';stroke-dasharray:4 3' : ''}` }, svg);
+      el('rect', { x: Lo.xN - 70, y: y - 17, width: 8, height: 34, rx: 3, style: `fill:var(${CTYPE[ct]})`, 'pointer-events': 'none' }, svg);
+      T(svg, Lo.xN - 56, y - 2, `gene ${gname}`, { fs: 12, c: '--ink', w: 700, attrs: { 'pointer-events': 'none' } });
+      T(svg, Lo.xN - 56, y + 11, ctName.toLowerCase(), { fs: 10, c: '--mute', attrs: { 'pointer-events': 'none' } });
+      el('rect', { x: Lo.xN + 38, y: y - 8, width: 26, height: 16, rx: 3, 'pointer-events': 'none', style: `fill:${col(v[i])};opacity:${(0.25 + 0.75 * Math.min(1, Math.abs(v[i]) / 1.5)).toFixed(2)}` }, svg);
+      T(svg, Lo.xN + 51, y + 4, num(v[i], 1), { fs: 9.5, c: '--ink', a: 'middle', w: 700, attrs: { 'pointer-events': 'none' } });
+      if (k) T(svg, Lo.xN + 66, y + 27, 'knocked down', { fs: 9, c: '--k1', w: 700, a: 'end', attrs: { 'pointer-events': 'none' } }); });
+    // risk
+    el('circle', { cx: Lo.xR, cy: Lo.yR, r: 30, style: `fill:${col(risk)};opacity:${(0.25 + 0.6 * Math.min(1, Math.abs(risk) / 1.2)).toFixed(2)};stroke:var(--ink);stroke-width:1.5` }, svg);
+    T(svg, Lo.xR, Lo.yR - 2, 'risk', { fs: 11, c: '--ink', a: 'middle', w: 700 }); T(svg, Lo.xR, Lo.yR + 13, num(risk, 2), { fs: 12, c: '--ink', a: 'middle', w: 700 });
+    T(svg, Lo.xS, 12, 'genotype', { fs: 10.5, c: '--mute', a: 'middle' }); T(svg, Lo.xN, 10, 'gene, cell type · value', { fs: 10.5, c: '--mute', a: 'middle' });
+    svg.onclick = e => { const t = e.target; if (t.dataset.s != null) { const s = +t.dataset.s; geno[s] = Number.isInteger(geno[s]) ? (geno[s] + 1) % 3 : 0; renderNet(); }
+      else if (t.dataset.n != null) { const n = +t.dataset.n; nSel = n; kd.has(n) ? kd.delete(n) : kd.add(n); renderNet(); } };
+  }
+  // bulk vs cell type, over 388 simulated people from the same toy
+  const bulkCmp = (() => { const r = rng32(388), rows = [];
+    for (let i = 0; i < 388; i++) { const gv = NET.maf.map(m => (r() < m ? 1 : 0) + (r() < m ? 1 : 0)); const v = values(gv, new Set()).map(x => x + 0.6 * gauss(r));
+      rows.push({ v, risk: riskOf(v) + 0.5 * gauss(r), bulkA: NET.bulkA.reduce((s, [n, w]) => s + w * v[n], 0) + 0.05 * gauss(r) }); }
+    const cor = (x, y) => { const mx = mean(x), my = mean(y); let a = 0, b = 0, c = 0; x.forEach((xi, i) => { a += (xi - mx) * (y[i] - my); b += (xi - mx) ** 2; c += (y[i] - my) ** 2; }); return a / Math.sqrt(b * c); };
+    const risk = rows.map(r_ => r_.risk);
+    return { cell: cor(rows.map(r_ => r_.v[0]), risk), bulk: cor(rows.map(r_ => r_.bulkA), risk), oli: cor(rows.map(r_ => r_.v[2]), risk) }; })();
+  function renderNet() {
+    drawNet();
+    const v = values(geno, kd), risk = riskOf(v), r0 = riskOf(values(geno, new Set()));
+    $('nRisk').innerHTML = `<div>Risk score of this person: <b class="big">${num(risk, 2)}</b>${kd.size ? ` <span class="mute">(without the knockdowns: ${num(r0, 2)})</span>` : ''}</div>
+      <div class="mute">Tap a variant to change its genotype; tap a node to knock that gene down in that cell type.</div>`;
+    const S = NET.nodes.map((_, i) => sal(i)), mx = Math.max(...S.map(Math.abs));
+    const order = S.map((s, i) => [s, i]).sort((a, b) => Math.abs(b[0]) - Math.abs(a[0]));
+    $('nSal').innerHTML = order.map(([s, i]) => { const w = 50 * Math.abs(s) / mx;
+      return `<div class="salr"><span>gene ${NET.nodes[i][0]} · ${NET.nodes[i][2].toLowerCase()}</span><div class="tk"><span style="left:${s >= 0 ? 50 : 50 - w}%;width:${w}%;background:${s >= 0 ? 'var(--bad)' : 'var(--k1)'}"></span></div><b>${num(s, 2)}</b></div>`; }).join('') +
+      '<p class="note" style="font-size:12.5px">Red raises the risk, blue lowers it. A gene’s importance includes what it does through the genes it regulates.</p>';
+    $('nBulk').innerHTML = `<div>Gene A in 388 simulated people: its microglial expression tracks the risk (r = <b>${num(bulkCmp.cell, 2)}</b>), but bulk tissue measures mostly its oligodendrocyte expression, which does not (r = <b>${num(bulkCmp.oli, 2)}</b>), so in bulk the signal nearly vanishes (r = <b>${num(bulkCmp.bulk, 2)}</b>).</div>`;
+  }
+  $('nZero').addEventListener('click', () => { geno = NET.maf.map(m => 2 * m); renderNet(); });
+  $('nRand').addEventListener('click', () => { geno = NET.maf.map(m => (Math.random() < m ? 1 : 0) + (Math.random() < m ? 1 : 0)); renderNet(); });
+  $('nClear').addEventListener('click', () => { kd.clear(); nSel = -1; renderNet(); });
+  drawers.push(renderNet);
+
+  watch();
+  renderDil();
+  window.__explore = { get sim() { return sim; }, bulkCmp, sal, values };
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement, setTheme = t => { root.dataset.theme = t === 'light' ? 'light' : 'dark'; };
+  addEventListener('storage', e => { if (e.key === 'theme') setTheme(e.newValue); });
+  if (!root.classList.contains('embed') || parent === window) return;
+  try { const pr = parent.document.documentElement; setTheme(pr.dataset.theme);
+    new MutationObserver(() => setTheme(pr.dataset.theme)).observe(pr, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) { /* not same-origin */ }
+  let last = -1;
+  const post = () => { const h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h !== last) { last = h; parent.postMessage({ type: 'walkthrough-height', height: h }, location.origin); } };
+  new ResizeObserver(() => requestAnimationFrame(post)).observe(document.body);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(post);
+})();
+</script>
