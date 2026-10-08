@@ -6,7 +6,7 @@
     "date_label": "October 7, 2026",
     "event": "ICS Honors Seminar",
     "kind": "Talk",
-    "upcoming": true,
+    "upcoming": false,
     "location": "University of California, Irvine",
     "path": "/talks/ics-honors-seminar-2026/",
     "links": [
