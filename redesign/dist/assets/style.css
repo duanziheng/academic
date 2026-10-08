@@ -427,3 +427,13 @@ body{background:var(--bg);color:var(--ink)}
  .section-nav a{color:#81909d;border-left-color:#263746}
  .section-nav a[aria-current="location"]{background:#111d2a!important;color:#a7b5c1;border-left-color:#607f99}
 }
+
+/* Paper pages: animated walkthrough above the abstract (an iframe of /walkthroughs/<name>/?embed that reports its height). */
+.walkthrough{border-top:1px solid var(--line);padding-top:35px;margin-top:45px}
+.walkthrough-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 20px;margin-bottom:10px}
+.walkthrough-head h2{font-size:1.9rem}
+.walkthrough-head a{font-size:.9375rem;font-weight:600;color:var(--blue)}
+.walkthrough-head a:hover{text-decoration:underline;text-underline-offset:4px}
+.walkthrough-lede{color:var(--muted);font-size:.9375rem;line-height:1.7;margin-bottom:14px}
+.walkthrough-frame{display:block;width:calc(100% + 12px);margin:0 -6px;border:0;background:transparent;height:min(calc(56.25vw + 380px),900px)}
+[data-theme=dark] .walkthrough{border-color:rgba(83,112,136,.10)}

@@ -322,6 +322,10 @@
           "url": "https://github.com/mjgirgenti/PTSDsnDLPFC"
         },
         {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/ptsd/"
+        },
+        {
           "label": "Cite",
           "url": "/publication/journal/single-cell-transcriptomic-and-chromatin-dynamics-of-the-human-brain-in-ptsd/cite.bib"
         },
@@ -597,6 +601,10 @@
         {
           "label": "PDF",
           "url": "https://zihengduan.cn/publication/Journal/Single-cell-genomics-and-regulatory-networks-for-388-human-brains/science.adi5199.pdf"
+        },
+        {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/388-brains/"
         },
         {
           "label": "Cite",

@@ -12,7 +12,7 @@
 <link rel="canonical" href="https://zihengduan.cn/walkthroughs/impeller/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261008">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}</script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}if(/[?&]embed(?:[=&]|$)/.test(location.search))document.documentElement.classList.add("embed")</script>
 <style>
 /* One 16:9 stage that always looks like a white slide (it is meant to be projected), with controls and speaker notes
    underneath that follow the viewer's theme. */
@@ -86,6 +86,12 @@ kbd { font: 11.5px/1 var(--sans); border: 1px solid var(--line); border-bottom-w
 .crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .crumbs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 @media (max-width: 640px) { .keys { display: none; } }  /* keyboard hints are no use on phones */
+/* Embedded on a paper page (?embed): no page title or link row; the paper page shows through */
+html.embed { color-scheme: light dark !important; overflow: hidden; }
+html.embed body { background: transparent; }
+html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
+html.embed .top, html.embed .crumbs { display: none; }
+html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held at their tallest step (below) */
 </style>
 
 <div class="wrap">
@@ -804,5 +810,29 @@ document.addEventListener('keydown', ev => {
 });
 window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
 go(0, false);
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement, setTheme = t => { root.dataset.theme = t === 'light' ? 'light' : 'dark'; };
+  addEventListener('storage', e => { if (e.key === 'theme') setTheme(e.newValue); });
+  if (!root.classList.contains('embed') || parent === window) return;
+  try { const pr = parent.document.documentElement; setTheme(pr.dataset.theme);
+    new MutationObserver(() => setTheme(pr.dataset.theme)).observe(pr, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) { /* not same-origin */ }
+  const M = window.__muse, notes = document.querySelector('.notes'), bar = document.querySelector('.bar'), count = document.getElementById('count');
+  let width = -1, last = -1;
+  const fit = () => {
+    const w = notes.clientWidth;
+    if (M && w && w !== width) {  // hold the narration and the control row at their tallest step, so the frame does not jump
+      width = w; const m = /^(\d+)/.exec(count.textContent), k = m ? +m[1] - 1 : 0;
+      notes.style.minHeight = bar.style.minHeight = ''; let hn = 0, hb = 0;
+      for (let j = 0; j < M.N; j++) { M.go(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
+      M.go(k, false); notes.style.minHeight = hn + 'px'; bar.style.minHeight = hb + 'px';
+    }
+    const h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h !== last) { last = h; parent.postMessage({ type: 'walkthrough-height', height: h }, location.origin); }
+  };
+  new ResizeObserver(() => requestAnimationFrame(fit)).observe(document.body);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { width = -1; fit(); });
 })();
 </script>
