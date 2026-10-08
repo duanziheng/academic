@@ -238,6 +238,38 @@
   ],
   "publications": [
     {
+      "abstract": "Therapeutic target identification—determining which genes or proteins to modulate for a desired clinical effect—is a foundational step in drug discovery. However, existing computational methods that rank candidates at genome scale fail to capture mechanistic knowledge locked in the biomedical literature, lack interpretability, and suffer from the false-negative problem by treating unlabeled but potentially druggable genes as definite negatives. We propose TargetSage, an LLM reasoning agent for therapeutic target identification built on positive-unlabeled (PU) learning. Our approach consists of three modules and provides an evidence-grounded, continuously updatable foundation for interpretable target prioritization at genome scale. Specifically, first, Agentic Profiling enriches each gene with LLM-gathered biomedical evidence; second, Guided Reasoning produces gene-specific rationales and explicit reasoning attributes through a GRPO-trained policy rewarded by downstream Adjusted F1; third, PU-Aware Scoring produces genome-wide druggability scores with an LLM-informed class-prior. Evaluated on 15 benchmark tasks spanning 19,032 human protein-coding genes, TargetSage consistently outperforms ten baselines, surpassing the strongest by 37% in macro-average Adjusted F1 and generalizing to independent held-out benchmarks. Using only the training data collected in 2021, TargetSage outperforms all ten baselines at ranking genes that gain clinical approval by 2025. On an independent validation set of Phase II/III clinical candidates, it further achieves a 51% higher enrichment odds ratio at the top-25 shortlist than the runner-up baseline.",
+      "authors": [
+        "Ziheng Duan",
+        "Tong Wu",
+        "Xi Li",
+        "Simon Dongbo Sun",
+        "Chaoyang Wang",
+        "Junhao Liu",
+        "Martin Renqiang Min",
+        "Jing Zhang"
+      ],
+      "citation_filename": "TargetSage-2026.bib",
+      "links": [
+        {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/targetsage/"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/targetsage/cite.bib"
+        }
+      ],
+      "metadata_source": "OpenReview author list supplied by the owner (2026-10-08); title and abstract from the submitted paper",
+      "path": "/publication/conference/targetsage/",
+      "selected": true,
+      "summary": "Prioritizing therapeutic target genes with interpretable LLM reasoning and positive-unlabeled learning.",
+      "title": "TargetSage: Identifying Therapeutic Target Genes with Interpretable and Robust LLM Reasoning",
+      "type": "Conference paper",
+      "venue": "NeurIPS 2026",
+      "year": 2026
+    },
+    {
       "abstract": "Post-traumatic stress disorder (PTSD) is a polygenic disorder occurring after extreme trauma exposure. Recent studies have begun to detail the molecular biology of PTSD. However, given the array of PTSD-perturbed molecular pathways identified so far, it is implausible that a single cell type is responsible. Here we profile the molecular responses in over two million nuclei from the dorsolateral prefrontal cortex of 111 human brains, collected post-mortem from individuals with and without PTSD and major depressive disorder. We identify neuronal and non-neuronal cell-type clusters, gene expression changes and transcriptional regulators, and map the epigenomic regulome of PTSD in a cell-type-specific manner. Our analysis revealed PTSD-associated gene alterations in inhibitory neurons, endothelial cells and microglia and uncovered genes and pathways associated with glucocorticoid signalling, GABAergic transmission and neuroinflammation. We further validated these findings using cell-type-specific spatial transcriptomics, confirming disruption of key genes such as SST and FKBP5. By integrating genetic, transcriptomic and epigenetic data, we uncovered the regulatory mechanisms of credible variants that disrupt PTSD genes, including ELFN1, MAD1L1 and KCNIP4, in a cell-type-specific context. Together, these findings provide a comprehensive characterization of the cell-specific molecular regulatory mechanisms that underlie the persisting effects of traumatic stress response on the human prefrontal cortex.",
       "authors": [
         "Ahyeon Hwang",
@@ -327,6 +359,10 @@
           "url": "https://github.com/RRRussell/MUSE"
         },
         {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/muse/"
+        },
+        {
           "label": "Cite",
           "url": "/publication/conference/muse/cite.bib"
         },
@@ -362,6 +398,10 @@
         {
           "label": "Code",
           "url": "https://github.com/aicb-ZhangLabs/iMiracle"
+        },
+        {
+          "label": "Walkthrough",
+          "url": "/walkthroughs/imiracle/"
         },
         {
           "label": "Cite",
@@ -928,7 +968,7 @@
       ],
       "metadata_source": "https://doi.org/10.1093/bib/bbae096",
       "path": "/publication/journal/scencore-leveraging-single-cell-epigenetic-data-to-predict-chromatin-conformation-using-graph-embedding/",
-      "selected": true,
+      "selected": false,
       "summary": "Reconstructing chromatin compartments from single-cell epigenetic data using graph learning.",
       "title": "scENCORE: leveraging single-cell epigenetic data to predict chromatin conformation using graph embedding",
       "type": "Journal article",
@@ -1003,7 +1043,7 @@
       ],
       "metadata_source": "https://doi.org/10.1371/journal.pcbi.1011444",
       "path": "/publication/journal/iherd-an-integrative-hierarchical-graph-representation-learning-framework-to-quantify-network-changes-and-prioritize-risk-genes-in-disease/",
-      "selected": true,
+      "selected": false,
       "summary": "Quantifying gene network rewiring to prioritize disease-associated risk genes.",
       "title": "iHerd: an integrative hierarchical graph representation learning framework to quantify network changes and prioritize risk genes in disease",
       "type": "Journal article",

@@ -13,6 +13,7 @@ Live: https://zihengduan.cn/ · Repository: duanziheng/academic · Netlify: zihe
 - Main theme and responsive layout: `dist/assets/style.css`.
 - Search, filtering, citations and theme preference: `dist/assets/app.js`.
 - CV and talk PDFs: `dist/files/`.
+- Animated paper walkthroughs: self-contained pages in `dist/walkthroughs/<name>/index.html`, with self-hosted fonts in `dist/walkthroughs/fonts/`; a publication links to one with a `Walkthrough` entry in its `links`.
 
 News labels use month and year; full dates can remain in the data for ordering. Search includes research interests, doctoral work, News, publications and talks. Past talk badges are omitted during builds and also expire in the browser. Publications retain full bylines and BibTeX; homepage selected papers show a short byline only when Ziheng is first author.
 
@@ -39,6 +40,6 @@ Current Research Interests presents three directions: Virtual Cells for Precisio
 
 PhD Research — From Cells to Atlases follows the dissertation's three-part structure: genomic/cellular analysis (scENCORE, iHerd, ExAD-GNN), microenvironments/intercellular regulation (Impeller, iMIRACLE), and region completion/multi-slice integration (DISCO, MUSE). The dissertation entry points to the owner's supplied public ProQuest record; the large thesis attachment is not republished in the repository.
 
-At the owner's request, the homepage retains the existing Yale postdoctoral title without “Incoming”; News retains the November 2026 start month. Employment dates, publication statuses, author metadata and News remain unchanged. The two newly accepted NeurIPS 2026 papers currently appear in News, pending complete publication metadata. Historical blog routes and the CIKM-to-iMIRACLE redirect remain available.
+At the owner's request, the homepage retains the existing Yale postdoctoral title without “Incoming”; News retains the November 2026 start month. Employment dates, publication statuses, author metadata and News remain unchanged. Of the two NeurIPS 2026 papers announced in News, TargetSage now has a selected publication entry; sMMC-22M appears only in News, pending complete publication metadata. Historical blog routes and the CIKM-to-iMIRACLE redirect remain available.
 
 The contact form opens the visitor's email app; it does not submit or store messages. Publisher PDFs can require institutional access. Large original PDFs are preserved in `large-assets/` and included in every production build.
