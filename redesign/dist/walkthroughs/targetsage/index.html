@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TargetSage walkthrough · Ziheng Duan</title>
+<meta name="description" content="A step-by-step animated walkthrough of TargetSage (NeurIPS 2026): agentic profiling, GRPO-guided reasoning and PU-aware scoring for identifying therapeutic target genes.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="TargetSage walkthrough · Ziheng Duan">
+<meta property="og:description" content="A step-by-step animated walkthrough of TargetSage (NeurIPS 2026): agentic profiling, GRPO-guided reasoning and PU-aware scoring for identifying therapeutic target genes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zihengduan.cn/walkthroughs/targetsage/">
+<link rel="canonical" href="https://zihengduan.cn/walkthroughs/targetsage/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261008">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}</script>
+<style>
+/* One 16:9 stage that always looks like a white slide (it is meant to be projected), with controls and speaker notes
+   underneath that follow the viewer's theme. */
+:root {
+  --bg: #EDF1F4; --panel: #FFFFFF; --ink: #1B2630; --ink2: #4B5966; --mute: #758593; --line: #D3DCE3;
+  --accent: #2B5A6E; --accent-ink: #FFFFFF; --chip: #E2EAF0; --chip-ink: #2B5A6E;
+  --sans: "Arimo", "Liberation Sans", Arial, Helvetica, "Noto Sans Math", sans-serif;
+  --serif: "Tinos", "Liberation Serif", "Times New Roman", Times, "Noto Sans Math", "Cambria Math", "STIX Two Math", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740;
+    --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --chip-ink: #A9D0DE; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740;
+  --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --chip-ink: #A9D0DE; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 44px; display: grid; gap: 14px; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 18px; }
+.top h1 { font-size: 21px; line-height: 1.2; margin: 0; font-weight: 700; text-wrap: balance; }
+.top p { margin: 0; color: var(--ink2); font-size: 13px; }
+.stageWrap { position: relative; display: flex; align-items: center; justify-content: center; background: #FFFFFF;
+  border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.stageWrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.stageWrap:fullscreen { width: 100vw; height: 100vh; border-radius: 0; box-shadow: none; }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; container-type: inline-size; }
+.stageWrap:fullscreen .stage { width: min(100vw, 177.78vh); }
+.stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ov { position: absolute; inset: 0; font-size: calc(100cqw / 960 * 16); pointer-events: none; color: #1D2731; font-family: var(--sans); }
+.tx { position: absolute; opacity: 0; }
+.kick { left: 2.2em; top: 1.15em; font-size: .74em; letter-spacing: .14em; text-transform: uppercase; color: #2B5A6E; font-weight: 700; }
+.ttl { left: 1.37em; top: 1.52em; font-size: 1.6em; color: #16212B; font-weight: 400; white-space: nowrap; }
+.cap { left: 2.12em; top: 29.6em; width: 55.7em; font-size: 1em; line-height: 1.36; color: #3C4A57; }
+.cap b { font-weight: 700; color: #1D2731; }
+.fn { left: 3.32em; top: 51.3em; font-size: .64em; color: #7F8D99; white-space: nowrap; }
+.eq { font-family: var(--serif); color: #1D2731; font-size: 1.12em; white-space: nowrap; }
+.eq i { font-style: italic; } .eq b { font-weight: 700; font-style: normal; }
+.eq .ss { display: inline-flex; flex-direction: column; vertical-align: 0.66em; font-size: .62em; line-height: 1.08; margin-left: .04em; }
+.eq sub, .eq sup { font-size: .64em; line-height: 0; }
+.eq .note { font-family: var(--sans); font-size: .62em; color: #6B7A87; margin-left: .8em; vertical-align: .15em; }
+.eq .num { font-family: var(--sans); font-size: .58em; color: #8796A3; margin-left: .7em; vertical-align: .2em; }
+.eq .ub { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; }
+.eq .ub > .lab { font-family: var(--sans); font-size: .52em; color: #6B7A87; border-top: 1.5px solid #9AA8B4; padding-top: .25em; margin-top: .2em; white-space: nowrap; }
+.eq .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 .2em; }
+.eq .frac > span:first-child { border-bottom: 1.2px solid #1D2731; padding: 0 .2em .1em; }
+.eq .frac > span:last-child { padding: .1em .2em 0; }
+.hat { position: relative; display: inline-block; }
+.hat::after { content: "\02C6"; position: absolute; left: 52%; top: -0.42em; transform: translateX(-50%); font-weight: 400; font-style: normal; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.btn { font: 600 14px/1 var(--sans); padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); cursor: pointer; }
+.btn:hover { border-color: var(--mute); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.count { font: 13px/1 var(--sans); color: var(--ink2); font-variant-numeric: tabular-nums; min-width: 4.5em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.chip { font: 12px/1 var(--sans); padding: 7px 10px; border-radius: 999px; background: transparent; color: var(--ink2);
+  border: 1px solid var(--line); cursor: pointer; }
+.chip[aria-current="true"] { background: var(--chip); color: var(--chip-ink); border-color: transparent; font-weight: 700; }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.notes { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: grid; gap: 6px; }
+.notes h2 { margin: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); font-weight: 700; }
+.notes p { margin: 0; font-size: 15.5px; line-height: 1.55; max-width: 72ch; color: var(--ink); }
+.keys { color: var(--mute); font-size: 12.5px; margin: 0; }
+kbd { font: 11.5px/1 var(--sans); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; color: var(--ink2); background: var(--panel); }
+@media (max-width: 640px) { .chips { margin-left: 0; } .notes p { font-size: 14.5px; } }
+
+/* Links back to the homepage (public copy) */
+.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; margin-bottom: -4px; }
+.crumbs a { color: var(--accent); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 640px) { .keys { display: none; } }  /* keyboard hints are no use on phones */
+</style>
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/conference/targetsage/">TargetSage paper page</a></nav>
+  <div class="top">
+    <h1>TargetSage, step by step</h1>
+    <p>Therapeutic target identification with LLM reasoning and PU learning · Duan et al., NeurIPS 2026</p>
+  </div>
+
+  <div class="stageWrap" id="stageWrap" tabindex="0" role="region" aria-label="Animation stage. Click or press the right arrow for the next step.">
+    <div class="stage" id="stage">
+      <svg id="sv" viewBox="0 0 960 540" aria-hidden="true">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#7D8C99" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="aht" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#2B5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ahr" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#C8473D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+
+        </defs>
+        <rect x="0" y="0" width="960" height="540" fill="#FFFFFF"/>
+        <g id="gGrid"></g>
+        <g id="gGridR"></g>
+        <g id="gProf"></g>
+        <g id="gRsn"></g>
+        <g id="gGrpo"></g>
+        <g id="gErb"></g>
+        <g id="gFus"></g>
+        <g id="gPrior"></g>
+        <g id="gNnpu"></g>
+        <g id="gMet"></g>
+        <g id="gMacro"></g>
+        <g id="gGains"></g>
+        <g id="gPros"></g>
+        <g id="gOr"></g>
+        <g id="gAbl"></g>
+        <g id="gRecap"></g>
+        <g id="gNav"></g>
+      </svg>
+      <div class="ov" id="ov"></div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button class="btn" id="bPrev" aria-label="Previous step">Back</button>
+    <button class="btn primary" id="bNext" aria-label="Next step">Next</button>
+    <button class="btn" id="bPlay" aria-pressed="false">Play all</button>
+    <button class="btn" id="bFull">Full screen</button>
+    <span class="count" id="count" aria-live="polite"></span>
+    <div class="chips" id="chips" role="tablist" aria-label="Scenes"></div>
+  </div>
+
+  <section class="notes" aria-label="Narration">
+    <h2>Narration</h2>
+    <p id="note"></p>
+  </section>
+  <p class="keys"><kbd>→</kbd> <kbd>Space</kbd> or a click: next · <kbd>←</kbd>: back · <kbd>F</kbd>: full screen · <kbd>P</kbd>: play all · <kbd>Home</kbd>: start</p>
+</div>
+
+<script id="toy" type="application/json">{"grid":{"nc":64,"nr":30,"known":[10,59,73,77,84,88,128,134,160,185,212,295,374,400,404,459,485,503,519,544,545,616,619,634,683,713,716,731,817,825,983,999,1022,1050,1054,1063,1071,1156,1164,1203,1230,1334,1360,1379,1381,1407,1411,1462,1471,1513,1545,1563,1567,1575,1576,1613,1647,1691,1718,1805,1873,1883],"upg":[62,350,531,741,1005,1077,1095,1391,1709],"perDot":9.9},"grpo":{"roll":[[0.93,0.12,0.82],[0.58,0.41,0.74],[0.21,0.86,0.69],[0.77,0.24,0.88]],"score":[0.405,0.123,0.026,0.282],"reward":[1.2376,1.157,1.1299,1.2023],"adv":[1.35,-0.6,-1.25,0.5],"static":[0.56,0.58,0.47],"p0":0.07,"base":1.1421,"n":600,"nP":30,"w":[1.45,0.37,3.85,-0.32,1.77]},"f1toy":{"n":40,"known":[3,11,22,31],"hidden":[7,18,35],"good":[0.05,0.07,0.18,0.86,0.05,0.11,0.12,0.71,0.17,0.05,0.1,0.74,0.11,0.14,0.17,0.21,0.08,0.15,0.63,0.09,0.03,0.21,0.91,0.09,0.2,0.14,0.12,0.18,0.04,0.16,0.1,0.68,0.16,0.21,0.07,0.8,0.09,0.17,0.17,0.07],"flat":[0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3],"perfect":[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"sGood":{"R":0.798,"pbar":0.235,"f1":2.71},"sFlat":{"R":0.3,"pbar":0.3,"f1":0.3},"sPerfect":{"R":1.0,"pbar":0.1,"f1":10.0}},"nnpu":{"zP":[[1.261,0.582],[1.094,0.311],[2.045,0.579],[1.484,0.153],[1.04,0.634],[1.1,0.745],[1.043,0.658],[1.156,0.457],[1.665,0.927],[0.992,0.889],[1.454,0.61],[0.869,0.402]],"zU":[[1.96,0.239],[1.028,0.658],[0.876,0.716],[1.181,0.871],[1.001,1.054],[1.273,1.368],[1.639,0.711],[0.634,0.605],[0.726,1.293],[1.116,0.483],[-1.152,-0.769],[0.302,-0.539],[0.457,-0.281],[-0.492,-1.594],[-0.449,-0.934],[0.02,-0.107],[-1.111,0.535],[-1.016,0.055],[-0.623,-0.392],[-1.16,0.684],[-0.122,-1.16],[-1.066,0.136],[-0.653,-0.152],[-0.21,-0.317],[-1.093,0.842],[0.243,0.19],[-0.741,-0.006],[-1.5,-0.025],[-1.107,0.295],[-1.066,-1.039],[-1.059,-0.455],[-1.993,0.437],[-0.323,1.199],[-0.698,-1.156],[0.171,-0.546],[-0.521,-0.258],[-0.124,-0.227],[-0.144,-0.782],[-0.372,-0.603],[-0.171,0.002],[0.334,-1.085],[-0.166,-0.544],[-0.203,-0.903],[0.033,-0.179],[-0.442,0.954],[0.1,-0.299],[0.162,-0.549],[-0.294,0.075],[0.917,1.133],[-0.162,0.156],[-1.461,-0.457],[-1.193,0.889],[-0.406,-0.841],[-0.24,0.717],[-0.322,-0.396],[0.289,0.007],[-0.564,-1.172],[-0.537,-0.322],[0.119,-0.349],[-0.564,0.023],[0.101,1.08],[-1.235,-0.732],[0.757,-0.276],[-0.972,0.003],[0.593,-0.012],[-0.336,0.004],[-0.699,-0.907],[0.938,-0.611],[-0.415,0.702],[-1.167,-0.74],[0.189,-0.263],[-0.227,-0.075],[1.017,-0.666],[-0.978,0.278],[0.302,-0.415],[-0.644,-1.564],[-1.06,-0.318],[-0.432,-0.321]],"w":[0.805,0.599,0.557,0.654,0.599,0.702,0.778,0.491,0.499,0.612,-0.393,0.068,0.277,-0.262,-0.301,-0.071,-0.251,-0.35,-0.39,-0.224,-0.192,-0.336,-0.385,-0.324,-0.181,0.436,-0.358,-0.365,-0.305,-0.375,-0.397,-0.319,0.096,-0.327,-0.022,-0.391,-0.301,-0.216,-0.323,-0.342,-0.024,-0.25,-0.23,-0.071,0.019,-0.014,-0.029,-0.295,0.57,-0.124,-0.396,-0.188,-0.3,0.069,-0.347,0.414,-0.303,-0.389,-0.012,-0.347,0.259,-0.396,0.374,-0.359,0.438,-0.347,-0.349,0.316,-0.023,-0.394,0.111,-0.38,0.326,-0.299,0.118,-0.289,-0.393,-0.381],"zbar":[1.267,0.579],"beta":0.6}}</script>
+<script>
+(() => {
+// ------------------------------------------------------------------ shared helpers
+const D = JSON.parse(document.getElementById('toy').textContent);
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const stag = (e, i, N, spread) => clamp((e - spread * (N > 1 ? i / (N - 1) : 0)) / (1 - spread));
+const RGB = {};
+const rgbOf = h => RGB[h] || (RGB[h] = [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+const toHex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+const mixHex = (a, b, t) => { const A = rgbOf(a), B = rgbOf(b); return toHex([0, 1, 2].map(k => A[k] + (B[k] - A[k]) * t)); };
+const f1 = v => Math.round(v * 10) / 10;
+const pct = x => Math.round(100 * x) + '%';
+const C = { ink: '#1D2731', ink2: '#4B5966', mute: '#8796A3', teal: '#2B5A6E', tealL: '#7FA9B8', red: '#C8473D', green: '#3B9466',
+  amb: '#D9822B', ambD: '#8A4B12', grey: '#CDD5DC', base: '#AEB9C4', line: '#C7D1DA', panel: '#F2F5F8', plane: '#F0F3F6', head: '#2C3A47' };
+const SANS = 'Arimo, Liberation Sans, Arial, Noto Sans Math, sans-serif', SERIF = 'Tinos, Liberation Serif, Times New Roman, Noto Sans Math, Cambria Math, serif';
+const txt = (x, y, s, attrs, parent) => { const t = mk('text', Object.assign({ x, y, 'font-family': SANS, 'font-size': 13, fill: C.ink2 }, attrs || {}), parent); t.textContent = s; return t; };
+const tsp = (t, s, attrs) => { const e = mk('tspan', attrs || {}, t); e.textContent = s; return e; };
+const HALO = { 'paint-order': 'stroke', stroke: '#FFFFFF', 'stroke-width': 4, 'stroke-linejoin': 'round' };
+const SS = (sub, sup) => `<span class="ss"><span>${sup}</span><span>${sub}</span></span>`;
+const NUM = k => `<span class="num">(${k})</span>`;
+const box = (x, y, w, h, parent, opts) => mk('rect', Object.assign({ x, y, width: w, height: h, rx: 8, fill: C.panel, stroke: '#C9D3DC' }, opts || {}), parent);
+const arrow = (x1, y1, x2, y2, parent, opts) => mk('line', Object.assign({ x1, y1, x2, y2, stroke: '#7D8C99', 'stroke-width': 1.5, 'marker-end': 'url(#ah)' }, opts || {}), parent);
+const lines = (x, y, arr, dy, attrs, parent) => arr.map((s, i) => txt(x, y + i * dy, s, attrs, parent));
+const op = (el, v) => el.setAttribute('opacity', (+v).toFixed(3));
+// ================================================================== TargetSage walkthrough
+const GREEN = '#3B9466', AMBER = '#E39B2E', NEG = '#EDBBB4', UNL = '#CDD5DC';
+const B2 = '#3E6FB0', B3 = '#D07A2C';
+const AT = ['#2B7A8C', '#B0703A', '#6B7FB8'];
+const MOD = ['#5E8DBF', '#B0703A', '#7B68D9'];
+const SRC = 'Duan et al., NeurIPS 2026';
+const OVL = s => `<span style="text-decoration:overline">${s}</span>`;
+
+const SCENES = [
+  ['The problem', 'Which genes should a drug target?'],
+  ['Module 1 · Agentic profiling', 'From a feature vector to an evidence profile'],
+  ['Module 2 · Guided reasoning', 'A reasoning policy trained by the downstream score'],
+  ['Module 3 · PU-aware scoring', 'Scoring without calling unlabeled genes negative'],
+  ['The metric', 'Reading Adjusted F1'],
+  ['Results', 'TargetSage on 15 tasks and on future targets'],
+  ['Summary', 'TargetSage in three steps'],
+];
+const CHIP = ['Problem', 'Profiling', 'Reasoning', 'PU scoring', 'Metric', 'Results', 'Summary'];
+const BASE = { grid: 0, gm: 0, gr1: 0, gr2: 0, gr3: 0, gr4: 0, prof: 0, pf2: 0, pf3: 0, rsn: 0, grpo: 0, erb: 0, erb2: 0,
+  fus: 0, prior: 0, nnpu: 0, met: 0, mm: 0, ceil: 0, macro: 0, gains: 0, pros: 0, orr: 0, abl: 0, recap: 0, dur: 1500 };
+const EQ_GRPO = `<div class="eq"><i>r</i>(<i>y<sub>k</sub></i>) = <span class="frac"><span>1</span><span><i>T</i></span></span>Σ<sub><i>t</i></sub> <i>F</i><sub>1-adj</sub>(<i class="hat">p</i><sup>(<i>t</i>,<i>k</i>)</sup>)${NUM(1)} &nbsp;&nbsp;&nbsp;&nbsp; <i>A<sub>k</sub></i> = (<i>r<sub>k</sub></i> − ${OVL('<i>r</i>')}) / std(<i>r</i>)${NUM(12)}<span class="note">advantage within the group of 4</span></div>`;
+const EQ_FUSE = `<div class="eq"><b>h</b>${SS('<i>i</i>', '<i>m</i>')} = σ(<b>W</b><sub><i>m</i></sub><b>u</b>${SS('<i>i</i>', '<i>m</i>')} + <b>b</b><sub><i>m</i></sub>), &nbsp; <i>α</i><sub><i>i</i></sub> = softmax(<b>W</b><sub><i>g</i></sub>[<b>h</b>${SS('<i>i</i>', 'bio')}; <b>h</b>${SS('<i>i</i>', 'attr')}; <b>h</b>${SS('<i>i</i>', 'emb')}]), &nbsp; <b>h</b>${SS('<i>i</i>', 'fuse')} = Σ<sub><i>m</i></sub> <i>α</i>${SS('<i>i</i>', '<i>m</i>')}<b>h</b>${SS('<i>i</i>', '<i>m</i>')}${NUM(2)}</div>`;
+const EQ_PRIOR = `<div class="eq"><i>π<sub>t</sub></i> = <i>α</i> <i>π</i><sub><i>t</i>,data</sub> + (1 − <i>α</i>) <i>π</i><sub><i>t</i>,LLM</sub>${NUM(3)} &nbsp;&nbsp;&nbsp; <i>π</i><sub><i>t</i>,LLM</sub> = <i>m</i>${SS('<i>t</i>,med', '∗')} · |<i>P<sub>t</sub></i>| / <i>n</i><span class="note">α = 0.6</span></div>`;
+const EQ_NNPU = `<div class="eq"><i>w<sub>j,t</sub></i> = <i>β D<sub>t</sub></i>(<b>h</b><sub><i>j</i></sub>) + (1 − <i>β</i>) cos(<b>z</b><sub><i>j</i></sub>, ${OVL('<b>z</b>')}<sub><i>P<sub>t</sub></i></sub>)${NUM(4)}<span class="note">β = 0.6</span></div><div class="eq" style="margin-top:.7em">ℒ${SS('nnPU', '(<i>t</i>)')} = <i>π<sub>t</sub></i> <i>R</i>${SS('<i>P<sub>t</sub></i>', '+')} + max(0, <i>R</i>${SS('<i>U<sub>t</sub></i>', '−')}(<i>w<sub>j,t</sub></i>) − <i>π<sub>t</sub></i> <i>R</i>${SS('<i>P<sub>t</sub></i>', '−')})${NUM(5)}</div>`;
+const EQ_F1 = `<div class="eq"><i>F</i><sub>1-adj</sub> = <i>R</i>${SS('soft', '2')} / ${OVL('<i>p</i>')}<span class="note">R<sub>soft</sub>: mean score of the known targets · p̄: mean score of all genes</span>${NUM(6)}</div>`;
+
+const S = [
+  { scene: 0, st: { grid: 1, gm: 0, gr1: 1, gr2: 1 },
+    cap: 'All 19,032 human protein-coding genes. In PHAROS 2021, 610 were clinical targets (Tclin); every other gene is unlabeled.',
+    fn: 'Grid: 1 dot ≈ 10 genes · ' + SRC + ', Sec. 3.1 and 4.3',
+    note: 'Here is the setting. These are all 19,032 human protein-coding genes; each dot is about ten genes. In the 2021 release of PHAROS, 610 of them were clinical targets, shown in green. Every other gene has no label: not “not a target”, just unlabeled.' },
+  { scene: 0, st: { grid: 1, gm: 1, gr1: 1, gr2: 1, gr3: 1 },
+    cap: 'The usual shortcut: train a classifier as if every unlabeled gene were a negative example.',
+    fn: 'Grid: 1 dot ≈ 10 genes · ' + SRC + ', Sec. 1',
+    note: 'The usual shortcut is to train a classifier as if every unlabeled gene were a negative example. That turns this whole area into negatives.' },
+  { scene: 0, st: { grid: 1, gm: 2, gr1: 1, gr2: 1, gr4: 1, dur: 1800 },
+    cap: 'By 2025, 90 of those “negatives” had become clinical targets. TargetSage treats unlabeled genes as unlabeled: positive–unlabeled (PU) learning.',
+    fn: 'Grid: 1 dot ≈ 10 genes · ' + SRC + ', Sec. 4.3 (Tclin grew from 610 to 700 genes, 2021 → 2025)',
+    note: 'But labels catch up. By 2025, 90 of those so-called negatives had become clinical targets; Tclin grew from 610 to 700 genes. A model trained the usual way was told these were not targets. TargetSage treats unlabeled genes as unlabeled, which is called positive–unlabeled learning, and we will come back to these 90 genes in the results.' },
+  { scene: 1, st: { prof: 1 },
+    cap: 'Tool 1 reads the 482 structured features and rewrites the informative values as evidence statements.',
+    fn: SRC + ', Sec. 3.2 and Appendix C (ABL1 example)',
+    note: 'Module 1 builds an evidence profile for each gene. Conventional methods feed a vector of 482 numbers into a classifier. TargetSage’s first tool reads those numbers and writes the informative ones as evidence statements. For ABL1, for example: highly loss-of-function intolerant, pLI equal to one; essential in mouse; 43 drug interaction types; kinase, SH2 and SH3 domains.' },
+  { scene: 1, st: { prof: 1, pf2: 1 },
+    cap: 'Tools 2–5 add context from NCBI Gene, UniProt, PubMed and Open Targets: function, localization, tractability, safety and literature.',
+    fn: SRC + ', Appendix C (coverage over the 19,032 genes)',
+    note: 'Tools two to five query four external sources: NCBI gene summaries, UniProt function annotations, PubMed abstracts, and Open Targets tractability and safety. Structured features and NCBI summaries exist for nearly all genes, UniProt for 85 percent and Open Targets for 72 percent; PubMed is queried when more evidence is needed.' },
+  { scene: 1, st: { prof: 1, pf2: 1, pf3: 1 },
+    cap: 'Tool 6, a fact-checker, removes sentences that would give away the label and flags statements that disagree across sources.',
+    fn: SRC + ', Appendix C',
+    note: 'Collecting text creates a risk: a sentence could simply state the answer, such as “FDA approved”. Tool six, a fact-checker, removes such sentences; this happened for one gene, CA4. It also flags statements that disagree across sources, in 385 genes, or 2 percent.' },
+  { scene: 2, st: { rsn: 1 },
+    cap: 'For each gene and task, a small LLM writes a rationale and scores 23 therapeutic attributes; the rationale is also embedded as a vector.',
+    fn: SRC + ', Sec. 3.3 and Appendix K (ERBB3; 6 of the 23 attributes shown)',
+    note: 'Module 2 reasons over this profile. A small language model, Qwen 2.5 with 1.5 billion parameters and LoRA adapters, writes a rationale for each gene and task, and scores 23 therapeutic attributes between zero and one. Here is ERBB3: high antibody and tractability scores, a low small-molecule score, and the rationale says why. The rationale is also embedded as a vector.' },
+  { scene: 2, st: { grpo: 1, dur: 1900 },
+    cap: 'GRPO: sample 4 rollouts per gene, score each by the downstream Adjusted F1, and reinforce the rollouts that beat their group’s average.',
+    fn: 'Toy: one known target, 4 hand-made rollouts, a frozen logistic scorer on a 600-gene toy genome, one task · ' + SRC + ', Eq. 1 and Appendix F',
+    eq: EQ_GRPO, eqPos: [62, 404],
+    note: 'How is this policy trained? With GRPO, using the downstream prediction as the reward. For one gene, the policy samples four rollouts. Each rollout’s attribute scores replace that gene’s row, a frozen scorer recomputes the predictions, and the reward is the Adjusted F1. In this toy, the rollouts that read the gene as an antibody target raise its score and the reward. GRPO compares rewards within the group, so beating the group average is what counts, and those rollouts are reinforced.' },
+  { scene: 2, st: { erb: 1 },
+    cap: 'Why reasoning helps: in the 482 structured features, ERBB2 and ERBB3 look almost identical.',
+    fn: SRC + ', Sec. 4.5',
+    note: 'Why does this reasoning help? Consider ERBB2 and ERBB3. In the 482-dimensional feature vector they are nearly indistinguishable: the same kinase-domain flag, the same druggability and membrane scores, and nearly the same pathway and cancer-driver scores.' },
+  { scene: 2, st: { erb: 1, erb2: 1, dur: 1800 },
+    cap: 'The reasoning recovers what no feature column records: ERBB3’s kinase domain is catalytically inactive, so it is an antibody target, not a kinase-inhibitor target.',
+    fn: SRC + ', Sec. 4.5 (approved drugs as reported there)',
+    note: 'The reasoning recovers what no column records: ERBB3’s kinase domain is catalytically inactive. Its attribute scores split from ERBB2’s: enzyme activity 0.85 versus 0.10. This matches the drugs: ERBB2 is targeted by small-molecule kinase inhibitors such as lapatinib and neratinib, while every approved ERBB3-directed agent is an antibody or an antibody–drug conjugate.' },
+  { scene: 3, st: { fus: 1 },
+    cap: 'The three representations are projected into a shared space, mixed with gates computed for each gene, and scored by a task-specific discriminator.',
+    fn: SRC + ', Eq. 2 (gate weights shown are schematic)',
+    eq: EQ_FUSE, eqPos: [62, 404],
+    note: 'Module 3 makes the final score. The structured features, the attribute scores and the rationale embedding are each projected into a shared space and combined with gates that are computed per gene, so each gene can weight the three sources differently. A task-specific discriminator scores the fused vector.' },
+  { scene: 3, st: { prior: 1 },
+    cap: 'How many targets hide among the unlabeled genes? The class prior mixes the model’s own estimate with an LLM-estimated multiplier on the observed rate.',
+    fn: SRC + ', Eq. 3 and Appendix E · observed rate for Clinical Targets: 700 / 19,032',
+    eq: EQ_PRIOR, eqPos: [110, 336],
+    note: 'PU learning needs one more number: the class prior, the true fraction of targets including the hidden ones. The observed positives give a lower bound, 3.7 percent for clinical targets. TargetSage asks an LLM, ten times, how much larger the true rate is likely to be, as a multiplier between 1 and 3.5, takes the median, and mixes this with the model’s own estimate, 60 to 40.' },
+  { scene: 3, st: { nnpu: 1 },
+    cap: 'Unlabeled genes enter the loss with a weight from their resemblance to known targets; the clip at zero keeps the negative-risk estimate from dropping below zero.',
+    fn: 'Toy 2-D embedding (ring size = weight w) · ' + SRC + ', Eq. 4–5',
+    eq: EQ_NNPU, eqPos: [482, 128],
+    note: 'Training then uses the non-negative PU loss. Unlabeled genes are not simply negatives: each gets a weight from the discriminator and from its similarity to the known targets in embedding space. And the clip at zero keeps the estimated negative risk from turning negative, which is what stops PU training from overfitting.' },
+  { scene: 4, st: { met: 1, mm: 0 },
+    cap: 'Adjusted F1 = R²<sub>soft</sub> / p̄. If every gene gets the same score, the value is just that score.',
+    fn: 'Toy: 40 genes, 4 known targets · ' + SRC + ', Eq. 6',
+    eq: EQ_F1, eqPos: [62, 100],
+    note: 'Before the results, how to read the metric. With unlabeled data we cannot count false positives, so we use Adjusted F1: the mean score of the known targets, squared, divided by the mean score of all genes. If every gene gets the same score, say 0.3, Adjusted F1 is just 0.3.' },
+  { scene: 4, st: { met: 1, mm: 1 },
+    cap: 'A useful model puts its high scores on the known targets while most genes stay low. Computing it needs the known targets and the average, never a list of negatives.',
+    fn: 'Toy: 40 genes, 4 known targets · ' + SRC + ', Eq. 6',
+    eq: EQ_F1, eqPos: [62, 100],
+    note: 'A useful model concentrates its scores on the known targets while most genes stay low; here Adjusted F1 rises to 2.7. It needs only the known targets and the genome-wide average, never a list of negatives. Under the usual PU assumption, that the known targets are a random sample of all targets, it tracks precision times recall against all true targets, including undiscovered ones.' },
+  { scene: 4, st: { met: 1, mm: 2, ceil: 1 },
+    cap: 'The ceiling is n / |P|, so values depend on the task: 27 for Clinical Targets, 7.4 for Clinical & Chemical, 276 for approved antibody targets.',
+    fn: SRC + ', Tables 1 and 4 (ceiling = number of genes / number of known targets)',
+    eq: EQ_F1, eqPos: [62, 100],
+    note: 'The best possible value is the number of genes divided by the number of known targets: 10 in this toy. That is why the numbers differ so much between tasks: the ceiling is 27 for clinical targets, 7.4 for clinical and chemical targets, and 276 for approved antibody targets. TargetSage scores 11.2, 3.2 and 22.6 on these.' },
+  { scene: 5, st: { macro: 1, dur: 1700 },
+    cap: 'Best on all 15 tasks: a macro-average Adjusted F1 of 11.1, 37% above the strongest of ten baselines.',
+    fn: SRC + ', Table 1 (mean of 5 seeds, stratified 80/20 gene splits)',
+    note: 'Now the results. Across 15 tasks, TargetSage is best on every one. Its macro-average Adjusted F1 is 11.1, 37 percent above the strongest of ten baselines, a deep tabular ResNet at 8.1; the gap is significant against all ten.' },
+  { scene: 5, st: { gains: 1, dur: 1700 },
+    cap: 'The largest gains are where literature evidence matters most: cancer druggability and drug-modality tasks.',
+    fn: SRC + ', Table 1 (TargetSage vs the best baseline on each task)',
+    note: 'The largest gains appear where literature evidence matters most. On the cancer druggability tasks it nearly doubles the strongest baseline, and on drug-modality tasks such as approved antibody targets and PROTAC-degradable targets it leads clearly.' },
+  { scene: 5, st: { pros: 1, dur: 1700 },
+    cap: 'Trained only on 2021 labels, TargetSage ranks the 90 genes that became clinical targets by 2025 at a median top 7.0% of the genome, best of all methods.',
+    fn: SRC + ', Table 3 (median rank percentile, lower is better)',
+    note: 'Now the 90 genes from the beginning. We train only on 2021 labels and ask where each method ranks the genes that became clinical targets by 2025. TargetSage places them at a median of the top 7 percent of the genome, the best of all methods; for the broader set of 456 genes upgraded to clinical or chemical targets it is also best, at 21.8 percent.' },
+  { scene: 5, st: { orr: 1, dur: 1800 },
+    cap: 'Independent check: among 11,891 understudied (Tbio) proteins, 8 of TargetSage’s top 25 are Phase 2/3 drug targets, versus 6 for the runner-up and 0.3 by chance.',
+    fn: 'Hit counts implied by the odds ratios in ' + SRC + ', Table 3 (136 of 11,891 Tbio proteins are ChEMBL Phase 2/3 targets)',
+    note: 'An independent check uses ChEMBL Phase 2 and 3 trial targets, which were never used for training. Among 11,891 understudied proteins, 136 are trial targets, about 1 percent. Eight of TargetSage’s top 25 are trial targets, an odds ratio of 43; the runner-up, a random forest, has six, and chance would give 0.3. Being in a trial means being tested, not proven to work.' },
+  { scene: 5, st: { abl: 1, dur: 1700 },
+    cap: 'Every component adds: nnPU over plain cross-entropy, gated fusion over concatenation or attention, GRPO-guided attributes over static or agent-only ones.',
+    fn: SRC + ', Fig. 2 (macro-average Adjusted F1 over the 15 tasks)',
+    note: 'Finally, ablations. Each design choice adds: the non-negative PU loss beats class-balanced cross-entropy and the unbiased PU loss, gated fusion beats concatenation, summation and attention, and GRPO-guided attributes beat a static list and agent-only extraction. All three input types together beat any single one.' },
+  { scene: 6, st: { recap: 1 },
+    cap: 'TargetSage profiles each gene with retrieved evidence, reasons over it with a GRPO-trained policy, and scores genes with PU learning.',
+    fn: SRC,
+    note: 'To summarize: TargetSage profiles every gene with retrieved and fact-checked evidence, reasons about it with a policy trained by the downstream score, and scores genes with PU learning, so unlabeled genes are not counted as negatives. It leads on 15 tasks and finds future targets from past labels. These are retrospective checks; every predicted target still needs experiments.' },
+];
+S.forEach(s => { s.st = Object.assign({}, BASE, s.st); });
+const SEQ = new Set(['grid', 'gr1', 'gr2', 'gr3', 'gr4', 'prof', 'pf2', 'pf3', 'rsn', 'grpo', 'erb', 'erb2', 'fus', 'prior', 'nnpu', 'met', 'ceil',
+  'macro', 'gains', 'pros', 'orr', 'abl', 'recap']);
+const EXIT = new Set([]);
+const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 14, 'font-weight': 700, fill: C.head }, attrs || {}), parent);
+
+// ------------------------------------------------------------------ scene 0: the genome grid
+const gGrid = $('gGrid'), GD = D.grid, GX0 = 62, GY0 = 150, GS = 7.0;
+const isKnown = new Set(GD.known), isUpg = new Set(GD.upg);
+const gDots = mk('g', {}, gGrid);
+const dots = [];
+for (let k = 0; k < GD.nc * GD.nr; k++) { const c = k % GD.nc, r = Math.floor(k / GD.nc); dots.push(mk('circle', { cx: f1(GX0 + c * GS), cy: f1(GY0 + r * GS), r: 2.45 }, gDots)); }
+const gRing = mk('g', {}, gGrid);
+GD.upg.forEach(k => { const c = k % GD.nc, r = Math.floor(k / GD.nc); mk('circle', { cx: f1(GX0 + c * GS), cy: f1(GY0 + r * GS), r: 7, fill: 'none', stroke: AMBER, 'stroke-width': 1.7 }, gRing); });
+const legItem = (x, col, s, ring) => { const g = mk('g', {}, gGrid); mk('circle', { cx: x + 4, cy: 128, r: 4.6, fill: col, stroke: ring || 'none', 'stroke-width': 1.4 }, g); txt(x + 14, 132.5, s, { 'font-size': 12.5 }, g); return g; };
+const lgK = legItem(62, GREEN, 'clinical target (Tclin, 2021)');
+const lgU = legItem(250, UNL, 'unlabeled');
+const lgN = legItem(250, NEG, 'treated as a negative');
+const lgA = legItem(400, AMBER, 'became a clinical target by 2025', '#8A4B12');
+function dotCol(k, m) {
+  if (isKnown.has(k)) return [GREEN, 2.45];
+  if (m >= 2 && isUpg.has(k)) return [AMBER, 3.3];
+  if (m >= 1) return [NEG, 2.45];
+  return [UNL, 2.45];
+}
+const gGR = $('gGridR');
+const bigNum = (y, num, col, l1, l2) => { const g = mk('g', {}, gGR);
+  txt(570, y, num, { 'font-size': 34, 'font-weight': 700, fill: col }, g);
+  txt(570, y + 23, l1, { 'font-size': 13.5, fill: C.ink }, g);
+  if (l2) txt(570, y + 41, l2, { 'font-size': 12.5, fill: C.ink2 }, g);
+  return g; };
+const gr1 = bigNum(186, '19,032', C.ink, 'human protein-coding genes', '1 dot ≈ 10 genes');
+const gr2 = bigNum(274, '610', GREEN, 'clinical targets (Tclin) in PHAROS 2021', 'the other 18,422 genes are unlabeled');
+const gr3 = mk('g', {}, gGR);
+txt(570, 364, 'unlabeled = negative?', { 'font-size': 23, 'font-weight': 700, fill: C.red }, gr3);
+txt(570, 387, 'the classifier is told these genes are not targets', { 'font-size': 12.5 }, gr3);
+const gr4 = bigNum(364, '90', '#C07A1E', 'of those “negatives” became clinical targets', 'by 2025 (Tclin grew from 610 to 700)');
+
+// ------------------------------------------------------------------ scene 1: agentic profiling (ABL1)
+const gP = $('gProf');
+(() => { const t = txt(62, 132, '', { 'font-size': 13.5 }, gP); tsp(t, 'Structured features: 482 numbers from 15 databases', { 'font-weight': 700, fill: C.head }); tsp(t, '   ABL1, six shown', { fill: C.mute }); })();
+const FT = [['pLI', '1.00'], ['LoF obs / exp', '0.07'], ['mouse essential', 'yes'], ['protein length', '1130 aa'], ['DGIdb types', '43'], ['domains', 'kinase, SH2, SH3']];
+FT.forEach(([a, b], i) => { const x = 62 + i * 106;
+  box(x, 144, i === 5 ? 114 : 100, 46, gP, { rx: 6, fill: '#FFFFFF', stroke: '#B8C5D0' });
+  txt(x + 9, 161, a, { 'font-size': 11.5, fill: C.mute }, gP);
+  txt(x + 9, 181, b, { 'font-size': b.length > 8 ? 12 : 16, 'font-weight': 700, fill: C.ink }, gP); });
+for (let i = 0; i < 40; i++) mk('rect', { x: 62 + i * 16, y: 198, width: 13, height: 9, rx: 1.5, fill: '#E3E9EE' }, gP);
+txt(62, 226, '+ 476 more numbers (constraint, phenotypes, druggability, networks, expression)', { 'font-size': 11.5, fill: C.mute }, gP);
+arrow(300, 230, 300, 252, gP);
+txt(310, 246, 'Tool 1: numbers → evidence statements', { 'font-size': 11.5, 'font-weight': 700, fill: C.teal }, gP);
+box(62, 258, 612, 176, gP, { fill: '#F7FAFB', stroke: '#9DB7C3' });
+txt(76, 281, 'Evidence profile · ABL1', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal }, gP);
+lines(76, 305, ['highly loss-of-function intolerant (pLI=1.00); observed/expected LoF ratio: 0.07;',
+  'essential in mouse; protein length 1130 aa; 43 DGIdb interaction types;', 'protein kinase, SH2, and SH3 domains.'], 20, { 'font-size': 13, fill: C.ink }, gP);
+const gP2 = mk('g', {}, gP);
+lines(76, 372, ['+ NCBI Gene: summary of function and disease context', '+ UniProt: molecular function, subcellular localization, tissue specificity',
+  '+ Open Targets: tractability and safety · PubMed: recent abstracts'], 19, { 'font-size': 12.5, fill: '#2E6B5A' }, gP2);
+[['NCBI Gene', 'nearly all genes'], ['UniProt', '85% of genes'], ['PubMed', 'when more evidence is needed'], ['Open Targets', '72% of genes']].forEach(([a, b], i) => {
+  const y = 144 + i * 46;
+  box(718, y, 202, 38, gP2, { rx: 7, fill: '#EDF5F1', stroke: '#9CC6B2' });
+  txt(730, y + 16, a, { 'font-size': 12.5, 'font-weight': 700, fill: '#2E6B5A' }, gP2);
+  txt(730, y + 31, b, { 'font-size': 11, fill: C.ink2 }, gP2);
+  arrow(716, y + 19, 678, 370 + i * 9, gP2, { 'stroke-width': 1.2 });
+});
+const gP3 = mk('g', {}, gP);
+box(718, 330, 202, 120, gP3, { rx: 7, fill: '#FBF1EF', stroke: '#E1A69E' });
+txt(730, 350, 'Tool 6 · fact-checker', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
+txt(730, 369, 'PubMed abstract for CA4:', { 'font-size': 11.5 }, gP3);
+txt(730, 388, '“… FDA approved …”', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
+mk('line', { x1: 728, x2: 852, y1: 384, y2: 384, stroke: C.red, 'stroke-width': 1.8 }, gP3);
+txt(730, 406, '→ sentence removed (label leakage)', { 'font-size': 11.5, fill: C.red }, gP3);
+txt(730, 425, 'leakage found in 1 of 19,032 genes', { 'font-size': 11.5 }, gP3);
+txt(730, 442, 'conflicts flagged in 385 genes (2.0%)', { 'font-size': 11.5 }, gP3);
+
+// ------------------------------------------------------------------ scene 2a: reasoning output (ERBB3)
+const gR = $('gRsn');
+box(62, 170, 176, 74, gR, { fill: '#F7FAFB', stroke: '#9DB7C3' });
+txt(150, 200, 'Evidence profile', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'middle' }, gR);
+txt(150, 220, 'ERBB3 · task context', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
+arrow(240, 207, 282, 207, gR);
+box(286, 160, 188, 94, gR, { fill: '#E8F0F3', stroke: '#9DB7C3' });
+txt(380, 192, 'Reasoning policy', { 'font-size': 14, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gR);
+txt(380, 212, 'Qwen2.5-1.5B + LoRA', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
+txt(380, 230, 'trained with GRPO', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gR);
+arrow(476, 190, 514, 160, gR); arrow(476, 207, 514, 300, gR); arrow(476, 224, 514, 412, gR);
+txt(524, 124, 'rationale', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gR);
+box(520, 132, 400, 82, gR, { rx: 6, fill: '#FFFFFF', stroke: '#C9D3DC' });
+lines(534, 156, ['“ERBB3 is unique in that it lacks a functional kinase domain,', 'which means it cannot directly initiate signaling through',
+  'phosphorylation. Instead, it acts primarily as a co-receptor …”'], 20, { 'font-size': 13, 'font-style': 'italic', 'font-family': SERIF, fill: C.ink }, gR);
+txt(524, 240, '23 attribute scores in [0, 1] · 6 shown', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gR);
+const ATTR = [['antibody', 0.94], ['antibody availability', 0.91], ['tractable modalities', 0.90], ['disease association', 0.88], ['protein–protein interactions', 0.85], ['small molecule', 0.12]];
+const attrBars = ATTR.map(([a, v], i) => { const y = 254 + i * 22;
+  txt(524, y + 11, a, { 'font-size': 12 }, gR);
+  mk('rect', { x: 708, y: y + 1, width: 170, height: 13, rx: 3, fill: '#EEF2F5' }, gR);
+  const b = mk('rect', { x: 708, y: y + 1, width: 170 * v, height: 13, rx: 3, fill: v > 0.5 ? '#2B7A8C' : '#B0703A' }, gR);
+  txt(886, y + 12, v.toFixed(2), { 'font-size': 12, 'font-weight': 700, fill: C.ink }, gR); return { b, v }; });
+txt(524, 404, 'embedding of the rationale · 256-d', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gR);
+(() => { let sd = 11; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 26; i++) mk('rect', { x: 524 + i * 15, y: 414, width: 13, height: 13, rx: 2, fill: mixHex('#E6E1F8', '#5B4BB8', rnd()) }, gR); })();
+
+// ------------------------------------------------------------------ scene 2b: GRPO rollouts (toy)
+const gQ = $('gGrpo'), GQ = D.grpo;
+(() => { const t = txt(62, 124, '', { 'font-size': 12.5 }, gQ); tsp(t, 'Gene i (a known target): ', { 'font-weight': 700, fill: C.head });
+  tsp(t, 'each rollout’s attribute scores replace gene i’s row → frozen scorer → reward = Adjusted F1'); })();
+const RN = ['antibody', 'small mol.', 'disease'];
+const RNOTE = ['reads it as an antibody target', 'mixed reading', 'reads it as a small-molecule target', 'antibody target, weaker'];
+const cards = GQ.roll.map((a, k) => { const x = 62 + k * 216, y = 138, g = mk('g', {}, gQ);
+  box(x, y, 200, 240, g, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+  txt(x + 14, y + 23, 'rollout ' + (k + 1), { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, g);
+  txt(x + 14, y + 40, RNOTE[k], { 'font-size': 11, fill: C.mute, 'font-style': 'italic' }, g);
+  const bars = a.map((v, j) => { const yy = y + 54 + j * 24;
+    txt(x + 14, yy + 11, RN[j], { 'font-size': 11.5 }, g);
+    mk('rect', { x: x + 86, y: yy + 1, width: 72, height: 12, rx: 3, fill: '#EEF2F5' }, g);
+    const b = mk('rect', { x: x + 86, y: yy + 1, width: 72 * v, height: 12, rx: 3, fill: AT[j] }, g);
+    txt(x + 164, yy + 11, v.toFixed(2), { 'font-size': 11.5, fill: C.ink }, g); return b; });
+  mk('line', { x1: x + 12, x2: x + 188, y1: y + 132, y2: y + 132, stroke: '#E1E7EC' }, g);
+  txt(x + 14, y + 152, 'score of gene i', { 'font-size': 11.5 }, g);
+  txt(x + 188, y + 152, GQ.score[k].toFixed(3), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
+  txt(x + 14, y + 172, 'reward (Adj. F1)', { 'font-size': 11.5 }, g);
+  txt(x + 188, y + 172, GQ.reward[k].toFixed(4), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
+  mk('line', { x1: x + 100, x2: x + 100, y1: y + 186, y2: y + 210, stroke: '#9AA8B4' }, g);
+  const adv = GQ.adv[k], ab = mk('rect', { y: y + 191, height: 14, rx: 3, fill: adv >= 0 ? C.teal : C.red }, g);
+  txt(x + 100, y + 228, 'advantage ' + (adv >= 0 ? '+' : '−') + Math.abs(adv).toFixed(2), { 'font-size': 12, 'font-weight': 700, fill: adv >= 0 ? C.teal : C.red, 'text-anchor': 'middle' }, g);
+  return { g, ab, adv, x }; });
+
+// ------------------------------------------------------------------ scene 2c: ERBB2 vs ERBB3
+const gE = $('gErb');
+const pairBars = (x0, y0, rows, scale, parent) => rows.map(([lab, v2, v3], i) => { const y = y0 + i * 50;
+  txt(x0, y, lab, { 'font-size': 12.5, fill: C.ink }, parent);
+  const r2 = mk('rect', { x: x0, y: y + 7, height: 11, rx: 2.5, fill: B2, width: scale * v2 }, parent);
+  const r3 = mk('rect', { x: x0, y: y + 21, height: 11, rx: 2.5, fill: B3, width: scale * v3 }, parent);
+  const t2 = txt(x0 + scale * v2 + 6, y + 17, v2 === 1 ? '1' : v2.toFixed(2), { 'font-size': 11.5, fill: B2, 'font-weight': 700 }, parent);
+  const t3 = txt(x0 + scale * v3 + 6, y + 31, v3 === 1 ? '1' : v3.toFixed(2), { 'font-size': 11.5, fill: B3, 'font-weight': 700 }, parent);
+  return { r2, r3, t2, t3, v2, v3, x0, scale }; });
+head(62, 128, 'Structured features', gE);
+[['ERBB2', B2], ['ERBB3', B3]].forEach(([s, col], k) => { mk('rect', { x: 250 + k * 80, y: 119, width: 12, height: 12, rx: 2, fill: col }, gE); txt(267 + k * 80, 129.5, s, { 'font-size': 12.5, 'font-weight': 700, fill: col }, gE); });
+pairBars(62, 158, [['kinase-domain flag', 1, 1], ['druggability', 0.90, 0.90], ['membrane localization', 0.95, 0.95], ['pathway centrality', 0.85, 0.80], ['cancer mutation driver', 0.90, 0.85]], 300, gE);
+const gE2 = mk('g', {}, gE);
+head(530, 128, 'Reasoning attributes (TargetSage)', gE2);
+const eRows = pairBars(530, 158, [['enzyme activity', 0.85, 0.10], ['kinase enzyme family', 0.90, 0.05]], 300, gE2);
+box(530, 262, 390, 128, gE2, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+txt(546, 286, 'Approved drugs', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gE2);
+txt(546, 310, 'ERBB2: small-molecule kinase inhibitors', { 'font-size': 12.5, 'font-weight': 700, fill: B2 }, gE2);
+txt(546, 327, '(lapatinib, neratinib)', { 'font-size': 12, fill: C.ink2 }, gE2);
+txt(546, 353, 'ERBB3: antibody- or ADC-based agents only', { 'font-size': 12.5, 'font-weight': 700, fill: B3 }, gE2);
+txt(546, 370, 'a kinase inhibitor needs an active enzyme to block', { 'font-size': 12, fill: C.ink2 }, gE2);
+
+// ------------------------------------------------------------------ scene 3a: gated fusion
+const gF = $('gFus');
+const MODS = [['structured features', 'x', 'bio', '482 numbers'], ['reasoning attributes', 'x', 'attr', '23 scores'], ['rationale embedding', 'z', 'emb', '256-d']];
+MODS.forEach(([a, sym, sup, b], i) => { const y = 136 + i * 70;
+  box(62, y, 186, 54, gF, { fill: '#FFFFFF', stroke: MOD[i], 'stroke-width': 1.6 });
+  txt(76, y + 22, a, { 'font-size': 13, 'font-weight': 700, fill: MOD[i] }, gF);
+  const t = txt(76, y + 41, '', { 'font-size': 12 }, gF); tsp(t, sym, { 'font-family': SERIF, 'font-weight': 700, 'font-size': 14 }); tsp(t, sup, { 'font-size': 9.5, dy: -6 }); tsp(t, '  ' + b, { dy: 6 });
+  arrow(250, y + 27, 280, y + 27, gF);
+  box(284, y + 8, 76, 38, gF, { rx: 6 });
+  txt(322, y + 32, 'MLP', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+  arrow(362, y + 27, 404, 230, gF); });
+mk('circle', { cx: 436, cy: 230, r: 30, fill: '#F2F5F8', stroke: '#B8C5D0' }, gF);
+txt(436, 226, 'gates', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(436, 243, 'α (per gene)', { 'font-size': 10.5, fill: C.ink2, 'text-anchor': 'middle' }, gF);
+arrow(467, 230, 500, 230, gF);
+box(504, 202, 150, 56, gF, { fill: '#E8F0F3', stroke: '#9DB7C3' });
+txt(579, 226, 'discriminator D', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(579, 244, 'one per task', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
+arrow(656, 230, 690, 230, gF);
+box(694, 202, 226, 56, gF, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+txt(807, 226, 'target score in [0, 1]', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(807, 244, 'used to rank all genes', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
+txt(504, 300, 'gate weights differ by gene (schematic)', { 'font-size': 12, fill: C.mute }, gF);
+const GATES = [['gene A', [0.56, 0.26, 0.18]], ['gene B', [0.18, 0.30, 0.52]]];
+const gateBars = GATES.map(([nm, w], i) => { const y = 312 + i * 30; txt(504, y + 13, nm, { 'font-size': 12 }, gF);
+  let x = 560; return w.map((v, j) => { const r = mk('rect', { x, y, width: 300 * v - 2, height: 18, rx: 2, fill: MOD[j] }, gF); x += 300 * v; return r; }); });
+
+// ------------------------------------------------------------------ scene 3b: hybrid class prior
+const gPr = $('gPrior');
+const PX = v => 110 + v / 0.15 * 740;
+mk('line', { x1: PX(0), x2: PX(0.15), y1: 252, y2: 252, stroke: '#9AA8B4', 'stroke-width': 1.4 }, gPr);
+[0, 0.025, 0.05, 0.075, 0.10, 0.125, 0.15].forEach(v => { mk('line', { x1: PX(v), x2: PX(v), y1: 248, y2: 256, stroke: '#9AA8B4' }, gPr);
+  txt(PX(v), 274, (100 * v).toFixed(v * 100 % 1 ? 1 : 0) + '%', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gPr); });
+txt(PX(0), 294, 'fraction of all genes that are true targets (Clinical Targets task)', { 'font-size': 11.5, fill: C.mute }, gPr);
+const obs = 700 / 19032;
+const llmBand = mk('rect', { x: PX(obs), y: 214, width: PX(3.5 * obs) - PX(obs), height: 16, rx: 3, fill: '#F5D7B2' }, gPr);
+txt(PX(obs) + 6, 206, 'LLM multiplier m* between 1.0 and 3.5 → LLM prior between 3.7% and 12.9%', { 'font-size': 12, fill: '#9A5A12', 'font-weight': 700 }, gPr);
+mk('line', { x1: PX(obs), x2: PX(obs), y1: 160, y2: 252, stroke: GREEN, 'stroke-width': 2.4 }, gPr);
+mk('circle', { cx: PX(obs), cy: 252, r: 5, fill: GREEN }, gPr);
+txt(PX(obs) + 8, 160, 'observed rate |P| / n = 700 / 19,032 = 3.7%', { 'font-size': 12.5, 'font-weight': 700, fill: GREEN }, gPr);
+txt(PX(obs) + 8, 177, 'a lower bound: unlabeled genes still hide targets', { 'font-size': 12, fill: C.ink2 }, gPr);
+lines(110, 404, ['m* is the median over 10 GPT-4o queries given the task, n and |P|; it is fixed before training.',
+  'The data estimate is the mean discriminator score on unlabeled genes; results are stable for α from 0.2 to 0.8.'], 20, { 'font-size': 12.5, fill: C.ink2 }, gPr);
+
+// ------------------------------------------------------------------ scene 3c: nnPU weights (toy embedding)
+const gNp = $('gNnpu'), NP = D.nnpu;
+box(62, 120, 392, 316, gNp, { fill: '#FAFBFC', stroke: '#DDE3E8' });
+const allZ = NP.zP.concat(NP.zU);
+const zx = allZ.map(p => p[0]), zy = allZ.map(p => p[1]);
+const zmin = [Math.min(...zx), Math.min(...zy)], zmax = [Math.max(...zx), Math.max(...zy)];
+const ZX = v => 84 + (v - zmin[0]) / (zmax[0] - zmin[0]) * 348, ZY = v => 412 - (v - zmin[1]) / (zmax[1] - zmin[1]) * 262;
+const npRings = NP.zU.map((p, i) => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: f1(4 + 9 * Math.max(0, NP.w[i])), fill: 'none', stroke: C.teal, 'stroke-width': 1.2, opacity: 0.75 }, gNp));
+NP.zU.forEach(p => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: 3.4, fill: '#AEB9C4' }, gNp));
+NP.zP.forEach(p => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: 4.6, fill: GREEN }, gNp));
+(() => { const x = ZX(NP.zbar[0]), y = ZY(NP.zbar[1]);
+  mk('path', { d: `M${f1(x - 7)} ${f1(y)}L${f1(x + 7)} ${f1(y)}M${f1(x)} ${f1(y - 7)}L${f1(x)} ${f1(y + 7)}`, stroke: '#1F5E3D', 'stroke-width': 2.6, 'stroke-linecap': 'round' }, gNp);
+  txt(x + 10, y - 9, 'centroid of known targets', Object.assign({ 'font-size': 11.5, 'font-weight': 700, fill: '#1F5E3D' }, HALO), gNp); })();
+[[GREEN, 'known target', 0], ['#AEB9C4', 'unlabeled gene', 1]].forEach(([col, s], k) => { mk('circle', { cx: 80 + k * 120, cy: 428 - 0, r: 4.5, fill: col }, gNp); txt(90 + k * 120, 432, s, { 'font-size': 11.5 }, gNp); });
+mk('circle', { cx: 324, cy: 428, r: 7, fill: 'none', stroke: C.teal, 'stroke-width': 1.2 }, gNp); txt(336, 432, 'ring = weight w', { 'font-size': 11.5 }, gNp);
+lines(482, 300, ['w is high for unlabeled genes the discriminator scores high', 'and whose embedding points toward the known targets.', '',
+  'max(0, ·): the estimated risk of the unlabeled genes, after', 'removing the positives’ share, is not allowed to go negative;', 'this stops a flexible model from overfitting (Kiryo et al., 2017).'], 19, { 'font-size': 12.5, fill: C.ink2 }, gNp);
+
+// ------------------------------------------------------------------ scene 4: the metric (toy)
+const gM = $('gMet'), F = D.f1toy;
+const known2 = new Set(F.known), hid2 = new Set(F.hidden);
+const MB = 392, MH = 196, MX0 = 66, MW = 14.1;
+mk('line', { x1: MX0 - 4, x2: MX0 + F.n * MW, y1: MB, y2: MB, stroke: '#9AA8B4' }, gM);
+[0, 0.5, 1].forEach(v => { mk('line', { x1: MX0 - 4, x2: MX0 + F.n * MW, y1: MB - v * MH, y2: MB - v * MH, stroke: v ? '#EEF2F5' : '#9AA8B4' }, gM);
+  txt(MX0 - 10, MB - v * MH + 4, v.toFixed(1), { 'font-size': 11, fill: C.mute, 'text-anchor': 'end' }, gM); });
+txt(MX0, MB + 20, '40 genes (toy) · bar height = model score', { 'font-size': 11.5, fill: C.mute }, gM);
+const mBars = Array.from({ length: F.n }, (_, i) => mk('rect', { x: MX0 + i * MW, width: MW - 2.6, rx: 2,
+  fill: known2.has(i) ? GREEN : '#C3CDD6', stroke: hid2.has(i) ? AMBER : 'none', 'stroke-width': hid2.has(i) ? 1.8 : 0 }, gM));
+[[GREEN, 'known target (4)'], ['#C3CDD6', 'unlabeled gene'], ['#C3CDD6', 'unlabeled, but a true target (the metric cannot know)', AMBER]].forEach(([col, s, st], k) => {
+  const x = [66, 210, 352][k]; mk('rect', { x, y: 422, width: 12, height: 12, rx: 2, fill: col, stroke: st || 'none', 'stroke-width': 1.8 }, gM); txt(x + 18, 432, s, { 'font-size': 11.5 }, gM); });
+const mR = txt(690, 186, '', { 'font-size': 13.5, fill: C.ink }, gM), mP = txt(690, 214, '', { 'font-size': 13.5, fill: C.ink }, gM);
+const mF = txt(690, 258, '', { 'font-size': 26, 'font-weight': 700, fill: C.teal }, gM);
+const mLab = txt(690, 156, '', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gM);
+const gCeil = mk('g', {}, gM);
+txt(690, 300, 'ceiling = n / |P| = 40 / 4 = 10', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gCeil);
+txt(690, 330, 'real task', { 'font-size': 12, fill: C.mute }, gCeil);
+txt(856, 330, 'ceiling', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
+txt(930, 330, 'TargetSage', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
+[['Clinical Targets', '27.2', '11.2'], ['Clinical & Chemical', '7.4', '3.2'], ['Ab (approved)', '276', '22.6']].forEach(([a, b, c], i) => { const y = 352 + i * 22;
+  txt(690, y, a, { 'font-size': 12.5 }, gCeil); txt(856, y, b, { 'font-size': 12.5, 'text-anchor': 'end' }, gCeil); txt(930, y, c, { 'font-size': 12.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, gCeil); });
+const MODELS = [F.flat, F.good, F.perfect], MNAME = ['Every gene scores 0.3', 'A useful model', 'A perfect model of the labels'];
+
+// ------------------------------------------------------------------ scene 5a: macro-average
+const gMa = $('gMacro');
+const MAC = [['TargetSage', 11.1], ['ResNet', 8.1], ['GB', 7.6], ['FT-Transformer', 6.7], ['LR', 6.0], ['MLP', 6.0], ['TabNet', 5.1], ['KNN', 3.7], ['SVM', 3.3], ['RF', 3.0], ['NB', 1.6]];
+head(62, 122, 'Macro-average Adjusted F1 over 15 tasks', gMa); txt(920, 122, 'higher is better', { 'font-size': 12, 'text-anchor': 'end' }, gMa);
+const macBars = MAC.map(([nm, v], i) => { const y = 136 + i * 27;
+  txt(196, y + 14, nm, { 'font-size': 12.5, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal, 'text-anchor': 'end' }, gMa);
+  const b = mk('rect', { x: 206, y, height: 18, rx: 3, fill: i ? '#B5C0CA' : C.teal }, gMa);
+  const t = txt(0, y + 14, v.toFixed(1), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gMa); return { b, t, v }; });
+const MS = v => v / 12 * 560;
+const macTag = txt(206 + MS(11.1) + 42, 150, '+37% vs the best baseline', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gMa);
+
+// ------------------------------------------------------------------ scene 5b: per-task gains
+const gGa = $('gGains');
+const GAIN = [['Cancer-relevant', 14.0, 7.5], ['Type-specific cancer', 5.4, 2.8], ['Pan-cancer', 5.5, 3.0], ['Antibody (approved)', 22.6, 16.2], ['Antibody (clinical+)', 17.5, 12.9], ['PROTAC-degradable', 17.2, 13.6]];
+head(62, 122, 'Adjusted F1 on the tasks with the largest gains', gGa);
+[['best baseline', '#B5C0CA'], ['TargetSage', C.teal]].forEach(([s, col], k) => { mk('rect', { x: 640 + k * 130, y: 112, width: 12, height: 12, rx: 2, fill: col }, gGa); txt(658 + k * 130, 122.5, s, { 'font-size': 12.5 }, gGa); });
+txt(62, 146, 'cancer druggability', { 'font-size': 11.5, fill: C.mute, 'font-weight': 700 }, gGa);
+txt(62, 296, 'drug modality', { 'font-size': 11.5, fill: C.mute, 'font-weight': 700 }, gGa);
+const gainBars = GAIN.map(([nm, ts, bl], i) => { const y = 156 + i * 46 + (i > 2 ? 12 : 0);
+  txt(240, y + 17, nm, { 'font-size': 12.5, fill: C.ink, 'text-anchor': 'end' }, gGa);
+  const b0 = mk('rect', { x: 250, y, height: 14, rx: 3, fill: '#B5C0CA' }, gGa), b1 = mk('rect', { x: 250, y: y + 17, height: 14, rx: 3, fill: C.teal }, gGa);
+  const t0 = txt(0, y + 12, bl.toFixed(1), { 'font-size': 11.5, fill: C.ink2 }, gGa), t1 = txt(0, y + 29, ts.toFixed(1), { 'font-size': 12, 'font-weight': 700, fill: C.teal }, gGa);
+  return { b0, b1, t0, t1, ts, bl }; });
+const GS2 = v => v / 24 * 600;
+
+// ------------------------------------------------------------------ scene 5c: prospective ranking
+const gPs = $('gPros');
+const PRO = [['TargetSage', 7.0], ['FT-Transformer', 7.4], ['GB', 7.7], ['RF', 8.1], ['LR', 10.5], ['SVM', 11.2], ['MLP', 21.8], ['TabNet', 28.1], ['ResNet', 36.6], ['KNN', 41.3], ['NB', 50.5]];
+head(62, 122, 'Where do the 90 new clinical targets rank? (trained on 2021 labels)', gPs);
+txt(920, 122, 'lower is better', { 'font-size': 12, 'text-anchor': 'end' }, gPs);
+const PXr = v => 220 + v / 55 * 680;
+[0, 10, 20, 30, 40, 50].forEach(v => { mk('line', { x1: PXr(v), x2: PXr(v), y1: 136, y2: 410, stroke: '#EEF2F5' }, gPs); txt(PXr(v), 426, v + '%', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gPs); });
+txt(PXr(0), 444, 'median rank percentile in the genome (0% = top)', { 'font-size': 11.5, fill: C.mute }, gPs);
+const proDots = PRO.map(([nm, v], i) => { const y = 148 + i * 24.5;
+  txt(208, y + 4, nm, { 'font-size': 12.5, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal, 'text-anchor': 'end' }, gPs);
+  mk('line', { x1: PXr(0), x2: PXr(v), y1: y, y2: y, stroke: i ? '#D5DCE2' : '#9DC0CC', 'stroke-width': 2 }, gPs);
+  const d = mk('circle', { cx: PXr(v), cy: y, r: i ? 5 : 6.5, fill: i ? '#9AA7B2' : C.teal }, gPs);
+  const t = txt(PXr(v) + 11, y + 4.5, v.toFixed(1) + '%', { 'font-size': 12, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal }, gPs);
+  return { d, t, v, y }; });
+
+// ------------------------------------------------------------------ scene 5d: top-25 shortlists vs Phase 2/3 targets
+const gO = $('gOr');
+const ORR = [['TargetSage', 8, 43.2], ['RF', 6, 28.5], ['LR', 5, 22.4], ['FT-Transformer', 4, 16.9], ['GB', 3, 12.0], ['ResNet', 3, 12.0], ['NB', 1, 3.6], ['SVM, MLP, TabNet, KNN', 0, 0.0]];
+head(62, 122, 'Top 25 understudied (Tbio) genes per method: how many are Phase 2/3 drug targets?', gO);
+const orRows = ORR.map(([nm, h, or], i) => { const y = 140 + i * 34, g = mk('g', {}, gO);
+  txt(232, y + 15, nm, { 'font-size': 12.5, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal, 'text-anchor': 'end' }, g);
+  const sq = Array.from({ length: 25 }, (_, j) => mk('rect', { x: 244 + j * 21, y, width: 17, height: 17, rx: 3, fill: j < h ? (i ? '#6F8290' : C.teal) : '#EEF2F5' }, g));
+  txt(782, y + 14, h + ' of 25', { 'font-size': 12.5, 'font-weight': 700, fill: i ? C.ink : C.teal }, g);
+  txt(920, y + 14, 'OR ' + or.toFixed(1), { 'font-size': 12.5, fill: i ? C.ink2 : C.teal, 'font-weight': i ? 400 : 700, 'text-anchor': 'end' }, g);
+  return { g, sq, h }; });
+txt(244, 428, 'by chance: 25 × 136 / 11,891 = 0.3 of 25', { 'font-size': 12.5, 'font-style': 'italic', fill: C.ink2 }, gO);
+
+// ------------------------------------------------------------------ scene 5e: ablations (Fig. 2)
+const gA = $('gAbl');
+const ABL = [['Input types', [['Bio', 10.7], ['Expl.', 10.8], ['Impl.', 10.7], ['Bio+Expl.', 10.8], ['Bio+Impl.', 10.9], ['Expl.+Impl.', 10.9], ['all three', 11.1]]],
+  ['Fusion', [['attention', 9.7], ['concat', 10.7], ['sum', 10.7], ['gated', 11.1]]],
+  ['Learning objective', [['BCE', 9.0], ['uPU', 10.5], ['nnPU', 11.1]]],
+  ['Attribute extraction', [['static', 10.2], ['agent', 10.5], ['+ GRPO', 11.1]]]];
+const ablBars = [];
+ABL.forEach(([title, rows], c) => { const x0 = 62 + c * 222;
+  head(x0, 124, title, gA, { 'font-size': 13 });
+  rows.forEach(([nm, v], i) => { const y = 140 + i * 36, full = i === rows.length - 1;
+    txt(x0, y + 13, nm, { 'font-size': 12, fill: full ? C.teal : C.ink2, 'font-weight': full ? 700 : 400 }, gA);
+    const b = mk('rect', { x: x0 + 76, y: y + 1, height: 15, rx: 3, fill: full ? C.teal : '#B5C0CA' }, gA);
+    const t = txt(0, y + 13, v.toFixed(1), { 'font-size': 12, 'font-weight': 700, fill: full ? C.teal : C.ink }, gA);
+    ablBars.push({ b, t, v, x0, i, c }); }); });
+txt(62, 432, 'bars start at 8.5 to show the differences; strongest baseline: 8.1', { 'font-size': 11.5, fill: C.mute }, gA);
+const AS = v => (v - 8.5) / 2.8 * 110;
+
+// ------------------------------------------------------------------ scene 6: recap
+const gRc = $('gRecap');
+const RC = [['1', 'Agentic profiling', ['features as evidence statements,', 'four external sources, fact-checked']], ['2', 'Guided reasoning', ['a rationale and 23 attribute scores,', 'GRPO with the downstream reward']],
+  ['3', 'PU-aware scoring', ['gated fusion, hybrid class prior,', 'non-negative PU loss']]];
+const rcItems = RC.map(([n, a, b], k) => { const g = mk('g', {}, gRc), x = 82 + k * 284;
+  mk('circle', { cx: x + 16, cy: 168, r: 16, fill: C.teal }, g); txt(x + 16, 173.5, n, { 'font-size': 15, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
+  txt(x + 42, 164, a, { 'font-size': 18, 'font-weight': 700, fill: C.ink }, g); lines(x + 42, 187, b, 18, { 'font-size': 12.5 }, g);
+  if (k < 2) mk('line', { x1: x + 252, y1: 168, x2: x + 272, y2: 168, stroke: '#9AA8B4', 'stroke-width': 1.6, 'marker-end': 'url(#ah)' }, g); return g; });
+const rcNums = mk('g', {}, gRc);
+[['11.1', 'macro-average Adjusted F1 on 15 tasks (+37%)'], ['top 7%', 'median rank of the 90 targets added 2021→2025'], ['8 of 25', 'top Tbio picks that are Phase 2/3 targets']].forEach(([a, b], k) => {
+  const x = 82 + k * 284; txt(x, 300, a, { 'font-size': 26, 'font-weight': 700, fill: C.teal }, rcNums); txt(x, 322, b, { 'font-size': 12.5 }, rcNums); });
+
+// ------------------------------------------------------------------ render one frame
+function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
+  // scene 0
+  const gv = L('grid'); op(gGrid, gv);
+  if (gv > 0.001) {
+    for (let i = 0; i < dots.length; i++) { const a = dotCol(i, s0.gm), b = dotCol(i, s1.gm), d = dots[i];
+      d.setAttribute('fill', mixHex(a[0], b[0], E)); d.setAttribute('r', f1(lerp(a[1], b[1], E) * 10) / 10); }
+    const m2 = lerp(s0.gm >= 2 ? 1 : 0, s1.gm >= 2 ? 1 : 0, E), m1 = lerp(s0.gm >= 1 ? 1 : 0, s1.gm >= 1 ? 1 : 0, E);
+    op(gRing, m2); op(lgA, m2); op(lgN, m1); op(lgU, 1 - m1); op(lgK, 1);
+  }
+  ['gr1', 'gr2', 'gr3', 'gr4'].forEach((f, i) => op([gr1, gr2, gr3, gr4][i], L(f)));
+  // scene 1
+  op(gP, L('prof')); op(gP2, L('pf2')); op(gP3, L('pf3'));
+  // scene 2
+  const rv = L('rsn'); op(gR, rv);
+  if (rv > 0.001) attrBars.forEach((a, i) => a.b.setAttribute('width', f1(170 * a.v * (grow('rsn') ? ease(stag(eIn, i, 6, 0.5)) : 1))));
+  const qv = L('grpo'); op(gQ, qv);
+  if (qv > 0.001) cards.forEach((c, i) => { const t = grow('grpo') ? ease(stag(eIn, i, 4, 0.45)) : 1, w = 42 * Math.abs(c.adv) * t;
+    c.ab.setAttribute('x', f1(c.adv >= 0 ? c.x + 100 : c.x + 100 - w)); c.ab.setAttribute('width', f1(w)); op(c.g, 0.25 + 0.75 * t); });
+  op(gE, L('erb')); const e2 = L('erb2'); op(gE2, e2);
+  if (e2 > 0.001) { const t = grow('erb2') ? ease(clamp(eIn * 1.3 - 0.2)) : 1;
+    eRows.forEach(r => { const v3 = lerp(r.v2, r.v3, t); r.r3.setAttribute('width', f1(r.scale * v3)); r.t3.setAttribute('x', f1(r.x0 + r.scale * v3 + 6)); r.t3.textContent = v3.toFixed(2); }); }
+  // scene 3
+  op(gF, L('fus')); op(gPr, L('prior')); op(gNp, L('nnpu'));
+  // scene 4
+  const mv = L('met'); op(gM, mv);
+  if (mv > 0.001) {
+    const A = MODELS[s0.mm], B = MODELS[s1.mm], p = A.map((v, i) => lerp(v, B[i], E));
+    p.forEach((v, i) => { mBars[i].setAttribute('y', f1(MB - v * MH)); mBars[i].setAttribute('height', f1(Math.max(0.8, v * MH))); });
+    const R = F.known.reduce((s, i) => s + p[i], 0) / F.known.length, pb = p.reduce((s, v) => s + v, 0) / p.length;
+    mR.textContent = ''; tsp(mR, 'R'); tsp(mR, 'soft', { 'font-size': 10, dy: 4 }); tsp(mR, ' = mean of known targets = ' + R.toFixed(2), { dy: -4 });
+    mP.textContent = ''; tsp(mP, 'p̄ = mean of all 40 genes = ' + pb.toFixed(3));
+    mF.textContent = 'Adjusted F1 = ' + (R * R / pb).toFixed(2);
+    mLab.textContent = MNAME[E < 0.5 ? s0.mm : s1.mm];
+    op(gCeil, L('ceil'));
+  }
+  // scene 5
+  const ma = L('macro'); op(gMa, ma);
+  if (ma > 0.001) { macBars.forEach((m, i) => { const t = grow('macro') ? ease(stag(eIn, i, 11, 0.5)) : 1, w = MS(m.v) * t;
+    m.b.setAttribute('width', f1(w)); m.t.setAttribute('x', f1(212 + w)); op(m.t, t); }); op(macTag, grow('macro') ? clamp(eIn * 2 - 1) : 1); }
+  const ga = L('gains'); op(gGa, ga);
+  if (ga > 0.001) gainBars.forEach((g, i) => { const t = grow('gains') ? ease(stag(eIn, i, 6, 0.5)) : 1;
+    g.b0.setAttribute('width', f1(GS2(g.bl) * t)); g.b1.setAttribute('width', f1(GS2(g.ts) * t));
+    g.t0.setAttribute('x', f1(256 + GS2(g.bl) * t)); g.t1.setAttribute('x', f1(256 + GS2(g.ts) * t)); op(g.t0, t); op(g.t1, t); });
+  const pr = L('pros'); op(gPs, pr);
+  if (pr > 0.001) proDots.forEach((p, i) => { const t = grow('pros') ? ease(stag(eIn, i, 11, 0.5)) : 1; op(p.d, t); op(p.t, t); });
+  const orv = L('orr'); op(gO, orv);
+  if (orv > 0.001) orRows.forEach((r, i) => { const t = grow('orr') ? ease(stag(eIn, i, 8, 0.5)) : 1; op(r.g, t); });
+  const ab = L('abl'); op(gA, ab);
+  if (ab > 0.001) ablBars.forEach(a => { const t = grow('abl') ? ease(stag(eIn, a.c, 4, 0.5)) : 1, w = AS(a.v) * t;
+    a.b.setAttribute('width', f1(Math.max(0, w))); a.t.setAttribute('x', f1(a.x0 + 82 + w)); op(a.t, t); });
+  const rc = L('recap'); op(gRc, rc);
+  if (rc > 0.001) { const app = grow('recap') ? eIn : 1; rcItems.forEach((g, j) => op(g, ease(stag(app, j, 4, 0.6)))); op(rcNums, ease(stag(app, 3, 4, 0.6))); }
+}
+// ------------------------------------------------------------------ shared: nav dots, overlay text, render, playback
+const N = S.length;
+const navDots = SCENES.map((s, k) => mk('circle', { cx: 936 - (SCENES.length - 1 - k) * 20, cy: 22, r: 4.2 }, $('gNav')));
+const ov = $('ov');
+const blocks = new Map();
+function blockKey(k, kind) {
+  const s = S[k];
+  if (kind === 'h') return 'h' + s.scene;
+  if (kind === 't') return 't' + s.scene;
+  if (kind === 'c') return 'c' + k;
+  if (kind === 'e') return s.eq ? 'e:' + s.eq + (s.eqPos || []).join(',') : null;
+  if (kind === 'f') return 'f:' + s.fn;
+}
+function ensureBlock(key, html, cls, style) {
+  if (!key || blocks.has(key)) return;
+  const d = document.createElement('div'); d.className = 'tx ' + cls; d.innerHTML = html; if (style) d.setAttribute('style', style);
+  ov.appendChild(d); blocks.set(key, d);
+}
+S.forEach((s, k) => {
+  ensureBlock(blockKey(k, 'h'), SCENES[s.scene][0], 'kick', '');
+  ensureBlock(blockKey(k, 't'), SCENES[s.scene][1], 'ttl', '');
+  ensureBlock(blockKey(k, 'c'), s.cap, 'cap', '');
+  if (s.eq) ensureBlock(blockKey(k, 'e'), s.eq, 'eqb', `left:${s.eqPos[0] / 16}em; top:${s.eqPos[1] / 16}em;`);
+  ensureBlock(blockKey(k, 'f'), s.fn, 'fn', '');
+});
+const keysOf = k => ['h', 't', 'c', 'e', 'f'].map(x => blockKey(k, x)).filter(Boolean);
+
+function render(k, e) {
+  const s0 = S[Math.max(0, k - 1)].st, s1 = S[k].st;
+  const E = k === 0 ? 1 : ease(clamp(e));
+  // panels that share screen space fade out first, then the next one fades in; EXIT fields only leave early
+  const L = f => {
+    const a = +s0[f], b = +s1[f];
+    if (a === b) return b;
+    if (SEQ.has(f) || (EXIT.has(f) && b < a)) return lerp(a, b, b > a ? ease(clamp(e * 2.1 - 1.1)) : ease(clamp(e * 2.1)));
+    return lerp(a, b, E);
+  };
+  const eIn = k === 0 ? 1 : clamp((e - 0.5) / 0.5);
+  const grow = f => !!(+s1[f] && !+s0[f]);
+  renderScene({ k, e, E, L, eIn, s0, s1, grow });
+  navDots.forEach((d, j) => { const on = j === S[k].scene; d.setAttribute('fill', on ? C.teal : '#CCD6DE'); d.setAttribute('r', on ? 5 : 3.6); });
+  const prevKeys = new Set(k > 0 ? keysOf(k - 1) : []), curKeys = new Set(keysOf(k));
+  blocks.forEach((d, key) => {
+    let o = 0;
+    const inP = prevKeys.has(key), inC = curKeys.has(key);
+    if (k === 0) o = inC ? 1 : 0;
+    else if (inP && inC) o = 1;
+    else if (inC) o = clamp(e * 2.2 - 1.0);
+    else if (inP) o = 1 - clamp(e * 2.2);
+    d.style.opacity = o.toFixed(3);
+  });
+}
+
+let cur = 0, anim = null, playing = false, playTimer = null;
+const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function updateChrome() {
+  $('count').textContent = `${cur + 1} / ${N}`;
+  $('note').textContent = S[cur].note;
+  chipEls.forEach((c, j) => c.setAttribute('aria-current', j === S[cur].scene ? 'true' : 'false'));
+  $('bNext').textContent = cur === N - 1 ? 'Restart' : 'Next';
+}
+function finish() { if (anim) { cancelAnimationFrame(anim.raf); anim = null; render(cur, 1); } }
+function go(k, animate) {
+  finish();
+  k = clamp(k, 0, N - 1);
+  if (animate && k === cur + 1) {
+    cur = k; updateChrome();
+    const dur = reduce ? 250 : S[k].st.dur, t0 = performance.now();
+    const tick = now => { const e = clamp((now - t0) / dur); render(cur, e); if (e < 1) anim.raf = requestAnimationFrame(tick); else { anim = null; if (playing) schedulePlay(); } };
+    anim = { raf: requestAnimationFrame(tick) };
+  } else { cur = k; updateChrome(); render(cur, 1); if (playing) schedulePlay(); }
+}
+function next() { if (cur === N - 1) { go(0, false); return; } go(cur + 1, true); }
+function prev() { go(cur - 1, false); }
+function schedulePlay() { clearTimeout(playTimer); if (!playing) return; if (cur >= N - 1) { setPlaying(false); return; } playTimer = setTimeout(() => go(cur + 1, true), 2600); }
+function setPlaying(on) { playing = on; $('bPlay').textContent = on ? 'Pause' : 'Play all'; $('bPlay').setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) { if (cur === N - 1) go(0, false); schedulePlay(); } else clearTimeout(playTimer); }
+const chipsEl = $('chips');
+const chipEls = SCENES.map((s, j) => { const b = document.createElement('button'); b.className = 'chip'; b.type = 'button'; b.textContent = (j + 1) + ' · ' + CHIP[j];
+  b.addEventListener('click', () => { setPlaying(false); go(S.findIndex(x => x.scene === j), false); }); chipsEl.appendChild(b); return b; });
+$('bNext').addEventListener('click', () => { setPlaying(false); next(); });
+$('bPrev').addEventListener('click', () => { setPlaying(false); prev(); });
+$('bPlay').addEventListener('click', () => setPlaying(!playing));
+const wrapEl = $('stageWrap');
+async function toggleFull() { try { if (document.fullscreenElement) await document.exitFullscreen(); else await wrapEl.requestFullscreen(); } catch (err) { /* full screen is optional */ } }
+$('bFull').addEventListener('click', toggleFull);
+document.addEventListener('fullscreenchange', () => { $('bFull').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
+wrapEl.addEventListener('click', () => { setPlaying(false); next(); });
+document.addEventListener('keydown', ev => {
+  if (ev.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(ev.target.tagName)) return;
+  const key = ev.key;
+  if (key === 'ArrowRight' || key === ' ' || key === 'PageDown' || key === 'Enter') { if (ev.target.tagName === 'BUTTON' && (key === ' ' || key === 'Enter')) return; ev.preventDefault(); setPlaying(false); next(); }
+  else if (key === 'ArrowLeft' || key === 'PageUp' || key === 'Backspace') { ev.preventDefault(); setPlaying(false); prev(); }
+  else if (key === 'Home') { ev.preventDefault(); setPlaying(false); go(0, false); }
+  else if (key === 'End') { ev.preventDefault(); setPlaying(false); go(N - 1, false); }
+  else if (key === 'f' || key === 'F') { toggleFull(); }
+  else if (key === 'p' || key === 'P') { setPlaying(!playing); }
+});
+window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
+go(0, false);
+})();
+</script>

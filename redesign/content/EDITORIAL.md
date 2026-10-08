@@ -9,3 +9,4 @@
 - Citation filenames include a paper identifier and year. Every publication has a citation; links use PDF, Code, Project/Data when verified, Cite, then DOI/arXiv.
 - ACM PDF and UCI abstract endpoints returned 403 in the audit environment; their official endpoints are retained. The unavailable wudufan/deep_brain repository link was removed.
 - Every Netlify build runs scripts/check-site.py. This verifies local resources, anchors, citation years, and the CV before deployment. External resources should be checked during content updates; a 403 does not by itself establish that a publisher link is broken.
+- TargetSage (NeurIPS 2026) follows the OpenReview author list supplied by the owner on 2026-10-08; its title and abstract follow the submitted paper. Add PDF, Code and proceedings details from the camera-ready version once it is public.
