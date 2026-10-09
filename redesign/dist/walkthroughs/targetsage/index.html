@@ -331,7 +331,7 @@ const S = [
   { scene: 1, st: { prof: 1 },
     cap: 'Tool 1 reads the 482 structured features and rewrites the informative values as evidence statements.',
     fn: SRC + ', Sec. 3.2 and Appendix C (ABL1 example)',
-    note: 'Module 1 builds an evidence profile for each gene. Conventional methods feed a vector of 482 numbers into a classifier. TargetSage’s first tool reads those numbers and writes the informative ones as evidence statements. For ABL1, for example: highly loss-of-function intolerant, pLI equal to one; essential in mouse; 43 drug interaction types; kinase, SH2 and SH3 domains.' },
+    note: 'Module 1 builds an evidence profile for each gene. Conventional methods feed a vector of 482 numbers into a classifier. TargetSage’s first tool reads those numbers and writes the informative ones as evidence statements. For ABL1, for example: highly loss-of-function intolerant, pLI equal to one; listed as essential in mouse; 43 drug–gene interactions in DGIdb; kinase, SH2 and SH3 domains.' },
   { scene: 1, st: { prof: 1, pf2: 1 },
     cap: 'Tools 2–5 add context from NCBI Gene, UniProt, PubMed and Open Targets: function, localization, tractability, safety and literature.',
     fn: SRC + ', Appendix C (coverage over the 19,032 genes)',
@@ -354,9 +354,9 @@ const S = [
     fn: SRC + ', Sec. 4.5',
     note: 'Why does this reasoning help? Consider ERBB2 and ERBB3. In the 482-dimensional feature vector they are nearly indistinguishable: the same kinase-domain flag, the same druggability and membrane scores, and nearly the same pathway and cancer-driver scores.' },
   { scene: 2, st: { erb: 1, erb2: 1, dur: 1800 },
-    cap: 'The reasoning recovers what no feature column records: ERBB3’s kinase domain is catalytically inactive, so it is an antibody target, not a kinase-inhibitor target.',
-    fn: SRC + ', Sec. 4.5 (approved drugs as reported there)',
-    note: 'The reasoning recovers what no column records: ERBB3’s kinase domain is catalytically inactive. Its attribute scores split from ERBB2’s: enzyme activity 0.85 versus 0.10. This matches the drugs: ERBB2 is targeted by small-molecule kinase inhibitors such as lapatinib and neratinib, while every approved ERBB3-directed agent is an antibody or an antibody–drug conjugate.' },
+    cap: 'The reasoning recovers what no feature column records: ERBB3’s kinase domain is severely impaired, so ERBB3 is a target for antibodies, not for kinase inhibitors.',
+    fn: SRC + ', Sec. 4.5 · kinase activity: Shi et al., PNAS 2010 · approvals: FDA (zenocutuzumab, Dec 2024)',
+    note: 'The reasoning recovers what no column records: ERBB3’s kinase domain is severely impaired, about a thousand times less active than EGFR’s, so ERBB3 signals by pairing with partners such as ERBB2. Its attribute scores split from ERBB2’s: enzyme activity 0.85 versus 0.10. This matches the drugs: ERBB2 is targeted by kinase inhibitors such as lapatinib and neratinib, and by antibodies such as trastuzumab; no small molecule is approved against ERBB3, and the one FDA-approved drug aimed at it, zenocutuzumab, is an antibody.' },
   { scene: 3, st: { fus: 1 },
     cap: 'The three representations are projected into a shared space, mixed with gates computed for each gene, and scored by a task-specific discriminator.',
     fn: SRC + ', Eq. 2 (gate weights shown are schematic)',
@@ -366,10 +366,10 @@ const S = [
     cap: 'How many targets hide among the unlabeled genes? The class prior mixes the model’s own estimate with an LLM-estimated multiplier on the observed rate.',
     fn: SRC + ', Eq. 3 and Appendix E · observed rate for Clinical Targets: 700 / 19,032',
     eq: EQ_PRIOR, eqPos: [110, 336],
-    note: 'PU learning needs one more number: the class prior, the true fraction of targets including the hidden ones. The observed positives give a lower bound, 3.7 percent for clinical targets. TargetSage asks an LLM, ten times, how much larger the true rate is likely to be, as a multiplier between 1 and 3.5, takes the median, and mixes this with the model’s own estimate, 60 to 40.' },
+    note: 'PU learning needs one more number: the class prior, the true fraction of targets including the hidden ones. The observed positives give a lower bound, 3.7 percent for clinical targets. TargetSage asks an LLM, ten times, how much larger the true rate is likely to be, as a multiplier between 1 and 3.5, takes the median, and blends it with the model’s own estimate: 60 percent the model’s estimate, 40 percent the LLM’s.' },
   { scene: 3, st: { nnpu: 1 },
-    cap: 'Unlabeled genes enter the loss with a weight from their resemblance to known targets; the clip at zero keeps the negative-risk estimate from dropping below zero.',
-    fn: 'Toy 2-D embedding (ring size = weight w) · ' + SRC + ', Eq. 4–5',
+    cap: 'Unlabeled genes enter the loss with a weight from the scorer’s confidence and their resemblance to known targets; the clip at zero keeps the negative-risk estimate from dropping below zero.',
+    fn: 'Toy 2-D embedding (ring size = weight w, floored at 0) · ' + SRC + ', Eq. 4–5',
     eq: EQ_NNPU, eqPos: [482, 128],
     note: 'Training then uses the non-negative PU loss. Unlabeled genes are not simply negatives: each gets a weight from the discriminator and from its similarity to the known targets in embedding space. And the clip at zero keeps the estimated negative risk from turning negative, which is what stops PU training from overfitting.' },
   { scene: 4, st: { met: 1, mm: 0 },
@@ -379,9 +379,9 @@ const S = [
     note: 'Before the results, how to read the metric. With unlabeled data we cannot count false positives, so we use Adjusted F1: the mean score of the known targets, squared, divided by the mean score of all genes. If every gene gets the same score, say 0.3, Adjusted F1 is just 0.3.' },
   { scene: 4, st: { met: 1, mm: 1 },
     cap: 'A useful model puts its high scores on the known targets while most genes stay low. Computing it needs the known targets and the average, never a list of negatives.',
-    fn: 'Toy: 40 genes, 4 known targets · ' + SRC + ', Eq. 6',
+    fn: 'Toy: 40 genes, 4 known targets · ' + SRC + ', Eq. 6 · PU metric: Lee and Liu, ICML 2003',
     eq: EQ_F1, eqPos: [62, 100],
-    note: 'A useful model concentrates its scores on the known targets while most genes stay low; here Adjusted F1 rises to 2.7. It needs only the known targets and the genome-wide average, never a list of negatives. Under the usual PU assumption, that the known targets are a random sample of all targets, it tracks precision times recall against all true targets, including undiscovered ones.' },
+    note: 'A useful model concentrates its scores on the known targets while most genes stay low; here Adjusted F1 rises to 2.7. It needs only the known targets and the genome-wide average, never a list of negatives. Under the usual PU assumption, that the known targets are a random sample of all targets, it is proportional to precision times recall against all true targets, including undiscovered ones.' },
   { scene: 4, st: { met: 1, mm: 2, ceil: 1 },
     cap: 'The ceiling is n / |P|, so values depend on the task: 27 for Clinical Targets, 7.4 for Clinical & Chemical, 276 for approved antibody targets.',
     fn: SRC + ', Tables 1 and 4 (ceiling = number of genes / number of known targets)',
@@ -392,25 +392,25 @@ const S = [
     fn: SRC + ', Table 1 (mean of 5 seeds, stratified 80/20 gene splits)',
     note: 'Now the results. Across 15 tasks, TargetSage is best on every one. Its macro-average Adjusted F1 is 11.1, 37 percent above the strongest of ten baselines, a deep tabular ResNet at 8.1; the gap is significant against all ten.' },
   { scene: 5, st: { gains: 1, dur: 1700 },
-    cap: 'The largest gains are where literature evidence matters most: cancer druggability and drug-modality tasks.',
-    fn: SRC + ', Table 1 (TargetSage vs the best baseline on each task)',
-    note: 'The largest gains appear where literature evidence matters most. On the cancer druggability tasks it nearly doubles the strongest baseline, and on drug-modality tasks such as approved antibody targets and PROTAC-degradable targets it leads clearly.' },
+    cap: 'Large gains where literature evidence matters most: cancer druggability and drug-modality tasks.',
+    fn: SRC + ', Table 1 and Sec. 4.2 (the six tasks the paper names; TargetSage vs the best baseline)',
+    note: 'Large gains appear where literature evidence matters most. On the three cancer-druggability subtasks, cancer-relevant, type-specific and pan-cancer genes, it nearly doubles the strongest baseline, and on drug-modality tasks such as approved antibody targets and PROTAC-degradable targets it leads clearly.' },
   { scene: 5, st: { pros: 1, dur: 1700 },
     cap: 'Trained only on 2021 labels, TargetSage ranks the 90 genes that became clinical targets by 2025 at a median top 7.0% of the genome, best of all methods.',
     fn: SRC + ', Table 3 (median rank percentile, lower is better)',
     note: 'Now the 90 genes from the beginning. We train only on 2021 labels and ask where each method ranks the genes that became clinical targets by 2025. TargetSage places them at a median of the top 7 percent of the genome, the best of all methods; for the broader set of 456 genes upgraded to clinical or chemical targets it is also best, at 21.8 percent.' },
   { scene: 5, st: { orr: 1, dur: 1800 },
     cap: 'Independent check: among 11,891 understudied (Tbio) proteins, 8 of TargetSage’s top 25 are Phase 2/3 drug targets, versus 6 for the runner-up and 0.3 by chance.',
-    fn: 'Hit counts implied by the odds ratios in ' + SRC + ', Table 3 (136 of 11,891 Tbio proteins are ChEMBL Phase 2/3 targets)',
+    fn: 'Hit counts implied by the odds ratios in ' + SRC + ', Table 3; 136 of the 11,891 Tbio proteins are ChEMBL Phase 2/3 targets (Sec. 4.3)',
     note: 'An independent check uses ChEMBL Phase 2 and 3 trial targets, which were never used for training. Among 11,891 understudied proteins, 136 are trial targets, about 1 percent. Eight of TargetSage’s top 25 are trial targets, an odds ratio of 43; the runner-up, a random forest, has six, and chance would give 0.3. Being in a trial means being tested, not proven to work.' },
   { scene: 5, st: { abl: 1, dur: 1700 },
-    cap: 'Every component adds: nnPU over plain cross-entropy, gated fusion over concatenation or attention, GRPO-guided attributes over static or agent-only ones.',
-    fn: SRC + ', Fig. 2 (macro-average Adjusted F1 over the 15 tasks)',
+    cap: 'Every component adds: nnPU over class-balanced cross-entropy, gated fusion over concatenation or attention, GRPO-guided attributes over static or agent-only ones.',
+    fn: SRC + ', Fig. 2 and Table 7 (macro-average Adjusted F1 over the 15 tasks)',
     note: 'Finally, ablations. Each design choice adds: the non-negative PU loss beats class-balanced cross-entropy and the unbiased PU loss, gated fusion beats concatenation, summation and attention, and GRPO-guided attributes beat a static list and agent-only extraction. All three input types together beat any single one.' },
   { scene: 6, st: { recap: 1 },
     cap: 'TargetSage profiles each gene with retrieved evidence, reasons over it with a GRPO-trained policy, and scores genes with PU learning.',
     fn: SRC,
-    note: 'To summarize: TargetSage profiles every gene with retrieved and fact-checked evidence, reasons about it with a policy trained by the downstream score, and scores genes with PU learning, so unlabeled genes are not counted as negatives. It leads on 15 tasks and finds future targets from past labels. These are retrospective checks; every predicted target still needs experiments.' },
+    note: 'To summarize: TargetSage profiles every gene with retrieved and fact-checked evidence, reasons about it with a policy trained by the downstream score, and scores genes with PU learning, so unlabeled genes are not simply counted as negatives. It leads on 15 tasks and finds future targets from past labels. These are retrospective checks; every predicted target still needs experiments.' },
 ];
 S.forEach(s => { s.st = Object.assign({}, BASE, s.st); });
 const SEQ = new Set(['grid', 'gr1', 'gr2', 'gr3', 'gr4', 'prof', 'pf2', 'pf3', 'rsn', 'grpo', 'erb', 'erb2', 'fus', 'prior', 'nnpu', 'met', 'ceil',
@@ -453,7 +453,7 @@ const gr4 = bigNum(364, '90', '#C07A1E', 'of those “negatives” became clinic
 // ------------------------------------------------------------------ scene 1: agentic profiling (ABL1)
 const gP = $('gProf');
 (() => { const t = txt(62, 132, '', { 'font-size': 13.5 }, gP); tsp(t, 'Structured features: 482 numbers from 15 databases', { 'font-weight': 700, fill: C.head }); tsp(t, '   ABL1, six shown', { fill: C.mute }); })();
-const FT = [['pLI', '1.00'], ['LoF obs / exp', '0.07'], ['mouse essential', 'yes'], ['protein length', '1130 aa'], ['DGIdb types', '43'], ['domains', 'kinase, SH2, SH3']];
+const FT = [['pLI', '1.00'], ['LoF obs / exp', '0.07'], ['mouse essential', 'yes'], ['protein length', '1130 aa'], ['DGIdb', '43'], ['domains', 'kinase, SH2, SH3']];
 FT.forEach(([a, b], i) => { const x = 62 + i * 106;
   box(x, 144, i === 5 ? 114 : 100, 46, gP, { rx: 6, fill: '#FFFFFF', stroke: '#B8C5D0' });
   txt(x + 9, 161, a, { 'font-size': 11.5, fill: C.mute }, gP);
@@ -465,7 +465,7 @@ txt(310, 246, 'Tool 1: numbers → evidence statements', { 'font-size': 11.5, 'f
 box(62, 258, 612, 176, gP, { fill: '#F7FAFB', stroke: '#9DB7C3' });
 txt(76, 281, 'Evidence profile · ABL1', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal }, gP);
 lines(76, 305, ['highly loss-of-function intolerant (pLI=1.00); observed/expected LoF ratio: 0.07;',
-  'essential in mouse; protein length 1130 aa; 43 DGIdb interaction types;', 'protein kinase, SH2, and SH3 domains.'], 20, { 'font-size': 13, fill: C.ink }, gP);
+  'essential in mouse; protein length 1130 aa; 43 drug–gene interactions in DGIdb;', 'protein kinase, SH2, and SH3 domains.'], 20, { 'font-size': 13, fill: C.ink }, gP);
 const gP2 = mk('g', {}, gP);
 lines(76, 372, ['+ NCBI Gene: summary of function and disease context', '+ UniProt: molecular function, subcellular localization, tissue specificity',
   '+ Open Targets: tractability and safety · PubMed: recent abstracts'], 19, { 'font-size': 12.5, fill: '#2E6B5A' }, gP2);
@@ -552,12 +552,13 @@ pairBars(62, 158, [['kinase-domain flag', 1, 1], ['druggability', 0.90, 0.90], [
 const gE2 = mk('g', {}, gE);
 head(530, 128, 'Reasoning attributes (TargetSage)', gE2);
 const eRows = pairBars(530, 158, [['enzyme activity', 0.85, 0.10], ['kinase enzyme family', 0.90, 0.05]], 300, gE2);
-box(530, 262, 390, 128, gE2, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+box(530, 262, 390, 146, gE2, { fill: '#FFFFFF', stroke: '#C9D3DC' });
 txt(546, 286, 'Approved drugs', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gE2);
-txt(546, 310, 'ERBB2: small-molecule kinase inhibitors', { 'font-size': 12.5, 'font-weight': 700, fill: B2 }, gE2);
-txt(546, 327, '(lapatinib, neratinib)', { 'font-size': 12, fill: C.ink2 }, gE2);
-txt(546, 353, 'ERBB3: antibody- or ADC-based agents only', { 'font-size': 12.5, 'font-weight': 700, fill: B3 }, gE2);
-txt(546, 370, 'a kinase inhibitor needs an active enzyme to block', { 'font-size': 12, fill: C.ink2 }, gE2);
+txt(546, 310, 'ERBB2: kinase inhibitors and antibodies', { 'font-size': 12.5, 'font-weight': 700, fill: B2 }, gE2);
+txt(546, 327, 'lapatinib, neratinib · trastuzumab, pertuzumab', { 'font-size': 12, fill: C.ink2 }, gE2);
+txt(546, 352, 'ERBB3: no small-molecule drug', { 'font-size': 12.5, 'font-weight': 700, fill: B3 }, gE2);
+txt(546, 369, 'antibody-based only, e.g. zenocutuzumab (FDA 2024)', { 'font-size': 12, fill: C.ink2 }, gE2);
+txt(546, 394, 'a kinase inhibitor needs an active enzyme to block', { 'font-size': 12, 'font-style': 'italic', fill: C.mute }, gE2);
 
 // ------------------------------------------------------------------ scene 3a: gated fusion
 const gF = $('gFus');
@@ -659,7 +660,7 @@ const macTag = txt(206 + MS(11.1) + 42, 150, '+37% vs the best baseline', { 'fon
 // ------------------------------------------------------------------ scene 5b: per-task gains
 const gGa = $('gGains');
 const GAIN = [['Cancer-relevant', 14.0, 7.5], ['Type-specific cancer', 5.4, 2.8], ['Pan-cancer', 5.5, 3.0], ['Antibody (approved)', 22.6, 16.2], ['Antibody (clinical+)', 17.5, 12.9], ['PROTAC-degradable', 17.2, 13.6]];
-head(62, 122, 'Adjusted F1 on the tasks with the largest gains', gGa);
+head(62, 122, 'Adjusted F1 on six tasks the paper highlights', gGa);
 [['best baseline', '#B5C0CA'], ['TargetSage', C.teal]].forEach(([s, col], k) => { mk('rect', { x: 640 + k * 130, y: 112, width: 12, height: 12, rx: 2, fill: col }, gGa); txt(658 + k * 130, 122.5, s, { 'font-size': 12.5 }, gGa); });
 txt(62, 146, 'cancer druggability', { 'font-size': 11.5, fill: C.mute, 'font-weight': 700 }, gGa);
 txt(62, 296, 'drug modality', { 'font-size': 11.5, fill: C.mute, 'font-weight': 700 }, gGa);
@@ -701,7 +702,7 @@ txt(244, 428, 'by chance: 25 × 136 / 11,891 = 0.3 of 25', { 'font-size': 12.5, 
 const gA = $('gAbl');
 const ABL = [['Input types', [['Bio', 10.7], ['Expl.', 10.8], ['Impl.', 10.7], ['Bio+Expl.', 10.8], ['Bio+Impl.', 10.9], ['Expl.+Impl.', 10.9], ['all three', 11.1]]],
   ['Fusion', [['attention', 9.7], ['concat', 10.7], ['sum', 10.7], ['gated', 11.1]]],
-  ['Learning objective', [['BCE', 9.0], ['uPU', 10.5], ['nnPU', 11.1]]],
+  ['Learning objective', [['BCE', 9.1], ['uPU', 10.5], ['nnPU', 11.1]]],
   ['Attribute extraction', [['static', 10.2], ['agent', 10.5], ['+ GRPO', 11.1]]]];
 const ablBars = [];
 ABL.forEach(([title, rows], c) => { const x0 = 62 + c * 222;
