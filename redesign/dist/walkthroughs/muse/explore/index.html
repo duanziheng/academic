@@ -142,6 +142,12 @@ html.embed { color-scheme: light dark !important; overflow: hidden; }
 html.embed body { background: transparent; }
 html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
 html.embed .top, html.embed .crumbs { display: none; }
+
+/* Homepage colours (public copy): page, text and lines as on zihengduan.cn; cards are the page colour, outlined */
+:root[data-theme="light"] { --bg: #f7f8fa; --panel: #f7f8fa; --ink: #10283f; --ink2: #3e5468; --mute: #52677a; --line: #ccd8e3;
+  --line2: #dde5ec; --chip: #e3eaf1; --track: #e3e9ef; --soft: #edf3f8; --heat0: #eef2f6; }
+:root[data-theme="dark"] { --bg: #0b121b; --panel: #0b121b; --ink: #e7edf3; --ink2: #b7c3ce; --mute: #9eacba; --line: #263746;
+  --line2: #1a2836; --chip: #142231; --track: #172534; --soft: #111d2a; --heat0: #0b121b; }
 </style>
 
 <div class="wrap">

@@ -92,6 +92,13 @@ html.embed body { background: transparent; }
 html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
 html.embed .top, html.embed .crumbs { display: none; }
 html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held at their tallest step (below) */
+
+/* Homepage colours (public copy): page, text and lines as on zihengduan.cn; panels are the page colour, outlined */
+:root[data-theme="light"] { --bg: #f7f8fa; --panel: #f7f8fa; --ink: #10283f; --ink2: #3e5468; --mute: #52677a; --line: #ccd8e3;
+  --chip: #e3eaf1; --stage: #f7f8fa; }
+:root[data-theme="dark"] { --bg: #0b121b; --panel: #0b121b; --ink: #e7edf3; --ink2: #b7c3ce; --mute: #9eacba; --line: #263746;
+  --chip: #142231; --stage: #0b121b; }
+.stageWrap { background: var(--stage); }
 </style>
 
 <div class="wrap">
@@ -156,6 +163,103 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
 </div>
 
 <script id="toy" type="application/json">{"grid":{"nc":64,"nr":30,"known":[10,59,73,77,84,88,128,134,160,185,212,295,374,400,404,459,485,503,519,544,545,616,619,634,683,713,716,731,817,825,983,999,1022,1050,1054,1063,1071,1156,1164,1203,1230,1334,1360,1379,1381,1407,1411,1462,1471,1513,1545,1563,1567,1575,1576,1613,1647,1691,1718,1805,1873,1883],"upg":[62,350,531,741,1005,1077,1095,1391,1709],"perDot":9.9},"grpo":{"roll":[[0.93,0.12,0.82],[0.58,0.41,0.74],[0.21,0.86,0.69],[0.77,0.24,0.88]],"score":[0.405,0.123,0.026,0.282],"reward":[1.2376,1.157,1.1299,1.2023],"adv":[1.35,-0.6,-1.25,0.5],"static":[0.56,0.58,0.47],"p0":0.07,"base":1.1421,"n":600,"nP":30,"w":[1.45,0.37,3.85,-0.32,1.77]},"f1toy":{"n":40,"known":[3,11,22,31],"hidden":[7,18,35],"good":[0.05,0.07,0.18,0.86,0.05,0.11,0.12,0.71,0.17,0.05,0.1,0.74,0.11,0.14,0.17,0.21,0.08,0.15,0.63,0.09,0.03,0.21,0.91,0.09,0.2,0.14,0.12,0.18,0.04,0.16,0.1,0.68,0.16,0.21,0.07,0.8,0.09,0.17,0.17,0.07],"flat":[0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3],"perfect":[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"sGood":{"R":0.798,"pbar":0.235,"f1":2.71},"sFlat":{"R":0.3,"pbar":0.3,"f1":0.3},"sPerfect":{"R":1.0,"pbar":0.1,"f1":10.0}},"nnpu":{"zP":[[1.261,0.582],[1.094,0.311],[2.045,0.579],[1.484,0.153],[1.04,0.634],[1.1,0.745],[1.043,0.658],[1.156,0.457],[1.665,0.927],[0.992,0.889],[1.454,0.61],[0.869,0.402]],"zU":[[1.96,0.239],[1.028,0.658],[0.876,0.716],[1.181,0.871],[1.001,1.054],[1.273,1.368],[1.639,0.711],[0.634,0.605],[0.726,1.293],[1.116,0.483],[-1.152,-0.769],[0.302,-0.539],[0.457,-0.281],[-0.492,-1.594],[-0.449,-0.934],[0.02,-0.107],[-1.111,0.535],[-1.016,0.055],[-0.623,-0.392],[-1.16,0.684],[-0.122,-1.16],[-1.066,0.136],[-0.653,-0.152],[-0.21,-0.317],[-1.093,0.842],[0.243,0.19],[-0.741,-0.006],[-1.5,-0.025],[-1.107,0.295],[-1.066,-1.039],[-1.059,-0.455],[-1.993,0.437],[-0.323,1.199],[-0.698,-1.156],[0.171,-0.546],[-0.521,-0.258],[-0.124,-0.227],[-0.144,-0.782],[-0.372,-0.603],[-0.171,0.002],[0.334,-1.085],[-0.166,-0.544],[-0.203,-0.903],[0.033,-0.179],[-0.442,0.954],[0.1,-0.299],[0.162,-0.549],[-0.294,0.075],[0.917,1.133],[-0.162,0.156],[-1.461,-0.457],[-1.193,0.889],[-0.406,-0.841],[-0.24,0.717],[-0.322,-0.396],[0.289,0.007],[-0.564,-1.172],[-0.537,-0.322],[0.119,-0.349],[-0.564,0.023],[0.101,1.08],[-1.235,-0.732],[0.757,-0.276],[-0.972,0.003],[0.593,-0.012],[-0.336,0.004],[-0.699,-0.907],[0.938,-0.611],[-0.415,0.702],[-1.167,-0.74],[0.189,-0.263],[-0.227,-0.075],[1.017,-0.666],[-0.978,0.278],[0.302,-0.415],[-0.644,-1.564],[-1.06,-0.318],[-0.432,-0.321]],"w":[0.805,0.599,0.557,0.654,0.599,0.702,0.778,0.491,0.499,0.612,-0.393,0.068,0.277,-0.262,-0.301,-0.071,-0.251,-0.35,-0.39,-0.224,-0.192,-0.336,-0.385,-0.324,-0.181,0.436,-0.358,-0.365,-0.305,-0.375,-0.397,-0.319,0.096,-0.327,-0.022,-0.391,-0.301,-0.216,-0.323,-0.342,-0.024,-0.25,-0.23,-0.071,0.019,-0.014,-0.029,-0.295,0.57,-0.124,-0.396,-0.188,-0.3,0.069,-0.347,0.414,-0.303,-0.389,-0.012,-0.347,0.259,-0.396,0.374,-0.359,0.438,-0.347,-0.349,0.316,-0.023,-0.394,0.111,-0.38,0.326,-0.299,0.118,-0.289,-0.393,-0.381],"zbar":[1.267,0.579],"beta":0.6}}</script>
+<script>
+/* Site colours for the slides (public copy). The slides were drawn for a white screen. Light theme: the white takes the
+   colour of the homepage, and every colour is multiplied by it, which leaves the rest practically unchanged. Dark theme:
+   every colour is mapped in OKLab with its lightness inverted and its hue kept, so the white becomes the page, dark ink
+   becomes light text and light tints become dark ones (a little more saturated, so pastel fills do not turn muddy).
+   Colours reach a slide only as hex values in SVG attributes, set by its script or written in its markup, and in the
+   stylesheet for the slide text, so those are the places mapped. */
+(() => {
+  const ATTRS = new Set(['fill', 'stroke', 'stop-color', 'flood-color', 'color']);
+  const PAGE = { light: [247, 248, 250], dark: [11, 18, 27] }, INK = [231, 237, 243];   // homepage --bg, and its dark --ink
+  const lin = v => (v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  const enc = v => 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055);
+  const lab = c => {
+    const [r, g, b] = c.map(lin);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+      0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+  };
+  const rgb = ([L, A, B]) => {
+    const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3, m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3,
+      s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+      -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+  };
+  const inside = c => c.every(v => v >= -1e-4 && v <= 1 + 1e-4);
+  // t: 0 for the darkest ink (and anything darker), 1 for white. Lightness runs from the light text (t = 0) to the page
+  // (t = 1) on a curve that keeps pale fills off the page colour, and strong colours keep some lightness (a dark yellow
+  // is no longer yellow). Chroma grows for pale fills, eases for text, and fades into the page's tint near white.
+  const P = lab(PAGE.dark), T = lab(INK), LK = 0.25, GAMMA = 0.72, BOOST = 0.8, EASE = 0.45, FLOOR = 2.5;
+  const dark = c => {
+    const [L, A, B] = lab(c), t = Math.min(1, Math.max(0, (L - LK) / (1 - LK))), w = t * t;
+    const L2 = Math.max(P[0] + (T[0] - P[0]) * (1 - t) ** GAMMA, P[0] + FLOOR * Math.hypot(A, B));
+    const k = (1 + BOOST * w) * (1 - EASE * (1 - t) ** 2);
+    const at = f => rgb([L2, A * k * f + P[1] * w, B * k * f + P[2] * w]);
+    let out = at(1);
+    if (!inside(out)) {                     // out of gamut: keep the lightness and hue, cut the chroma
+      let lo = 0, hi = 1; out = at(0);
+      for (let i = 0; i < 18; i++) { const f = (lo + hi) / 2, o = at(f); if (inside(o)) { lo = f; out = o; } else hi = f; }
+    }
+    return out.map(v => enc(Math.min(1, Math.max(0, v))));
+  };
+  const light = c => c.map((v, i) => v * PAGE.light[i] / 255);
+  const hex = c => '#' + c.map(v => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0')).join('');
+  const parse = v => {
+    let m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(v.trim());
+    if (m) { const h = m[1].length === 3 ? m[1].replace(/./g, x => x + x) : m[1]; return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); }
+    m = /^rgb\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/i.exec(v.trim());
+    return m ? [+m[1], +m[2], +m[3]] : null;
+  };
+  const cache = { light: new Map(), dark: new Map() };
+  const conv = (v, th) => {
+    const key = v.toLowerCase(), C = cache[th];
+    let o = C.get(key);
+    if (o === undefined) { const c = parse(v); o = c ? hex(th === 'dark' ? dark(c) : light(c)) : v; C.set(key, o); }
+    return o;
+  };
+  const theme = () => { const r = document.documentElement; return r && r.dataset.theme === 'dark' ? 'dark' : 'light'; };
+  // every colour attribute an SVG element receives is kept as drawn (el.__c) and written as mapped
+  const set = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function (name, value) {
+    if (ATTRS.has(name) && this instanceof SVGElement) {
+      const v = String(value);
+      if (v[0] === '#') { (this.__c || (this.__c = {}))[name] = v; return set.call(this, name, conv(v, theme())); }
+      if (this.__c) delete this.__c[name];
+    }
+    return set.call(this, name, value);
+  };
+  window.__recolor = v => conv(v, theme());   // for colours a page writes into HTML
+  const init = () => {
+    for (const el of document.querySelectorAll('svg, svg *')) for (const a of ATTRS) {   // colours written in the markup
+      const v = el.getAttribute(a); if (v && v[0] === '#' && !(el.__c && a in el.__c)) el.setAttribute(a, v);
+    }
+    if (!document.getElementById('ov')) return;
+    const rules = [];   // slide text: the stylesheet's colours for the overlay classes, mapped once for the dark theme
+    for (const sh of document.styleSheets) {
+      let list; try { list = sh.cssRules; } catch (e) { continue; }
+      for (const r of list) {
+        if (!r.selectorText || !/^\.(ov|kick|ttl|cap|fn|eq)\b/.test(r.selectorText)) continue;
+        const d = [];
+        for (const p of ['color', 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color']) {
+          const v = r.style.getPropertyValue(p); if (v && parse(v)) d.push(`${p}: ${conv(v, 'dark')}`);
+        }
+        if (d.length) rules.push(r.selectorText.split(',').map(x => ':root[data-theme="dark"] ' + x.trim()).join(', ') + ` { ${d.join('; ')}; }`);
+      }
+    }
+    const st = document.createElement('style'); st.textContent = rules.join('\n'); document.head.appendChild(st);
+  };
+  let cur = theme();
+  const follow = () => new MutationObserver(() => {   // theme switched: write every kept colour again
+    const th = theme(); if (th === cur) return; cur = th;
+    for (const el of document.querySelectorAll('svg *')) { const c = el.__c; if (c) for (const a in c) set.call(el, a, conv(c[a], th)); }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.querySelector('svg')) { init(); follow(); } else document.addEventListener('DOMContentLoaded', () => { cur = theme(); init(); follow(); });
+})();
+</script>
 <script>
 (() => {
 // ------------------------------------------------------------------ shared helpers
