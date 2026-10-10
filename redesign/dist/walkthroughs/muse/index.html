@@ -348,7 +348,7 @@ const SCENES = [
 ];
 const CHIP = ['Data', 'Problem', 'Graphs', 'One spot', 'Transport plan', 'Virtual neighbors', 'Alignment loss', 'Results', 'Summary'];
 const BASE = { lay: 'side', cA: 'domain', cB: 'domain', opA: 1, opB: 1, plane: 1, planeFill: 1, ghost: 0, data: 0, labels: 1,
-  blk: 0, blkS: 0.1, blkZ: 0, brain: 0, brainS: 0, call: 0, col: 0, ids: 0, qm: 0, qmMask: 0, lineDom: 0, rd2: 0,
+  blk: 0, blkS: 0.1, blkZ: 0, brain: 0, brainS: 0, call: 0, col: 0, ids: 0, tl: 0, qm: 0, qmMask: 0, lineDom: 0, rd2: 0,
   edges: 0, hl: 0, rulers: 0, qline: 0, lines: 0, lineF: 0, mat: 0, matDots: 0, matSort: 0, matBars: 0, matBlocks: 0,
   qbar: 0, ref: 0, vEx: 0, vAll: 0, schem: 0, schemSmall: 0, align: 0, embLab1: 0, embLab2: 0, heat: 0, heatQ: 0,
   chart: 0, abl: 0, recap: 0, rs: 1, readout: 0, hAcc: 0, dur: 1400 };
@@ -374,61 +374,61 @@ const OWN = (() => {
 const OPEN = { lay: 'stack', opA: 0, opB: 0, plane: 0, labels: 0 };
 const S = [
   { scene: 0, ttl: 'Where the data come from', st: Object.assign({}, OPEN, { brain: 1, brainS: 0, blkZ: 1 }),
-    cap: 'The paper’s data come from the human dorsolateral prefrontal cortex (DLPFC): 12 tissue sections from three donors, measured with 10x Visium.',
+    cap: 'The paper’s data: 12 Visium sections of human dorsolateral prefrontal cortex (DLPFC) from three donors.',
     fn: DATAFN,
     note: 'MUSE is evaluated on the human dorsolateral prefrontal cortex, or DLPFC, a region on the upper side of the frontal lobe, highlighted here on a side view of the left hemisphere. The dataset, from Maynard and colleagues, has twelve tissue sections from three donors, each measured with 10x Visium.' },
   { scene: 0, ttl: 'Where the data come from', st: Object.assign({}, OPEN, { brain: 1, brainS: 1, call: 1, blk: 1, blkS: 0.1, blkZ: 1, col: 1, dur: 2400 }),
-    cap: 'A block of DLPFC spans the depth of the cortex: from the brain’s surface, layers L1 to L6, then white matter (WM). Each layer has its own mix of cell types.',
+    cap: 'A block of DLPFC spans the cortex: layers L1 to L6 from the brain’s surface down, then white matter (WM).',
     fn: BLKFN,
     note: 'Each section comes from a small block of DLPFC tissue that spans the whole depth of the cortex: from the surface of the brain, the six cortical layers, L1 to L6, and then the white matter underneath. The cells are not mixed at random: each layer has its own mix of cell types, and so its own expression profile. The toy tissue in this walkthrough is modeled on such a section.' },
   { scene: 0, ttl: 'Where the data come from', st: Object.assign({}, OPEN, { blk: 1, blkS: 1, blkZ: 0, col: 1, dur: 2400 }),
-    cap: 'The block is cut into thin sections. Adjacent sections, such as 151673 and 151674, are about 10 µm apart, so they show nearly the same layers.',
+    cap: 'Cut into thin sections, adjacent ones (e.g. 151673 and 151674, about 10 µm apart) show nearly the same layers.',
     fn: BLKFN,
     note: 'The block is cut into thin sections, one after the other. In the DLPFC data, each donor has two pairs of adjacent sections, about ten micrometers apart, such as 151673 and 151674. Sections that close show nearly the same layers, and the paper aligns each slice to an adjacent one.' },
   { scene: 0, st: { lay: 'stack', ghost: 1, data: 1, blkS: 1, dur: 1800 },
-    cap: 'Each section is measured with Visium at many spots: a sparse spot-by-gene matrix <b>X</b><sub>obs</sub><sup>(<i>k</i>)</sup> and spot coordinates <b>C</b><sup>(<i>k</i>)</sup>. A measured section is a slice.',
+    cap: 'Measured with Visium, each section becomes a slice: a sparse spot-by-gene matrix <b>X</b><sub>obs</sub><sup>(<i>k</i>)</sup> and spot coordinates <b>C</b><sup>(<i>k</i>)</sup>.',
     fn: 'Toy DLPFC section for illustration · method: Duan et al., CIKM 2025',
     note: 'Each section is then measured. Visium records gene expression at thousands of spots across the section; slice 151673, for example, has 3,611. So every measured section, which we call a slice k, gives two things: a spot-by-gene count matrix, which is mostly zeros, and the x–y coordinates of every spot.' },
   { scene: 0, st: { lay: 'side', dur: 1700 },
-    cap: 'We follow two slices, A and B. Each is mounted and imaged on its own, so each comes with its own coordinate frame.',
+    cap: 'We follow two slices, A and B. Each is imaged on its own, so each comes with its own coordinate frame.',
     fn: 'Toy DLPFC section for illustration · method: Duan et al., CIKM 2025',
     note: 'Let us follow two of these slices, A and B. Even though they come from neighboring sections of the same tissue, each one is placed on the slide and imaged separately, so their coordinates are not in the same frame.' },
   { scene: 1, st: { cA: 'cl', cB: 'cl', ids: 1, dur: 1800 },
-    cap: `<b>Cross-slice inconsistency.</b> Analyzed one by one, each slice gets its own domain IDs, and they do not correspond: L3 is domain ${OWN.a3} in A but domain ${OWN.b3} in B.`,
+    cap: `<b>Cross-slice inconsistency.</b> Analyzed one by one, the slices get domain IDs that do not match: L3 is ${OWN.a3} in A, ${OWN.b3} in B.`,
     fn: 'Toy: each slice clustered on its own (neighbor-smoothed expression, k-means with k = 7), domains numbered by each run · Duan et al., CIKM 2025, Sec. 1',
     note: `The first obstacle. Analyze each slice on its own, as single-slice methods do, and each gets its own domains with its own IDs, which nothing makes agree: L3 is domain ${OWN.a3} in slice A but domain ${OWN.b3} in slice B${OWN.diff}. Its coordinates are its own too, so spots cannot be matched by position. This is what the paper calls cross-slice inconsistency.` },
   { scene: 1, st: { lay: 'mside', cA: 'qrow', cB: 'qrow', qm: 1, qmMask: 1, dur: 2600 },
-    cap: '<b>Data-quality variability.</b> Every spot of slice B is still there, but it detects far fewer genes: most of its spot-by-gene entries read zero.',
+    cap: '<b>Data-quality variability.</b> Slice B keeps every spot, but each detects far fewer genes: most entries read zero.',
     fn: 'Toy: B keeps a random 25% of its non-zero entries, like quality level Q2; the paper’s Q1–Q4 mask 50%, 75%, 87.5% and 93.75% (Sec. 3.5)',
     note: 'The second obstacle is quality. Slices are sequenced to different depths, so in some slices every spot detects far fewer genes. The spots are all still there, and each still has its own expression program, but most entries of its row read zero. The paper simulates lower quality exactly this way, by masking a random share of the non-zero entries; here three quarters of slice B’s. A method that analyzes B on its own will struggle.' },
   { scene: 2, st: { cA: 'grey', cB: 'grey', edges: 1, hl: 1, rs: 0.62, dur: 1700 },
-    cap: 'Connect each spot to its <i>k</i> nearest neighbors (within-graph edges). The model sees expression and positions only, never the layer labels.',
+    cap: 'Each spot links to its <i>k</i> nearest neighbors. The model sees only expression and positions, never the layers.',
     fn: TOYFN,
     note: 'MUSE first turns every slice into a graph: each spot is linked to its k nearest neighbors, so it carries its local context. From now on the colors are gone, because the model never sees the layer labels; it only sees expression and positions.' },
   { scene: 3, st: { cA: 'q', cB: 'cand', edges: 0.35, dur: 1900 },
-    cap: '<b>Assumption 1, similar expression.</b> Many spots look alike, most of them along the same layer; one just a few spots from the true match even looks more similar than it.',
+    cap: '<b>Assumption 1, similar expression.</b> Many spots look alike; one near the true match looks even more similar.',
     fn: TOYFN,
     eq: `<div class="eq">${MIN}${OBJ1}<span class="note">δ: KL divergence</span></div>`, eqPos: [180, 404],
     note: `Now the alignment. Take one spot i in slice A: which spot in B is the same place in the tissue? By expression alone, the first term of the objective, many spots in B look similar, most of them along the same layer. With three quarters of B’s entries missing, a spot only ${Math.round(D.wrongDist)} spots from the true match even looks more similar than the true match: neighboring spots look alike. Expression alone is ambiguous.` },
   { scene: 3, st: { cA: 'q2', cB: 'cand2', edges: 0.35, rulers: 1, qline: 1, dur: 2300 },
-    cap: '<b>Assumption 2, preserve relative distances.</b> Neighbors of <i>i</i> should match spots near <i>j′</i>: if <i>p</i> matches <i>q′</i>, then <i>D<sub>ip</sub></i> = <i>D<sub>j′q′</sub></i>. Only the true match passes.',
+    cap: '<b>Assumption 2, preserve distances.</b> Neighbors <i>p</i> of <i>i</i> match spots <i>q′</i> near <i>j′</i>, <i>D<sub>ip</sub></i> = <i>D<sub>j′q′</sub></i>: only the true match fits.',
     fn: TOYFN,
     eq: `<div class="eq">${MIN}${OBJ1}</div><div class="eq" style="margin-left:3.1em;margin-top:.15em">${OBJ2}</div>`, eqPos: [180, 392],
     note: 'The second term fixes this. Distances inside a slice should be preserved, so neighbors in A should have matches close to each other in B. Take three spots p near i: if p matches q prime, the distance from j prime to q prime should equal the distance from i to p. From the true match all three agree, in green; from the look-alike a few spots away they do not, in red. The match is the spot whose neighborhood fits.' },
-  { scene: 4, st: { cA: 'pairs', cB: 'pairs', edges: 0, lines: 1, lineF: 0, lineDom: 1, rd2: 1, dur: 2200 },
-    cap: 'Match every spot at once, on expression alone (<i>α</i> = 0). Colored by layer, the toy’s cell types: each spot in A is matched to a spot of the same type in B.',
+  { scene: 4, st: { cA: 'pairs', cB: 'pairs', edges: 0, tl: 1, rd2: 1, dur: 2400 },
+    cap: 'Match every spot on expression alone (<i>α</i> = 0): each spot is matched to a spot of its own cell type.',
     fn: TOYFN,
-    note: 'Now match every spot at once, first with expression only, alpha equal to zero. Color both slices by layer, which in this toy stands for the cell types, and draw a line from a spot in A to the spot in B it is matched with. The lines join the same colors: green to green, orange to orange. Similar expression means the same cell type, so almost every spot is matched to a spot of its own type.' },
+    note: `Now match every spot at once, first on expression alone, alpha equal to zero. Color both slices by cell type, one per layer in this toy, and follow two spots of each type: every line joins a spot in A to a spot of the same type in B, green to green, orange to orange. Similar expression means the same cell type: ${Math.round(100 * D.accExact[0])} percent of all spots are matched within their type.` },
   { scene: 4, st: { cA: 'pos', cB: 'posW', edges: 0, lines: 1, lineF: 0, readout: 1, dur: 2000 },
-    cap: 'Same type, but the right place? Color A by position; each B spot takes the color of its match. On expression alone, spots land in the right layer but the wrong place.',
+    cap: 'Same type, but the right place? Colored by position in A, the matches in B are scrambled: right layer, wrong place.',
     fn: TOYFN,
     note: `Same type, but is it the right place? Now color each spot in A by its position, from left to right, and give each spot in B the color of its match. With expression only, a spot lands in the right layer but at a random place along it: the colors in B are scrambled and the lines cross. On average a spot lands about ${Math.round(D.perr[0])} spot spacings from where it belongs.` },
   { scene: 4, st: { cA: 'pos', cB: 'posF', edges: 0, lines: 1, lineF: 1, readout: 1, dur: 2200 },
-    cap: 'Add the spatial term (<i>α</i> = 0.8, the paper’s default): the color pattern carries over intact, so neighbors in A stay neighbors in B.',
+    cap: 'Add the spatial term (<i>α</i> = 0.8, the paper’s default): the color pattern carries over, so neighbors stay neighbors.',
     fn: TOYFN,
     note: 'Now add the spatial term, with alpha at 0.8, the default in the paper. The color pattern carries over intact, just rotated with the slice, and the error drops to about one spot spacing. In the paper, increasing alpha steadily improved transport accuracy, until very high values kept the solver from converging; 0.8 balances the two.' },
   { scene: 4, st: { lay: 'mside', cA: 'grey', cB: 'grey', mat: 1, labels: 1, dur: 1700 },
-    cap: 'Why is <b>T</b> = 0 not the answer? It costs nothing, but every row must send out its full mass <i>a<sub>i</sub></i> and every column must receive <i>b<sub>j′</sub></i>.',
+    cap: 'Why not <b>T</b> = 0? It costs nothing, but every row must send out its mass <i>a<sub>i</sub></i> and every column receive <i>b<sub>j′</sub></i>.',
     fn: TOYFN,
     eq: `<div class="eq">subject to&nbsp; <b>T 1</b> = <b>a</b>, &nbsp;<b>T</b><sup>⊤</sup><b>1</b> = <b>b</b><span class="note">uniform: a<sub>i</sub> = 1/n<sub>A</sub>, b<sub>j′</sub> = 1/n<sub>B</sub></span></div>`, eqPos: [318, 438],
     note: 'All of these matches live in one matrix, the transport plan T: rows are spots in A, columns are spots in B. Notice that T equal to zero would make both terms of the objective zero. That is why the constraints matter: every row of T has to add up to a i, and every column to b j. Every spot must be fully matched.' },
@@ -443,7 +443,7 @@ const S = [
     eq: `<div class="eq">subject to&nbsp; <b>T 1</b> = <b>a</b>, &nbsp;<b>T</b><sup>⊤</sup><b>1</b> = <b>b</b><span class="note">uniform: a<sub>i</sub> = 1/n<sub>A</sub>, b<sub>j′</sub> = 1/n<sub>B</sub></span></div>`, eqPos: [318, 438],
     note: 'Sort rows and columns by layer, and the structure appears: T is block-diagonal, so spots are matched within their own layer, and within each layer the dots follow a line, so the spatial order is kept too.' },
   { scene: 5, st: { cA: 'domain', cB: 'domain', ref: 1, qbar: 1, dur: 1700 },
-    cap: 'MUSE takes the slice with the highest density of non-zero entries as the reference: here A. Other slices are aligned to it.',
+    cap: 'The slice with the highest density of non-zero entries is the reference, here A; the others are aligned to it.',
     fn: 'Toy densities · Duan et al., CIKM 2025, Sec. 3.3–3.4',
     note: 'Module 2 uses T. MUSE picks the slice with the highest data quality, meaning the highest density of non-zero entries, as the reference. Here that is slice A. With many slices, every other slice is aligned to this reference, which keeps the cost linear in the number of slices.' },
   { scene: 5, st: { cA: 'virtA', cB: 'virtB', edges: 0.3, vEx: 1, dur: 1900 },
@@ -452,11 +452,11 @@ const S = [
     eq: `<div class="eq"><i>i</i> = arg max<sub><i>i</i></sub> <i>T</i><sub><i>ij′</i></sub> ,&nbsp;&nbsp;&nbsp; <i>N</i><sub><i>j′</i></sub> = <i>N</i>${SS('<i>j′</i>', 'original')} ∪ {<i>i</i>}</div>`, eqPos: [318, 430],
     note: 'The first use of T is virtual neighbors. Take a spot j prime in slice B. Most of its entries are missing, and its own neighbors in B are just as sparse. So MUSE looks up the spot in A with the highest transport score, and adds it to j prime’s neighborhood as a virtual neighbor. Its well-measured expression profile now feeds into j prime’s encoding.' },
   { scene: 5, st: { cA: 'vpairs', cB: 'vpairs', edges: 0.2, vAll: 1, dur: 2000 },
-    cap: `Every spot in B gets one cross-slice edge to the reference (a sample is drawn): a well-measured spot of the same layer, for ${Math.round(100 * D.virtSame)}% of the spots.`,
+    cap: `Every spot in B gets one edge to the reference (a sample is drawn): for ${Math.round(100 * D.virtSame)}%, a well-measured spot of its own layer.`,
     fn: TOYFN,
     note: `Every spot in B gets one of these cross-slice edges. Colored by layer, the edges again join the same colors: for ${Math.round(100 * D.virtSame)} percent of the spots in B, the virtual neighbor is a spot of the same layer in A. So a spot that detected only a quarter of its genes is linked to a well-measured profile of its own type.` },
   { scene: 6, st: { opA: 0, opB: 0, plane: 0, labels: 0, schem: 1, dur: 1600 },
-    cap: 'MUSE keeps an existing single-slice encoder–decoder (SpaceFlow, STAGATE, GraphST, stCluster, Impeller) and runs it on each slice’s graph.',
+    cap: 'MUSE keeps an existing single-slice encoder–decoder, such as STAGATE, and runs it on each slice’s graph.',
     fn: 'Duan et al., CIKM 2025, Sec. 3.3 and Fig. 1C',
     eq: `<div class="eq"><b>H</b><sup>(<i>k</i>)</sup> = <i>ϕ</i>(<b>X</b>${SS('obs', '(<i>k</i>)')}, <b>C</b><sup>(<i>k</i>)</sup>), &nbsp;&nbsp; <b class="hat">X</b><sup>(<i>k</i>)</sup> = <i>ψ</i>(<b>H</b><sup>(<i>k</i>)</sup>, <b>C</b><sup>(<i>k</i>)</sup>)</div>`, eqPos: [262, 432],
     note: 'MUSE is a plug-in. Most single-slice methods are encoder–decoders: the encoder phi turns expression and the spatial graph into hidden representations H, and the decoder psi reconstructs or imputes expression. MUSE keeps that model as it is, with its original loss, and adds two things on top: the virtual neighbors we just saw, and an alignment loss.' },
@@ -470,7 +470,7 @@ const S = [
     eq: `<div class="eq">ℒ${SS('align', '(B)')} = <i>φ</i>(<b>H</b><sup>(A)</sup>, <b>T</b><sup>⊤</sup><b>H</b><sup>(B)</sup>)</div><div class="eq" style="margin-top:.35em">ℒ<sup>(B)</sup> = (1 − <i>β</i>) ℒ${SS('original', '(B)')} + <i>β</i> ℒ${SS('align', '(B)')}</div>`, eqPos: [34, 380],
     note: 'The second use of T is the alignment loss: the embeddings of slice B, mapped through T, should match the embeddings of the reference slice A, measured with mean squared error. It is mixed with the original loss with weight beta, 0.5 by default. Now the two slices share one space, and spots group by layer, not by slice.' },
   { scene: 7, st: { opA: 0, opB: 0, plane: 0, labels: 0, heat: 1, dur: 1800 },
-    cap: 'Slice 151673 aligned to 151674: most spots map to the same annotated layer, and errors fall mostly in adjacent layers.',
+    cap: 'Slice 151673 aligned to 151674: most spots land in the same annotated layer, the misses mostly in adjacent ones.',
     fn: 'Duan et al., MUSE, CIKM 2025, Fig. 5A (151673, reference 151674)',
     note: 'Now real data: two adjacent human DLPFC slices. Each row is an annotated layer in slice 151673, and each column is the layer its spots are aligned to in slice 151674. Most of the mass sits on the diagonal, and when MUSE misses, it misses into the neighboring layer, which is the plausible kind of error.' },
   { scene: 7, st: { opA: 0, opB: 0, plane: 0, labels: 0, heat: 1, heatQ: 1, hAcc: 1, dur: 2000 },
@@ -478,7 +478,7 @@ const S = [
     fn: 'Duan et al., MUSE, CIKM 2025, Fig. 5A and Fig. 3B (151673 at Q4, reference 151674)',
     note: 'Here the same alignment at the lowest quality level, Q4, where 93.75 percent of the non-zero entries are masked. The diagonal barely changes: the mean agreement drops only from about 65 to 60 percent. This is also why the expression cost is KL divergence: transport accuracy stays at 0.60 at Q4, while a PCA-based Euclidean cost falls to 0.13.' },
   { scene: 7, st: { opA: 0, opB: 0, plane: 0, labels: 0, chart: 1, dur: 2000 },
-    cap: 'As quality drops from Q1 to Q4, STAGATE on its own collapses; with MUSE it keeps finding the spatial domains and imputes better.',
+    cap: 'From Q1 to Q4, STAGATE alone collapses; with MUSE it keeps finding the spatial domains and imputes better.',
     fn: 'Duan et al., CIKM 2025, Tables 2–3 (151673, reference 151674; mean of 10 runs)',
     note: 'And the downstream effect, for STAGATE on slice 151673. On its own, its domain accuracy falls from 0.55 ARI to 0.03 as quality drops. Plugged into MUSE, it stays between 0.58 and 0.37, and its imputation error stays lower at every level.' },
   { scene: 7, st: { opA: 0, opB: 0, plane: 0, labels: 0, abl: 1, dur: 1800 },
@@ -493,7 +493,7 @@ const S = [
 S.forEach(s => { s.st = Object.assign({}, BASE, s.st); });
 const N = S.length;
 const SEQ = new Set(['opA', 'opB', 'plane', 'labels', 'data', 'ghost', 'qbar', 'ref', 'readout', 'rd2', 'qm', 'mat', 'schem', 'embLab1', 'embLab2', 'heat', 'chart', 'abl', 'recap', 'hAcc', 'col']);
-const EXIT = new Set(['lines', 'vAll', 'vEx', 'rulers', 'qline', 'hl', 'edges', 'brain', 'call', 'ids']);
+const EXIT = new Set(['lines', 'vAll', 'vEx', 'rulers', 'qline', 'hl', 'edges', 'brain', 'call', 'ids', 'tl']);
 
 // ------------------------------------------------------------------ build SVG content
 const gA = $('gSpotsA'), gB = $('gSpotsB'), gG = $('gSpotsG');
@@ -521,7 +521,22 @@ const jLab = txt(0, 0, 'j′', { 'font-size': 15, 'font-style': 'italic', 'font-
 const gVall = $('gVall');
 const vLines = D.subB.map(j => mk('line', { stroke: DOML[dB[j]], 'stroke-width': 1.8, 'stroke-linecap': 'round' }, gVall));
 // match lines for a spread-out subsample of A, coloured like their A spot
+// the pairs drawn in the 'same type' step: two spots of each cell type in A, one on each side of the slice, and their
+// matches on expression alone (alpha = 0)
+const TL = [];
+LNAMES.forEach((_, d) => [-0.75, 0.6].forEach(u0 => {
+  let best = -1, bd = 1e9;
+  D.A.forEach((p, i) => { if (dA[i] !== d || TL.includes(i)) return; const dd = Math.abs(p[0] - u0) + 0.3 * Math.abs(p[1] - (D.A.filter((q, k) => dA[k] === d).reduce((t, q) => t + q[1], 0) / D.domSizesA[d])); if (dd < bd) { bd = dd; best = i; } });
+  if (best >= 0) TL.push(best);
+}));
 const gLines = $('gLines');
+const gTL = mk('g', {}); $('sv').insertBefore(gTL, gLines);
+const tlLines = TL.map(i => mk('line', { stroke: DOML[dA[i]], 'stroke-width': 2.6, 'stroke-linecap': 'round' }, gTL));
+const gTLeg = mk('g', {}, gTL);
+(() => { const x0 = 480 - (66 + ND * 44) / 2;
+  txt(x0, 126, 'cell type', { 'font-size': 12.5, 'font-weight': 700, fill: '#33424F' }, gTLeg);
+  LNAMES.forEach((n, d) => { const x = x0 + 72 + d * 44; mk('circle', { cx: x, cy: 121.5, r: 5.5, fill: DOMC[d], stroke: DOML[d], 'stroke-width': 1.2 }, gTLeg);
+    txt(x + 9, 126, n, { 'font-size': 12, fill: C.ink2 }, gTLeg); }); })();
 const subLines = D.sub.map(i => mk('line', { stroke: ramp(uN[i]), 'stroke-width': 1.9, 'stroke-linecap': 'round' }, gLines));
 // readout under the slices (toy numbers, exact)
 const gRd = mk('g', {}, $('gLabels'));
@@ -634,11 +649,11 @@ function setQmask(t) {   // t = 0: B as measured before masking; 1: after
 // readout for the 'same type' step
 const gRd2 = mk('g', {}, $('gLabels'));
 const rd2 = txt(480, 438, '', { 'font-size': 14, fill: C.ink2, 'text-anchor': 'middle' }, gRd2);
-mk('tspan', {}, rd2).textContent = 'Spots of A matched to a spot of the same layer in B: ';
+mk('tspan', {}, rd2).textContent = 'Spots of A matched to the same cell type in B: ';
 mk('tspan', { 'font-weight': 700, fill: '#1D2731' }, rd2).textContent = Math.round(100 * D.accExact[0]) + '%';
-const subSetA = new Set(D.sub), subSetB = new Set(D.sub.map(i => D.matchW[i]));      // pairs drawn in the 'same type' step
+const subSetA = new Set(TL), subSetB = new Set(TL.map(i => D.matchW[i]));
 const vSetB = new Set(D.subB), vSetA = new Set(D.subB.map(j => D.virt[j]));          // pairs drawn for virtual neighbours
-const pairCol = (on, d) => on ? [DOMC[d], DOML[d], 1.3, 1.3] : [mixHex(DOMC[d], '#FFFFFF', 0.55), null, 0, 1];
+const pairCol = (on, d) => on ? [DOMC[d], DOML[d], 1.7, 1.45] : [mixHex(DOMC[d], '#FFFFFF', 0.38), null, 0, 1];
 
 // ------------------------------------------------------------------ the opening: brain → a block of DLPFC → sections
 // schematic human brain: the left hemisphere seen from the left, front of the head to the left (local box 0..410 x 0..300)
@@ -1156,6 +1171,17 @@ function render(k, e) {
       const g = grow ? ease(stag(clamp(e), n, nS, 0.55)) : 1;
       l.setAttribute('x1', f1(PA[i][0])); l.setAttribute('y1', f1(PA[i][1]));
       l.setAttribute('x2', f1(lerp(PA[i][0], tx, g))); l.setAttribute('y2', f1(lerp(PA[i][1], ty, g)));
+      l.setAttribute('opacity', g > 0.002 ? 1 : 0);
+    });
+  }
+  const tl = L('tl');
+  gTL.setAttribute('opacity', tl.toFixed(3));
+  if (tl > 0.001) {
+    const grow = s1.tl && !s0.tl;
+    TL.forEach((i, n) => {
+      const l = tlLines[n], b = PB[D.matchW[i]], g = grow ? ease(stag(clamp(e), n, TL.length, 0.6)) : 1;
+      l.setAttribute('x1', f1(PA[i][0])); l.setAttribute('y1', f1(PA[i][1]));
+      l.setAttribute('x2', f1(lerp(PA[i][0], b[0], g))); l.setAttribute('y2', f1(lerp(PA[i][1], b[1], g)));
       l.setAttribute('opacity', g > 0.002 ? 1 : 0);
     });
   }
