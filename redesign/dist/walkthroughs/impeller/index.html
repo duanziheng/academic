@@ -707,15 +707,19 @@ txt(520, 189, 'neighbours can interact (cell–cell communication)', { 'font-siz
 txt(520, 242, 'join each spot to its K most similar spots by expression', { 'font-size': 12.5 }, gGgT);
 txt(520, 293, 'same-type cells share signatures, even far apart', { 'font-size': 12, fill: C.mute }, gGgT);
 const gC = $('gChk'), CK = D.check;
-txt(520, 326, `Toy check: error on ${D.check.n} hidden values (RMSE)`, { 'font-size': 13, 'font-weight': 700, fill: C.head }, gC);
-const ckRows = [['spatial neighbours', CK.spatial, SPC], ['similar spots', CK.similar, SIMC], ['blend of both', CK.both, '#5B4BB8']];
-const ckBars = ckRows.map(([l, v, col], i) => { const y = 340 + i * 26;
-  txt(520, y + 13, l, { 'font-size': 12.5 }, gC);
-  const b = mk('rect', { x: 650, y: y + 2, height: 15, rx: 3, fill: col, width: 0 }, gC);
+// toy check: guess every hidden test value from one kind of neighbour, and compare the errors
+txt(520, 322, 'Toy check: fill in hidden values from neighbours', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gC);
+txt(520, 338, `error on the ${D.check.n} values hidden for testing (RMSE, lower is better)`, { 'font-size': 11.5, fill: C.mute }, gC);
+const CKX = 724;                                   // bars start here, after the row labels
+const ckRows = [['average of 6 spatial neighbours', CK.spatial, SPC, 400], ['average of 8 most similar spots', CK.similar, SIMC, 400], ['blend of the two averages', CK.both, '#5B4BB8', 700]];
+const ckBars = ckRows.map(([l, v, col, wt], i) => { const y = 348 + i * 24;
+  txt(520, y + 13, l, { 'font-size': 12.5, 'font-weight': wt, fill: wt > 400 ? C.ink : C.ink2 }, gC);
+  const b = mk('rect', { x: CKX, y: y + 2, height: 15, rx: 3, fill: col, width: 0 }, gC);
   const t = txt(0, y + 14, v.toFixed(3), { 'font-size': 12.5, 'font-weight': 700, fill: col }, gC);
   return { b, t, v }; });
-const CKS = v => v * 400;
-txt(520, 432, 'spatial errs at layer boundaries; similar spots miss smooth trends', { 'font-size': 11.5, fill: C.mute }, gC);
+const CKS = v => v * 270;
+txt(520, 432, 'spatial neighbours: wrong at layer boundaries (next spot, other layer)', { 'font-size': 11.5, fill: C.mute }, gC);
+txt(520, 447, 'similar spots: miss genes that change gradually across the section', { 'font-size': 11.5, fill: C.mute }, gC);
 
 // ------------------------------------------------------------------ scene 2: reach table and smoothing chart
 const gH = $('gHop');
@@ -1009,7 +1013,7 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
   // scene 1
   op(gGsT, L('gsT')); op(gGgT, L('ggT'));
   const cv = L('chk'); op(gC, cv);
-  if (cv > 0.001) ckBars.forEach((c, i) => { const t = grow('chk') ? ease(stag(eIn, i, 3, 0.4)) : 1, w = CKS(c.v) * t; c.b.setAttribute('width', f1(w)); c.t.setAttribute('x', f1(656 + w)); op(c.t, t); });
+  if (cv > 0.001) ckBars.forEach((c, i) => { const t = grow('chk') ? ease(stag(eIn, i, 3, 0.4)) : 1, w = CKS(c.v) * t; c.b.setAttribute('width', f1(w)); c.t.setAttribute('x', f1(CKX + 6 + w)); op(c.t, t); });
   // scene 2
   const hv = L('hop'); op(gH, hv);
   if (hv > 0.001) hopRows.forEach((g, i) => op(g, grow('hop') ? ease(stag(eIn, i, 5, 0.5)) : 1));
