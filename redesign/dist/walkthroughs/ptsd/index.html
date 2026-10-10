@@ -365,6 +365,7 @@ const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size
 const sub = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 11.5, fill: C.mute }, attrs || {}), parent);
 const rng = (seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(20250618);
 const gauss = () => { let u = 0; while (u === 0) u = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng()); };
+const tg = () => { let v; do v = gauss(); while (Math.abs(v) > 1.8); return v; };   // truncated normal: compact clusters, no strays
 const okMark = (x, y, col, g, w) => mk('path', { d: `M${x} ${y}l4 4l8 -9`, fill: 'none', stroke: col, 'stroke-width': w || 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
 
 // ------------------------------------------------------------------ scene 0: cohort
@@ -380,14 +381,14 @@ mk('path', { d: 'M84 232 C 82 186, 116 146, 168 128 C 220 110, 290 112, 336 136 
   'M282 150 C 306 166, 330 190, 344 222', 'M316 252 C 336 248, 356 248, 376 252'].forEach(d => mk('path', { d, fill: 'none', stroke: '#B9ABA4', 'stroke-width': 1.2, 'stroke-linecap': 'round' }, gBrain));
 const gDl = mk('g', {}, gCoh);
 mk('path', { d: 'M110 186 C 132 166, 170 154, 208 151 C 212 168, 210 184, 206 197 C 172 196, 138 202, 106 214 C 102 204, 104 194, 110 186 Z', fill: C.teal, opacity: 0.55, stroke: C.teal, 'stroke-width': 1.6 }, gDl);
-mk('line', { x1: 150, y1: 168, x2: 150, y2: 110, stroke: C.teal, 'stroke-width': 1.3 }, gDl);
+mk('line', { x1: 150, y1: 168, x2: 150, y2: 110, stroke: C.teal, 'stroke-width': 1.4 }, gDl);
 txt(62, 104, 'Dorsolateral prefrontal cortex (DLPFC)', { 'font-size': 13, 'font-weight': 700, fill: C.teal }, gDl);
-sub(238, 384, 'post-mortem tissue from each donor', gCoh, { 'text-anchor': 'middle' });
+sub(238, 377, 'post-mortem tissue from each donor', gCoh, { 'text-anchor': 'middle' });
 const facts = [['6–8%', 'of the general', 'population'], ['24–40%', 'heritable', ''], ['polygenic', 'many variants,', 'each adds a little']];
 const factEls = facts.map(([n, a, b], i) => { const g = mk('g', {}, gCoh), x = 62 + i * 128;
-  box(x, 398, 118, 54, g, { fill: '#F4F7F9', stroke: '#D3DCE3' });
-  txt(x + 10, 419, n, { 'font-size': 16, 'font-weight': 700, fill: C.teal }, g);
-  txt(x + 10, 434, a, { 'font-size': 10.5, fill: C.ink2 }, g); if (b) txt(x + 10, 446, b, { 'font-size': 10.5, fill: C.ink2 }, g);
+  box(x, 388, 118, 64, g, { fill: '#F4F7F9', stroke: '#D3DCE3' });
+  txt(x + 11, 411, n, { 'font-size': 16, 'font-weight': 700, fill: C.teal }, g);
+  txt(x + 11, 428, a, { 'font-size': 10.5, fill: C.ink2 }, g); if (b) txt(x + 11, 441, b, { 'font-size': 10.5, fill: C.ink2 }, g);
   return g; });
 head(480, 118, '111 donors in three groups', gCoh);
 const GRPS = [['PTSD', 'post-traumatic stress', 'disorder', D.cohort.PTSD, 12], ['MDD', 'major depression:', 'psychiatric comparison', D.cohort.MDD, 12], ['CON', 'controls:', 'neither disorder', D.cohort.CON, 13]];
@@ -405,27 +406,28 @@ txt(496, 432, 'changes, and in which cells do genetic risk variants act?', { 'fo
 // ------------------------------------------------------------------ scene 1: data and cell types
 const gData = $('gData');
 head(62, 118, 'Four assays on the same brain region', gData);
-const AMAX = D.assays[0][2], AW = 300;
+const AMAX = D.assays[0][2], AW = 388;
 const assayRows = D.assays.map(([name, desc, n, smp], i) => { const y = 152 + i * 66, g = mk('g', {}, gData);
   const t = txt(62, y, name, { 'font-size': 13.5, 'font-weight': 700, fill: C.ink }, g); tsp(t, desc, { dx: 8, 'font-weight': 400, fill: C.ink2, 'font-size': 12.5 });
   txt(450, y, smp, { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, g);
   mk('rect', { x: 62, y: y + 9, width: AW, height: 16, rx: 3, fill: '#F0F3F6' }, g);
   const b = mk('rect', { x: 62, y: y + 9, width: 0, height: 16, rx: 3, fill: i === 3 ? '#8E7CC3' : C.teal }, g);
-  const v = txt(0, y + 22, fmt(n) + ' nuclei', { 'font-size': 12, 'font-weight': 700, fill: C.ink }, g);
-  return { g, b, v, w: AW * n / AMAX }; });
+  const w = AW * n / AMAX, inside = w > AW - 100;
+  const v = txt(inside ? f1(62 + w - 7) : 0, y + 22, fmt(n) + ' nuclei', { 'font-size': 12, 'font-weight': 700, fill: inside ? '#FFFFFF' : C.ink, 'text-anchor': inside ? 'end' : 'start' }, g);
+  return { g, b, v, w, inside }; });
 txt(62, 430, `${fmt(D.assays.reduce((a, r) => a + r[2], 0))} nuclei in all`, { 'font-size': 13.5, 'font-weight': 700, fill: C.teal }, gData);
 head(500, 118, 'Seven major cell types', gData);
 sub(500, 136, 'schematic cluster map: each dot stands for many nuclei', gData);
 const CLU = [ // type, label, x, y, sdx, sdy, n, label position [dx, dy, anchor]
-  ['OLG', 'OLG', 570, 214, 26, 20, 80, [0, -34, 'middle']], ['OPC', 'OPC', 548, 300, 12, 10, 20, [-20, 4, 'end']], ['END', 'END', 566, 372, 12, 9, 16, [-20, 4, 'end']],
-  ['MG', 'MG', 636, 396, 13, 8, 20, [22, 4, 'start']], ['AST', 'AST', 684, 176, 20, 13, 36, [0, -24, 'middle']],
-  ['EXN', 'CUX2', 790, 176, 24, 13, 60, [0, -21, 'middle']], ['EXN', 'RORB', 856, 214, 17, 12, 38, [24, 4, 'start']], ['EXN', 'OPRK1', 790, 240, 17, 11, 32, [0, 27, 'middle']],
-  ['EXN', 'FEZF2', 868, 282, 12, 12, 24, [0, 28, 'middle']],
-  ['IN', 'LAMP5', 676, 268, 11, 9, 16, [0, -17, 'middle']], ['IN', 'KCNG1', 668, 330, 11, 9, 16, [-17, 4, 'end']], ['IN', 'PVALB', 734, 300, 11, 9, 18, [0, -16, 'middle']],
-  ['IN', 'VIP', 734, 362, 11, 9, 16, [0, 25, 'middle']], ['IN', 'SST', 792, 336, 12, 9, 20, [20, 4, 'start']],
+  ['OLG', 'OLG', 570, 214, 26, 20, 80, [0, -37, 'middle']], ['OPC', 'OPC', 548, 300, 12, 10, 20, [-23, 4, 'end']], ['END', 'END', 566, 372, 12, 9, 16, [-23, 4, 'end']],
+  ['MG', 'MG', 636, 396, 13, 8, 20, [25, 4, 'start']], ['AST', 'AST', 684, 176, 20, 13, 36, [0, -27, 'middle']],
+  ['EXN', 'CUX2', 790, 176, 24, 13, 60, [0, -25, 'middle']], ['EXN', 'RORB', 856, 214, 17, 12, 38, [30, 4, 'start']], ['EXN', 'OPRK1', 790, 240, 17, 11, 32, [0, 29, 'middle']],
+  ['EXN', 'FEZF2', 868, 282, 12, 12, 24, [0, 30, 'middle']],
+  ['IN', 'LAMP5', 676, 268, 11, 9, 16, [0, -19, 'middle']], ['IN', 'KCNG1', 668, 330, 11, 9, 16, [-21, 4, 'end']], ['IN', 'PVALB', 734, 300, 11, 9, 18, [0, -19, 'middle']],
+  ['IN', 'VIP', 734, 362, 11, 9, 16, [0, 27, 'middle']], ['IN', 'SST', 792, 336, 12, 9, 20, [23, 4, 'start']],
 ];
 const cluEls = CLU.map(([t, lab, cx, cy, sx, sy, n, [dx, dy, an]]) => { const g = mk('g', {}, gData);
-  for (let i = 0; i < Math.round(n * 1.7); i++) mk('circle', { cx: f1(cx + gauss() * sx * 0.82), cy: f1(cy + gauss() * sy * 0.82), r: 2.3, fill: CT[t], opacity: 0.78 }, g);
+  for (let i = 0; i < Math.round(n * 1.7); i++) mk('circle', { cx: f1(cx + tg() * sx * 0.82), cy: f1(cy + tg() * sy * 0.82), r: 2.3, fill: CT[t], opacity: 0.8 }, g);
   const sty = t === 'EXN' || t === 'IN' ? { 'font-size': 11, 'font-style': 'italic', fill: CTD[t] } : { 'font-size': 12.5, 'font-weight': 700, fill: CTD[t] };
   txt(cx + dx, cy + dy, lab, Object.assign({ 'text-anchor': an }, sty, HALO), g);
   return g; });
@@ -477,15 +479,20 @@ txt(580, 434, 'bulk RNA-seq of an overlapping cohort agrees (r = 0.69)', { 'font
 
 // ------------------------------------------------------------------ scene 3: FKBP5 in endothelial cells
 const gEnd = $('gEnd');
+(() => { const lg = mk('linearGradient', { id: 'ptLumen', x1: 0, y1: 0, x2: 0, y2: 1 }, mk('defs', {}, gEnd));
+  [[0, '#F6DAD5'], [0.5, '#FDF3F1'], [1, '#F6DAD5']].forEach(([o, c]) => mk('stop', { offset: o, 'stop-color': c }, lg)); })();
 const vessel = (x0, nFk, label, col, g) => {
   txt(x0, 118, label, { 'font-size': 14, 'font-weight': 700, fill: col }, g);
   const W = 196, yT = 150, yB = 234;
-  mk('rect', { x: x0, y: yT + 12, width: W, height: yB - yT - 12, fill: '#FBE9E6' }, g);
-  [[x0 + 30, yT + 38], [x0 + 92, yT + 52], [x0 + 150, yT + 34], [x0 + 60, yT + 62], [x0 + 172, yT + 60]].forEach(([x, y]) => mk('ellipse', { cx: x, cy: y, rx: 11, ry: 6.5, fill: '#E58B80', stroke: '#C9655A', 'stroke-width': 0.8 }, g));
+  mk('rect', { x: x0, y: yT + 12, width: W, height: yB - yT - 12, fill: 'url(#ptLumen)' }, g);
+  [[x0 + 30, yT + 38], [x0 + 92, yT + 52], [x0 + 150, yT + 34], [x0 + 60, yT + 62], [x0 + 172, yT + 60]].forEach(([x, y]) => {
+    mk('ellipse', { cx: x, cy: y, rx: 11, ry: 6.5, fill: '#E58B80', stroke: '#C9655A', 'stroke-width': 0.8 }, g);
+    mk('ellipse', { cx: x, cy: y, rx: 5, ry: 2.4, fill: '#EDA197' }, g); });
+  const FKX = nFk > 1 ? [[7.5, 13.5, 38], [10, 35.5, 41]] : [[10.5], [37.5]], FKY = nFk > 1 ? [-1, 1, 0] : [0];
   [yT, yB].forEach((y, w) => { for (let c = 0; c < 4; c++) { const x = x0 + c * 49;
     mk('rect', { x: x + 1, y, width: 47, height: 12, rx: 6, fill: '#EFD98E', stroke: CT.END, 'stroke-width': 1 }, g);
     mk('ellipse', { cx: x + 24, cy: y + 6, rx: 7, ry: 3.4, fill: '#C9A227' }, g);
-    for (let m = 0; m < nFk; m++) mk('circle', { cx: f1(x + 6 + ((m * 13 + c * 7 + w * 5) % 38)), cy: f1(y + 3 + ((m * 5 + c * 3 + w) % 6)), r: 2.6, fill: FK }, g); } });
+    FKX[(c + w) % 2].forEach((dx, m) => mk('circle', { cx: f1(x + dx), cy: f1(y + 6 + FKY[m]), r: 2.6, fill: FK }, g)); } });
   txt(x0 + W / 2, yB + 32, nFk > 1 ? 'more FKBP5 in the vessel wall' : 'FKBP5 at baseline', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, g);
 };
 const gV1 = mk('g', {}, gEnd), gV2 = mk('g', {}, gEnd);
@@ -501,6 +508,7 @@ lines(78, 374, ['PTSD often comes with low cortisol. More glucocorticoid may', '
 head(530, 118, 'FKBP5 in PTSD vs controls', gEnd);
 sub(530, 136, 'single-nucleus RNA · log2 fold change', gEnd);
 const FKS = 160;
+mk('line', { x1: 660, x2: 660, y1: 150, y2: 214, stroke: '#7D8C99', 'stroke-width': 1.2 }, gEnd);
 const fkBars = [['END', 'Endothelial cells', FKB.END], ['OLG', 'Oligodendrocytes', FKB.OLG]].map(([t, l, v], i) => { const y = 156 + i * 34, g = mk('g', {}, gEnd);
   txt(530, y + 13, l, { 'font-size': 12.5, fill: C.ink }, g);
   const b = mk('rect', { x: 660, y, width: 0, height: 18, rx: 3, fill: CT[t] }, g);
@@ -510,9 +518,9 @@ const gXen = mk('g', {}, gEnd);
 head(530, 254, 'Spatial check (Xenium, 18 donors)', gXen, { 'font-size': 13 });
 lines(530, 276, [`FKBP5 up in endothelial cells (log2 fold change ${FKB.xeniumEND})`, 'highest near blood vessels', '88 endothelial genes change; 31 also in snRNA-seq'], 20, { 'font-size': 12.5, fill: C.ink2 }, gXen);
 const gUnx = mk('g', {}, gEnd);
-box(530, 352, 392, 66, gUnx, { fill: '#FBF6E6', stroke: '#E2CF8C' });
-txt(546, 377, 'Unexpectedly, the glucocorticoid changes are strongest', { 'font-size': 12.5, 'font-weight': 700, fill: CTD.END }, gUnx);
-txt(546, 397, 'in endothelial cells; earlier FKBP5 work focused on neurons', { 'font-size': 12.5, 'font-weight': 700, fill: CTD.END }, gUnx);
+box(530, 364, 392, 66, gUnx, { fill: '#FBF6E6', stroke: '#E2CF8C' });
+txt(546, 389, 'Unexpectedly, the glucocorticoid changes are strongest', { 'font-size': 12.5, 'font-weight': 700, fill: CTD.END }, gUnx);
+txt(546, 409, 'in endothelial cells; earlier FKBP5 work focused on neurons', { 'font-size': 12.5, 'font-weight': 700, fill: CTD.END }, gUnx);
 
 // ------------------------------------------------------------------ scene 4: SST interneurons
 const gSst = $('gSst');
@@ -536,13 +544,17 @@ TGT.forEach(t => { if (!t) { ty += 10; return; } const [ct, lab] = t, y = ty; ty
   if (kc) txt(TX + 62, y + 4.5, 'largest drop', { 'font-size': 11.5, 'font-weight': 700, fill: C.red }, g);
   sstArrows.push({ band, line, g }); });
 (() => { const g = mk('g', {}, gSst);
-  [[-26, -30], [-30, 22], [24, -34], [-8, 36]].forEach(([dx, dy]) => mk('line', { x1: SX, y1: SY, x2: SX + dx, y2: SY + dy, stroke: '#5FA36B', 'stroke-width': 3, 'stroke-linecap': 'round' }, g));
+  const taper = (x0, y0, x1, y1, w0, w1) => { const L = Math.hypot(x1 - x0, y1 - y0), nx = (y0 - y1) / L, ny = (x1 - x0) / L;
+    return `M${f1(x0 + nx * w0)} ${f1(y0 + ny * w0)} L${f1(x1 + nx * w1)} ${f1(y1 + ny * w1)} L${f1(x1 - nx * w1)} ${f1(y1 - ny * w1)} L${f1(x0 - nx * w0)} ${f1(y0 - ny * w0)} Z`; };
+  [[-30, -35, -44, -35], [-35, 24, -48, 21], [28, -39, 44, -41], [-8, 37, 9, 41]].forEach(([dx, dy, bx, by]) => {
+    mk('path', { d: taper(SX, SY, SX + dx, SY + dy, 3.4, 0.8), fill: '#5FA36B', stroke: '#5FA36B', 'stroke-width': 0.8, 'stroke-linejoin': 'round' }, g);
+    mk('path', { d: taper(SX + dx * 0.7, SY + dy * 0.7, SX + bx, SY + by, 1.3, 0.5), fill: '#5FA36B', stroke: '#5FA36B', 'stroke-width': 0.6, 'stroke-linejoin': 'round' }, g); });
   mk('circle', { cx: SX, cy: SY, r: 22, fill: CT.IN, stroke: CTD.IN, 'stroke-width': 1.4 }, g);
   txt(SX, SY + 5, 'SST', { 'font-size': 14, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
   txt(SX, SY + 58, 'SST interneuron', { 'font-size': 12.5, 'font-weight': 700, fill: CTD.IN, 'text-anchor': 'middle' }, g);
   txt(102, 444, 'control', { 'font-size': 11.5, fill: C.ink2 }, g); mk('line', { x1: 66, x2: 94, y1: 440, y2: 440, stroke: '#C7E0CC', 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
   txt(204, 444, 'PTSD (widths schematic)', { 'font-size': 11.5, fill: C.ink2 }, g); mk('line', { x1: 168, x2: 196, y1: 440, y2: 440, stroke: '#2F7A3D', 'stroke-width': 2.2 }, g); })();
-head(580, 118, 'Outgoing signalling, PTSD vs control', gSst, { 'font-size': 13.5 });
+head(580, 118, 'Outgoing signalling, PTSD vs control', gSst);
 sub(580, 136, 'log differential output, 14 sender cell types', gSst);
 const OZ = 880, OS = 440;
 (() => { const g = mk('g', {}, gSst);
@@ -574,10 +586,13 @@ const gTrk = mk('g', {}, gReg);
 TRK.forEach(([t, y, pk]) => { mk('circle', { cx: 68, cy: y - 5, r: 5, fill: CT[t] }, gTrk); txt(80, y - 1, t, { 'font-size': 12, 'font-weight': 700, fill: CTD[t] }, gTrk);
   mk('line', { x1: RX0, x2: RX1, y1: y, y2: y, stroke: '#C9D3DC' }, gTrk);
   pk.forEach(([x, h]) => mk('path', { d: bump(x, h, 13, y) + ' Z', fill: CT[t], opacity: 0.85 }, gTrk)); });
-const gLinks = mk('g', {}, gReg);
 const LY = 340;
+mk('line', { x1: RX0, x2: RX1, y1: LY, y2: LY, stroke: '#E3E9EE' }, gTrk);
+const gLinks = mk('g', {}, gReg);
 [['EXN', 296, 186], ['IN', 346, 232], ['END', 252, 278]].forEach(([t, x, y]) => mk('line', { x1: x, x2: x, y1: y + 2, y2: LY - 2, stroke: CT[t], 'stroke-width': 1.1, 'stroke-dasharray': '2 3' }, gLinks));
 [['EXN', 296], ['IN', 346], ['END', 252]].forEach(([t, x]) => mk('path', { d: `M${x} ${LY} Q ${(x + TSS) / 2} ${LY - 0.42 * (TSS - x)}, ${TSS} ${LY}`, fill: 'none', stroke: CTD[t], 'stroke-width': 2, pathLength: 1, 'stroke-dasharray': '1 1' }, gLinks));
+[['EXN', 296], ['IN', 346], ['END', 252]].forEach(([t, x]) => mk('circle', { cx: x, cy: LY, r: 2.8, fill: CTD[t] }, gLinks));
+const tssDot = mk('circle', { cx: TSS, cy: LY, r: 3.2, fill: C.head }, gReg);
 txt(62, LY - 4, 'links', { 'font-size': 11.5, fill: C.mute }, gLinks);
 const gGene = mk('g', {}, gReg);
 mk('line', { x1: RX0, x2: RX1, y1: 362, y2: 362, stroke: '#9AA8B4', 'stroke-width': 1.4 }, gGene);
@@ -616,7 +631,7 @@ txt(560, 447, 'neurons confirmed changes in 27 target genes', { 'font-size': 11.
 // ------------------------------------------------------------------ scene 6: genetic risk
 const gRisk = $('gRisk');
 const gLd = mk('g', {}, gRisk);
-txt(62, 110, 'PTSD risk variants are enriched in the open chromatin of', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gLd);
+txt(62, 110, 'PTSD risk variants are enriched in the open chromatin of', { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, gLd);
 const ldOn = new Set(['EXN', 'IN']);
 ['EXN', 'IN', 'OLG', 'OPC', 'END', 'AST', 'MG'].forEach((t, i) => { const x = 466 + i * 64, on = ldOn.has(t);
   box(x, 93, 58, 24, gLd, { rx: 12, fill: on ? CT[t] : '#FFFFFF', stroke: on ? CTD[t] : '#D3DCE3' });
@@ -635,12 +650,13 @@ const stC = mk('line', { x1: XC, x2: XC, y1: PY0, y2: PY0, stroke: C.red, 'strok
 const hdC = mk('circle', { cx: XC, cy: PY0, r: 6.5, fill: C.red, stroke: '#FFFFFF', 'stroke-width': 1.4 }, gSnp);
 mk('circle', { cx: XL, cy: pipL, r: 5.5, fill: '#7A4FB0', stroke: '#FFFFFF', 'stroke-width': 1.2 }, gSnp);
 const lbC = mk('g', {}, gSnp);
+mk('line', { x1: XC, x2: XC, y1: PY0 + 4, y2: 330 - 32, stroke: C.red, 'stroke-width': 1.3, 'stroke-dasharray': '2 3', 'stroke-linecap': 'round' }, lbC);
 txt(XC + 12, pipC - 1, SN.credible[0], { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, lbC);
 txt(XC + 12, pipC + 14, 'PIP ' + SN.credible[1], { 'font-size': 11.5, fill: C.ink2 }, lbC);
-txt(XL - 10, PY0 - 18, SN.lead[0], { 'font-size': 12, 'font-weight': 700, fill: '#7A4FB0', 'text-anchor': 'end' }, gSnp);
-txt(XL - 10, PY0 - 4, 'MVP lead variant, PIP ' + SN.lead[1], { 'font-size': 11, fill: C.ink2, 'text-anchor': 'end' }, gSnp);
+txt(XL - 10, PY0 - 22, SN.lead[0], { 'font-size': 12, 'font-weight': 700, fill: '#7A4FB0', 'text-anchor': 'end' }, gSnp);
+txt(XL - 10, PY0 - 8, 'MVP lead variant, PIP ' + SN.lead[1], { 'font-size': 11, fill: C.ink2, 'text-anchor': 'end' }, gSnp);
 const gLdr = mk('g', {}, gSnp);
-mk('line', { x1: XL + 4, y1: pipL - 4, x2: XC - 5, y2: pipC + 5, stroke: '#9AA8B4', 'stroke-width': 1.2, 'stroke-dasharray': '3 3' }, gLdr);
+mk('line', { x1: XL + 4, y1: pipL - 4, x2: XC - 5, y2: pipC + 5, stroke: '#9AA8B4', 'stroke-width': 1.4, 'stroke-dasharray': '3 3' }, gLdr);
 txt((XL + XC) / 2 - 8, (pipL + pipC) / 2 - 2, 'LD r = ' + SN.ld, { 'font-size': 11, fill: C.ink2, 'text-anchor': 'end' }, gLdr);
 const IY = 330;
 mk('circle', { cx: 68, cy: IY - 5, r: 5, fill: CT.IN }, gLoc); txt(80, IY - 1, 'IN', { 'font-size': 12, 'font-weight': 700, fill: CTD.IN }, gLoc);
@@ -657,13 +673,13 @@ txt(XE + 31, GY + 26, 'ELFN1', { 'font-size': 12.5, 'font-weight': 700, 'font-st
 txt(505, GY + 26, 'MAD1L1', { 'font-size': 12.5, 'font-weight': 700, 'font-style': 'italic', fill: C.head, 'text-anchor': 'middle' }, gLoc);
 txt(62, GY + 4, 'genes', { 'font-size': 11.5, fill: C.mute }, gLoc);
 const gOth = mk('g', {}, gRisk);
-box(732, 150, 190, 290, gOth, { fill: '#F7FAFB', stroke: '#C9D3DC' });
-txt(746, 174, 'ELFN1', { 'font-size': 13, 'font-weight': 700, 'font-style': 'italic', fill: CTD.IN }, gOth);
-lines(746, 194, ['synaptic protein of', 'interneurons, most', 'expressed in SST cells'], 17, { 'font-size': 12, fill: C.ink2 }, gOth);
-txt(746, 268, 'KCNIP4', { 'font-size': 13, 'font-weight': 700, 'font-style': 'italic', fill: CTD.EXN }, gOth);
-lines(746, 288, [`${SN.kcnip4[0]}, PIP ${SN.kcnip4[1]},`, 'in excitatory neurons'], 17, { 'font-size': 12, fill: C.ink2 }, gOth);
-txt(746, 346, 'Also fine-mapped', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gOth);
-lines(746, 366, ['EGR3, LRFN5, OPCML,', 'CAMKV, TCF4, CRHR1'], 17, { 'font-size': 12, 'font-style': 'italic', fill: C.ink2 }, gOth);
+box(732, 158, 190, 282, gOth, { fill: '#F7FAFB', stroke: '#C9D3DC' });
+txt(746, 181, 'ELFN1', { 'font-size': 13, 'font-weight': 700, 'font-style': 'italic', fill: CTD.IN }, gOth);
+lines(746, 201, ['synaptic protein of', 'interneurons, most', 'expressed in SST cells'], 17, { 'font-size': 12, fill: C.ink2 }, gOth);
+txt(746, 274, 'KCNIP4', { 'font-size': 13, 'font-weight': 700, 'font-style': 'italic', fill: CTD.EXN }, gOth);
+lines(746, 294, [`${SN.kcnip4[0]}, PIP ${SN.kcnip4[1]},`, 'in excitatory neurons'], 17, { 'font-size': 12, fill: C.ink2 }, gOth);
+txt(746, 351, 'Also fine-mapped', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gOth);
+lines(746, 371, ['EGR3, LRFN5, OPCML,', 'CAMKV, TCF4, CRHR1'], 17, { 'font-size': 12, 'font-style': 'italic', fill: C.ink2 }, gOth);
 
 // ------------------------------------------------------------------ scene 7: summary
 const gRc = $('gRecap');
@@ -678,10 +694,11 @@ const rcItems = RC.map(([n, t, col, fillc, ls], i) => { const g = mk('g', {}, gR
   lines(x + 20, 190, ls, 22, { 'font-size': 13.5, fill: C.ink }, g);
   return g; });
 (() => { const g = mk('g', {}, rcItems[0]), x0 = 92;
-  mk('rect', { x: x0, y: 286, width: 212, height: 30, fill: '#FBE9E6' }, g);
+  mk('rect', { x: x0, y: 286, width: 212, height: 30, fill: 'url(#ptLumen)' }, g);
   [272, 316].forEach(y => { for (let c = 0; c < 4; c++) { mk('rect', { x: x0 + c * 53 + 1, y, width: 51, height: 12, rx: 6, fill: '#EFD98E', stroke: CT.END }, g);
     for (let m = 0; m < 4; m++) mk('circle', { cx: x0 + c * 53 + 8 + m * 11, cy: y + 6, r: 2.1, fill: FK }, g); } });
-  [[x0 + 40, 301], [x0 + 120, 298], [x0 + 180, 303]].forEach(([x, y]) => mk('ellipse', { cx: x, cy: y, rx: 10, ry: 6, fill: '#E58B80' }, g)); })();
+  [[x0 + 40, 301], [x0 + 120, 298], [x0 + 180, 303]].forEach(([x, y]) => { mk('ellipse', { cx: x, cy: y, rx: 10, ry: 6, fill: '#E58B80', stroke: '#C9655A', 'stroke-width': 0.8 }, g);
+    mk('ellipse', { cx: x, cy: y, rx: 4.5, ry: 2.2, fill: '#EDA197' }, g); }); })();
 (() => { const g = mk('g', {}, rcItems[1]), x0 = 62 + 292 + 46, y0 = 300;
   mk('circle', { cx: x0, cy: y0, r: 15, fill: CT.IN, stroke: CTD.IN }, g);
   txt(x0, y0 + 4, 'SST', { 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
@@ -694,8 +711,8 @@ const rcItems = RC.map(([n, t, col, fillc, ls], i) => { const g = mk('g', {}, gR
   mk('rect', { x: x0 + 14, y: y0 - 6, width: 40, height: 12, rx: 2, fill: C.head }, g);
   mk('path', { d: bump(x0 + 168, 22, 11, y0 - 16) + ' Z', fill: CT.IN }, g);
   mk('line', { x1: x0, x2: x0 + 220, y1: y0 - 16, y2: y0 - 16, stroke: '#C9D3DC' }, g);
-  mk('path', { d: `M${x0 + 30} ${y0 - 20} Q ${x0 + 100} ${y0 - 74}, ${x0 + 168} ${y0 - 40}`, fill: 'none', stroke: CTD.IN, 'stroke-width': 2 }, g);
-  mk('circle', { cx: x0 + 168, cy: y0 - 46, r: 5, fill: C.red }, g); })();
+  mk('path', { d: `M${x0 + 34} ${y0 - 9} Q ${x0 + 100} ${y0 - 84}, ${x0 + 163.6} ${f1(y0 - 44.2)}`, fill: 'none', stroke: CTD.IN, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
+  mk('circle', { cx: x0 + 168, cy: y0 - 42, r: 4.6, fill: C.red, stroke: '#FFFFFF', 'stroke-width': 1.2 }, g); })();
 const rcFoot = txt(62, 396, `Over 2 million nuclei · 111 donors · ${(100 * DG.both / DG.ptsd).toFixed(1)}% of PTSD genes also change in depression`, { 'font-size': 13, fill: C.ink2 }, gRc);
 
 // ------------------------------------------------------------------ render
@@ -707,7 +724,8 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
     factEls.forEach((g, i) => op(g, ease(stag(app, i, 3, 0.5)))); op(gQ, ease(clamp(app * 2 - 1))); }
   const b = L('data'); op(gData, b);
   if (b > 0.001) { const app = grow('data') ? eIn : 1;
-    assayRows.forEach((r, i) => { const t = ease(stag(app, i, 4, 0.5)); r.b.setAttribute('width', f1(r.w * t)); r.v.setAttribute('x', f1(68 + r.w * t)); op(r.v, t); });
+    assayRows.forEach((r, i) => { const t = ease(stag(app, i, 4, 0.5)); r.b.setAttribute('width', f1(r.w * t));
+      if (r.inside) op(r.v, clamp(t * 4 - 3)); else { r.v.setAttribute('x', f1(68 + r.w * t)); op(r.v, t); } });
     cluEls.forEach((g, i) => op(g, ease(stag(app, i, cluEls.length, 0.7)))); op(gGrpLab, ease(clamp(app * 2 - 1))); }
   const c = L('deg'); op(gDeg, c);
   if (c > 0.001) { const app = grow('deg') ? eIn : 1;
@@ -730,6 +748,7 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
   if (g > 0.001) { const app = grow('reg') ? eIn : 1;
     op(gTrk, ease(clamp(app * 3))); op(gGene, ease(clamp(app * 3)));
     [...gLinks.querySelectorAll('path')].forEach((p, i) => p.setAttribute('stroke-dashoffset', (1 - ease(stag(clamp(app * 1.6 - 0.3), i, 3, 0.4))).toFixed(3)));
+    op(tssDot, clamp(ease(stag(clamp(app * 1.6 - 0.3), 0, 3, 0.4)) * 5 - 4));
     op(gLinks, ease(clamp(app * 3 - 0.6))); op(gTF, ease(clamp(app * 2 - 0.8)));
     regRows.forEach((r, i) => op(r, ease(stag(clamp(app * 1.5 - 0.2), i, 3, 0.5))));
     const tl = ease(clamp(app * 2 - 0.8)); lkBars.forEach(r => r.b.setAttribute('width', f1(r.w * tl))); op(gLk, ease(clamp(app * 3 - 1.6))); op(gTfs, ease(clamp(app * 2 - 1))); }
@@ -791,6 +810,8 @@ function render(k, e) {
     else if (inC) o = clamp(e * 2.2 - 1.0);
     else if (inP) o = 1 - clamp(e * 2.2);
     d.style.opacity = o.toFixed(3);
+    // text that arrives rises a few pixels into place as it fades in
+    d.style.transform = inC && !inP && o < 1 ? `translateY(${(0.32 * (1 - o)).toFixed(3)}em)` : '';
   });
 }
 

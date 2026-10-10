@@ -488,7 +488,7 @@ const BASE = { brain: 0, brainS: 0, call: 0, blk: 0, lift: 0, flat: 0, col: 0, t
 const SUP = s => `<sup>${s}</sup>`;
 const EQ1 = `<div class="eq"><i>e</i><sub><i>s</i>,{<i>ij</i>}</sub> = 1 if ‖<b>C</b><sub><i>i</i></sub> − <b>C</b><sub><i>j</i></sub>‖<sub>2</sub> ≤ <i>d</i><sub>thr</sub> else 0${NUM(1)}</div>`;
 const EQ2 = `<div class="eq"><i>e</i><sub><i>g</i>,{<i>ij</i>}</sub> = 1 if <i>j</i> ∈ <i>K</i><sub><i>g</i></sub>(<b>X</b>${SS('<i>i</i>', 'h')}) else 0${NUM(2)}</div>`;
-const EQ12 = EQ1 + EQ2.replace('<div class="eq">', '<div class="eq" style="margin-top:4.15em">');
+const EQ12 = EQ1 + EQ2.replace('<div class="eq">', '<div class="eq" style="margin-top:4.55em">');
 const EQ3 = `<div class="eq"><i>f</i>${SS('<i>i</i>', '(<i>l</i>)')} = <i>γ</i>(<i>f</i>${SS('<i>i</i>', '(<i>l</i>−1)')}, ⨁<sub><i>j</i>∈<i>N<sup>s</sup></i>(<i>i</i>)</sub> <i>ϕ</i>(·), ⨁<sub><i>j</i>∈<i>N<sup>g</sup></i>(<i>i</i>)</sub> <i>ψ</i>(·))${NUM(3)}</div>`;
 const EQ4 = `<div class="eq">(<b>op</b><sub><i>s</i></sub> ∗ <i>f</i>)[<i>j</i>] = Σ${SS('<i>i</i>=1', '<i>k<sub>s</sub></i>')} <b>op</b><sub><i>s</i>,<i>i</i></sub>[<i>j</i>] · <i>f</i><sub><i>s<sub>i</sub></i></sub>[<i>j</i>]${NUM(4)}<span class="note">for every channel <i>j</i></span></div>`;
 const EQ56 = `<div class="eq"><b>op</b><sub><i>s</i></sub>(𝒫<sub><i>s</i></sub>) ∗ <i>f</i> = <span class="frac"><span>1</span><span><i>T<sub>s</sub></i></span></span>Σ<sub><i>P<sub>s</sub></i>∈𝒫<sub><i>s</i></sub></sub> <b>op</b><sub><i>s</i></sub>(<i>P<sub>s</sub></i>) ∗ <i>f</i>${NUM(5)}</div>` +
@@ -587,7 +587,7 @@ const S = [
 S.forEach(s => { s.st = Object.assign({}, BASE, s.st); });
 const SEQ = new Set(['tis', 'tr', 'leg', 'mat', 'gs', 'gg', 'gsT', 'ggT', 'chk', 'hop', 'osm', 'wsp', 'wsim', 'wT1', 'wT2', 'opx', 'arch', 'bench', 'rf', 'het', 'eff', 'recap']);
 const EXIT = new Set(['ring']);
-const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 14, 'font-weight': 700, fill: C.head }, attrs || {}), parent);
+const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 13.5, 'font-weight': 700, fill: C.head }, attrs || {}), parent);
 const dist = (a, b) => Math.hypot(P[a][0] - P[b][0], P[a][1] - P[b][1]);
 
 // ------------------------------------------------------------------ where the data come from (shared with iMiracle)
@@ -634,27 +634,41 @@ const smCol = v => (v < 1.2 ? mixHex('#F1F4F6', '#E9B26E', clamp(v / 1.2)) : mix
 const smVal = (i, sm) => { const a = Math.floor(clamp(sm, 0, 2.999)), t = sm - a; return lerp(SMV[a][i], SMV[a + 1][i], t); };
 const colOf = (i, fill, sm) => fill === 0 ? LCOL[LAY[i]] : fill === 1 ? DIM[LAY[i]] : fill === 2 ? HOPC(D.hop[i]) : smCol(smVal(i, sm));
 // hop labels
-const gHopLab = mk('g', {}, gOv);
+// hop labels: the marked spots on the target's row carry their step count (drawn under the target ring)
+const gHopLab = mk('g', {}); gOv.insertBefore(gHopLab, gRing);
 [1, 2, 4, 8].forEach(k => { let best = -1, bx = -1e9; P.forEach((p, i) => { if (D.hop[i] === k && Math.abs(p[1] - P[TG][1]) < 7 && p[0] < P[TG][0] && p[0] > bx) { bx = p[0]; best = i; } });
-  if (best >= 0) txt(P[best][0], P[best][1] - 9, String(k), Object.assign({ 'font-size': 12, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, HALO), gHopLab); });
+  if (best < 0) return; const [x, y] = P[best];
+  mk('circle', { cx: x, cy: y, r: 6.4, fill: HOPC(k), stroke: '#FFFFFF', 'stroke-width': 1.4 }, gHopLab);
+  txt(x, y + 3.4, String(k), { 'font-size': 9.5, 'font-weight': 700, fill: k < 4 ? '#FFFFFF' : C.ink, 'text-anchor': 'middle' }, gHopLab); });
 // smoothing label (rounds of averaging)
 const gSmLab = mk('g', {}, gOv);
 const smLabT = txt(70, 105.5, '', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gSmLab);
-(() => { const g = mk('g', {}, gSmLab); txt(70, 428, 'G25 value', { 'font-size': 11.5, fill: C.ink2 }, g);
-  for (let k = 0; k <= 10; k++) mk('rect', { x: 70 + k * 9, y: 434, width: 9, height: 10, fill: smCol(k * 0.25) }, g);
-  txt(70, 456, '0', { 'font-size': 10.5, fill: C.mute }, g); txt(169, 456, '2.5', { 'font-size': 10.5, fill: C.mute, 'text-anchor': 'end' }, g); })();
+(() => { const g = mk('g', {}, gSmLab), lg = mk('linearGradient', { id: 'impG25', x1: 0, x2: 1, y1: 0, y2: 0 }, $('sv').querySelector('defs'));
+  [0, 0.3, 0.6, 0.9, 1.2, 1.45, 1.7, 1.95, 2.2, 2.5].forEach(v => mk('stop', { offset: f1(v / 2.5 * 1000) / 1000, 'stop-color': smCol(v) }, lg));
+  txt(70, 424, 'G25 value', { 'font-size': 11.5, fill: C.ink2 }, g);
+  mk('rect', { x: 70, y: 430, width: 100, height: 9, rx: 3, fill: 'url(#impG25)', stroke: '#D5DDE3', 'stroke-width': 0.6 }, g);
+  [[70, '0', 'start'], [170, '2.5', 'end']].forEach(([x, s, a]) => txt(x, 452, s, { 'font-size': 10.5, fill: C.mute, 'text-anchor': a }, g)); })();
 // walks
-const gWalk = mk('g', {}, gOv);
-const upArc = (a, b) => { const [x1, y1] = P[a], [x2, y2] = P[b], L = Math.hypot(x2 - x1, y2 - y1); return `Q${f1((x1 + x2) / 2)} ${f1(Math.min(y1, y2) - 0.28 * L)} ${x2} ${y2}`; };
-const walkPath = (w, sim) => { let d = `M${P[w[0]][0]} ${P[w[0]][1]}`; for (let a = 1; a < w.length; a++) d += sim ? upArc(w[a - 1], w[a]) : `L${P[w[a]][0]} ${P[w[a]][1]}`; return d; };
-const mkWalks = (ws, col, sim, hero) => ws.map((w, j) => { const g = mk('g', {}, gWalk), main = j === hero;
-  const p = mk('path', { d: walkPath(w, sim), stroke: col, 'stroke-width': main ? 2.8 : 1.6, opacity: main ? 1 : 0.55, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', pathLength: 1, 'stroke-dasharray': '1 1' }, g);
-  const nodes = w.slice(1).map((v, m) => { const c = mk('g', {}, g);
-    mk('circle', { cx: P[v][0], cy: P[v][1], r: main && !sim ? 6.4 : main ? 4 : 3, fill: '#FFFFFF', stroke: col, 'stroke-width': main ? 1.8 : 1.4, opacity: main ? 1 : 0.7 }, c);
-    if (main && !sim) txt(P[v][0], P[v][1] + 3.6, String(m + 2), { 'font-size': 9.5, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, c);
-    return c; });
+const gWalk = mk('g', {}); gOv.insertBefore(gWalk, gRing);      // walks run under the target ring
+const upCtl = (a, b) => { const [x1, y1] = P[a], [x2, y2] = P[b], L = Math.hypot(x2 - x1, y2 - y1); return [(x1 + x2) / 2, Math.min(y1, y2) - 0.28 * L]; };
+const upArc = (a, b) => { const [cx, cy] = upCtl(a, b); return `Q${f1(cx)} ${f1(cy)} ${P[b][0]} ${P[b][1]}`; };
+// every path leaves the target from the edge of its ring, along its first direction
+const walkPath = (w, sim) => { const [x0, y0] = P[w[0]], [tx, ty] = sim ? upCtl(w[0], w[1]) : P[w[1]], L = Math.hypot(tx - x0, ty - y0) || 1;
+  let d = `M${f1(x0 + (tx - x0) / L * 9.8)} ${f1(y0 + (ty - y0) / L * 9.8)}`;
+  for (let a = 1; a < w.length; a++) d += sim ? upArc(w[a - 1], w[a]) : `L${P[w[a]][0]} ${P[w[a]][1]}`; return d; };
+// the hero path sits on a white casing with small numbered stops; the other paths stay thin and light underneath
+const mkWalks = (ws, col, sim, hero) => ws.map((w, j) => { const g = mk('g', {}, gWalk), main = j === hero, d = walkPath(w, sim);
+  const DASH = { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', pathLength: 1, 'stroke-dasharray': '1 1' };
+  const c = main ? mk('path', Object.assign({ d, stroke: '#FFFFFF', 'stroke-width': 5.6, opacity: 0.9 }, DASH), g) : null;
+  const p = mk('path', Object.assign({ d, stroke: col, 'stroke-width': main ? 2.4 : 1.4, opacity: main ? 1 : 0.5 }, DASH), g);
+  const nodes = w.slice(1).map((v, m) => { const n = mk('g', {}, g);
+    if (!main) mk('circle', { cx: P[v][0], cy: P[v][1], r: 2.3, fill: col, opacity: 0.6 }, n);
+    else if (sim) mk('circle', { cx: P[v][0], cy: P[v][1], r: 3.8, fill: '#FFFFFF', stroke: col, 'stroke-width': 1.6 }, n);
+    else { mk('circle', { cx: P[v][0], cy: P[v][1], r: 6, fill: '#FFFFFF', stroke: col, 'stroke-width': 1.5 }, n);
+      txt(P[v][0], P[v][1] + 3.25, String(m + 2), { 'font-size': 9, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, n); }
+    return n; });
   if (main) g.parentNode.appendChild(g);
-  return { g, p, nodes }; });
+  return { g, p, c, nodes }; });
 const WSP = mkWalks(D.ws, SPC, false, D.wi), WSIM = mkWalks(D.wg, SIMC, true, 0);
 // ------------------------------------------------------------------ scene 0: the matrix of the outlined spots
 const gMat = $('gMat');
@@ -681,7 +695,7 @@ D.tr.forEach((sp, r) => { const y = MY + r * RH;
 mk('rect', { x: MX - 3, y: MY - 3, width: CW * 6 + 6, height: RH * D.tr.length + 6, rx: 6, fill: 'none', stroke: AMBD, 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }, gMat);
 const gMatLeg = mk('g', {}, gMat);
 [['#FBE3BF', AMB, 'hidden for testing'], ['#E7EBEF', '#AEB9C4', 'hidden for validation']].forEach(([f, s, l], k) => { const x = MX + k * 160;
-  mk('rect', { x, y: 396, width: 14, height: 12, rx: 2, fill: f, stroke: s, 'stroke-width': 1.2 }, gMatLeg); txt(x + 20, 406, l, { 'font-size': 11.5 }, gMatLeg); });
+  mk('rect', { x, y: 368, width: 14, height: 12, rx: 3, fill: f, stroke: s, 'stroke-width': 1.2 }, gMatLeg); txt(x + 20, 378, l, { 'font-size': 11.5 }, gMatLeg); });
 
 // ------------------------------------------------------------------ scene 1: graph text and the toy check
 const gGT = $('gGraphT');
@@ -697,7 +711,6 @@ txt(520, 326, `Toy check: error on ${D.check.n} hidden values (RMSE)`, { 'font-s
 const ckRows = [['spatial neighbours', CK.spatial, SPC], ['similar spots', CK.similar, SIMC], ['blend of both', CK.both, '#5B4BB8']];
 const ckBars = ckRows.map(([l, v, col], i) => { const y = 340 + i * 26;
   txt(520, y + 13, l, { 'font-size': 12.5 }, gC);
-  mk('rect', { x: 650, y: y + 2, width: 240, height: 15, rx: 3, fill: '#F0F3F6' }, gC);
   const b = mk('rect', { x: 650, y: y + 2, height: 15, rx: 3, fill: col, width: 0 }, gC);
   const t = txt(0, y + 14, v.toFixed(3), { 'font-size': 12.5, 'font-weight': 700, fill: col }, gC);
   return { b, t, v }; });
@@ -717,10 +730,10 @@ const hopRows = [1, 2, 4, 8, 16].map((k, i) => { const y = 230 + i * 28, R = D.r
   txt(770, y, R.layers + ' of 7', { 'font-size': 13.5, 'font-weight': hl ? 700 : 400, fill: C.ink }, g); return g; });
 txt(520, 383, 'one GNN layer = one step; numbers in the section mark the steps', { 'font-size': 11.5, fill: C.mute }, gH);
 const gSm = $('gSm');
-const SX0 = 560, SX1 = 900, SY0 = 160, SY1 = 380, LV = [0, 1, 2, 4, 8, 16, 32, 64];
+const SX0 = 560, SX1 = 900, SY0 = 146, SY1 = 366, LV = [0, 1, 2, 4, 8, 16, 32, 64];
 const sx = i => SX0 + (SX1 - SX0) * i / (LV.length - 1), sy = v => SY1 - (SY1 - SY0) * v / 2;
-txt(520, 128, 'Contrast of the L4 marker G25', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gSm);
-txt(520, 145, 'mean in L4 minus mean in the other layers', { 'font-size': 11.5, fill: C.mute }, gSm);
+txt(520, 105.5, 'Contrast of the L4 marker G25', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gSm);
+txt(520, 123, 'mean in L4 minus mean in the other layers', { 'font-size': 11.5, fill: C.mute }, gSm);
 [0, 0.5, 1, 1.5, 2].forEach(v => { mk('line', { x1: SX0, x2: SX1, y1: sy(v), y2: sy(v), stroke: '#E6EBEF' }, gSm); txt(SX0 - 8, sy(v) + 4, v.toFixed(1), { 'font-size': 11, fill: C.mute, 'text-anchor': 'end' }, gSm); });
 LV.forEach((L, i) => txt(sx(i), SY1 + 18, String(L), { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gSm));
 txt((SX0 + SX1) / 2, SY1 + 36, 'rounds of neighbour averaging (= GNN layers)', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gSm);
@@ -738,44 +751,45 @@ head(520, 132, 'Paths on the spatial graph', gW1, { fill: SPC });
 lines(520, 154, ['start at the target, take 7 random steps', '(Node2Vec random walk, q = 1)', 'each path: 8 spots, up to 7 steps away', '8 paths per spot by default (3 drawn)'], 19, { 'font-size': 12.5 }, gW1);
 head(520, 262, 'Paths on the gene similarity graph', gW2, { fill: SIMC });
 lines(520, 284, ['the same walk, but each step goes to a similar spot', walksL4 ? 'the drawn paths stay in L4 and cross the section' : 'the drawn paths cross the section', `longest single step: ${Math.round(D.hopFar)} spot widths`], 19, { 'font-size': 12.5 }, gW2);
-(() => { const g = mk('g', {}, gWT); mk('rect', { x: 512, y: 356, width: 410, height: 66, rx: 8, fill: '#F2F6F8', stroke: '#C9D6DE' }, g);
-  txt(526, 380, 'Reach 7 steps:', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, g);
-  txt(526, 400, 'standard GNN: 7 layers, averaging every spot within reach', { 'font-size': 12 }, g);
-  txt(526, 416, 'Impeller: 1 layer, averaging over 8 sampled paths', { 'font-size': 12, 'font-weight': 700, fill: C.teal }, g); })();
+(() => { const g = mk('g', {}, gWT); mk('rect', { x: 512, y: 354, width: 410, height: 74, rx: 8, fill: '#F2F6F8', stroke: '#C9D6DE' }, g);
+  txt(528, 376, 'Reach 7 steps:', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, g);
+  txt(528, 397, 'standard GNN: 7 layers, averaging every spot within reach', { 'font-size': 12 }, g);
+  txt(528, 415, 'Impeller: 1 layer, averaging over 8 sampled paths', { 'font-size': 12, 'font-weight': 700, fill: C.teal }, g); })();
 
 // ------------------------------------------------------------------ scene 4a: the path operator, worked
 const gOp = $('gOp');
+const gOS = [0, 1, 2, 3].map(() => mk('g', {}, gOp));      // build order: features, operator, sums, the worked G25 value
 const OY = 150, OH = 31, FX = 176, OXG = 498, OCW = 64;
 const pathW = D.ws[D.wi];
-txt(62, 118, 'position', { 'font-size': 12, fill: C.mute }, gOp);
-txt(FX, 104, 'features f along the path (observed expression)', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, gOp);
-txt(OXG, 104, 'operator op (one weight per position and gene)', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, gOp);
+txt(62, 124, 'position', { 'font-size': 12, fill: C.mute }, gOS[0]);
+txt(FX, 104, 'features f along the path (observed expression)', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, gOS[0]);
+txt(OXG, 104, 'operator op (one weight per position and gene)', { 'font-size': 12.5, 'font-weight': 700, fill: C.head }, gOS[1]);
 const CHL = ['L4 marker', 'L4 marker', 'L4 marker', 'trend gene'];
-[FX, OXG].forEach(x0 => D.ch.forEach((g, j) => { txt(x0 + j * OCW + OCW / 2, 124, g, { 'font-size': 12, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOp);
-  txt(x0 + j * OCW + OCW / 2, 137, CHL[j], { 'font-size': 9.5, fill: C.mute, 'text-anchor': 'middle' }, gOp); }));
-mk('line', { x1: 80, x2: 80, y1: OY + OH / 2, y2: OY + 7.5 * OH, stroke: SPC, 'stroke-width': 2.4 }, gOp);
+[FX, OXG].forEach((x0, q) => D.ch.forEach((g, j) => { txt(x0 + j * OCW + OCW / 2, 124, g, { 'font-size': 12, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOS[q]);
+  txt(x0 + j * OCW + OCW / 2, 137, CHL[j], { 'font-size': 9.5, fill: C.mute, 'text-anchor': 'middle' }, gOS[q]); }));
+mk('line', { x1: 80, x2: 80, y1: OY + OH / 2, y2: OY + 7.5 * OH, stroke: SPC, 'stroke-width': 2.4 }, gOS[0]);
 const opRows = pathW.map((sp, i) => { const y = OY + i * OH, l = LAY[sp];
-  mk('circle', { cx: 80, cy: y + OH / 2, r: 10, fill: LCOL[l], stroke: i === 0 ? C.ink : LDK[l], 'stroke-width': i === 0 ? 2.2 : 1 }, gOp);
-  txt(80, y + OH / 2 + 4.2, String(i + 1), { 'font-size': 11.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOp);
-  txt(98, y + OH / 2 + 4.2, i === 0 ? LN[l] + ' · target' : LN[l], { 'font-size': 11.5, fill: i === 0 ? C.ink : C.ink2, 'font-weight': i === 0 ? 700 : 400 }, gOp);
+  mk('circle', { cx: 80, cy: y + OH / 2, r: 10, fill: LCOL[l], stroke: i === 0 ? C.ink : LDK[l], 'stroke-width': i === 0 ? 2.2 : 1 }, gOS[0]);
+  txt(80, y + OH / 2 + 4.2, String(i + 1), { 'font-size': 11.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOS[0]);
+  txt(98, y + OH / 2 + 4.2, i === 0 ? LN[l] + ' · target' : LN[l], { 'font-size': 11.5, fill: i === 0 ? C.ink : C.ink2, 'font-weight': i === 0 ? 700 : 400 }, gOS[0]);
   D.ch.forEach((g, j) => { const v = D.pathF[i][j], hid = i === 0 && j === 1, x = FX + j * OCW;
-    mk('rect', { x: x + 1, y: y + 1, width: OCW - 2, height: OH - 3, rx: 3, fill: hid ? '#FBE3BF' : v > 0 ? mixHex('#FFFFFF', '#6FA3B6', clamp(v / 2.8)) : '#FFFFFF', stroke: hid ? AMB : '#E1E7EC', 'stroke-width': hid ? 1.3 : 0.8 }, gOp);
-    txt(x + OCW / 2, y + OH / 2 + 4, hid ? '? → 0' : v > 0 ? v.toFixed(2) : '0', { 'font-size': 12, fill: hid ? AMBD : v > 0 ? C.ink : '#B7C2CB', 'font-weight': hid ? 700 : 400, 'text-anchor': 'middle' }, gOp);
+    mk('rect', { x: x + 1, y: y + 1, width: OCW - 2, height: OH - 3, rx: 3, fill: hid ? '#FBE3BF' : v > 0 ? mixHex('#FFFFFF', '#6FA3B6', clamp(v / 2.8)) : '#FFFFFF', stroke: hid ? AMB : '#E1E7EC', 'stroke-width': hid ? 1.3 : 0.8 }, gOS[0]);
+    txt(x + OCW / 2, y + OH / 2 + 4, hid ? '? → 0' : v > 0 ? v.toFixed(2) : '0', { 'font-size': 12, fill: hid ? AMBD : v > 0 ? C.ink : '#B7C2CB', 'font-weight': hid ? 700 : 400, 'text-anchor': 'middle' }, gOS[0]);
     const w = D.opw[i][j], xo = OXG + j * OCW;
-    mk('rect', { x: xo + 1, y: y + 1, width: OCW - 2, height: OH - 3, rx: 3, fill: mixHex('#FFFFFF', '#8E7CC3', clamp(w / 0.36)), stroke: '#E1E7EC', 'stroke-width': 0.8 }, gOp);
-    txt(xo + OCW / 2, y + OH / 2 + 4, w.toFixed(2), { 'font-size': 12, fill: C.ink, 'text-anchor': 'middle' }, gOp); });
+    mk('rect', { x: xo + 1, y: y + 1, width: OCW - 2, height: OH - 3, rx: 3, fill: mixHex('#FFFFFF', '#8E7CC3', clamp(w / 0.36)), stroke: '#E1E7EC', 'stroke-width': 0.8 }, gOS[1]);
+    txt(xo + OCW / 2, y + OH / 2 + 4, w.toFixed(2), { 'font-size': 12, fill: C.ink, 'text-anchor': 'middle' }, gOS[1]); });
   return y; });
-txt(FX + 4 * OCW + 25, OY + 4 * OH + 6, '×', { 'font-size': 22, fill: C.ink2, 'text-anchor': 'middle' }, gOp);
-txt(FX + 4 * OCW + 25, OY + 4 * OH + 22, 'cell by cell', { 'font-size': 10, fill: C.mute, 'text-anchor': 'middle' }, gOp);
+txt(FX + 4 * OCW + 25, OY + 4 * OH + 6, '×', { 'font-size': 22, fill: C.ink2, 'text-anchor': 'middle' }, gOS[1]);
+txt(FX + 4 * OCW + 25, OY + 4 * OH + 22, 'cell by cell', { 'font-size': 10, fill: C.mute, 'text-anchor': 'middle' }, gOS[1]);
 // highlight the G25 column in both grids
-[FX, OXG].forEach(x0 => mk('rect', { x: x0 + OCW - 2, y: OY - 3, width: OCW + 4, height: 8 * OH + 3, rx: 5, fill: 'none', stroke: AMB, 'stroke-width': 2 }, gOp));
+[FX, OXG].forEach((x0, q) => mk('rect', { x: x0 + OCW - 2, y: OY - 3, width: OCW + 4, height: 8 * OH + 3, rx: 5, fill: 'none', stroke: AMB, 'stroke-width': 2 }, gOS[q]));
 // sum along the path
 const OSY = OY + 8 * OH + 14;
-txt(OXG - 10, OSY + 15, 'Σ over positions', { 'font-size': 12, fill: C.ink2, 'text-anchor': 'end' }, gOp);
+txt(OXG + 4 * OCW + 10, OSY + 16.5, 'Σ over positions', { 'font-size': 12, fill: C.ink2 }, gOS[2]);
 D.opOut.forEach((v, j) => { const x = OXG + j * OCW;
-  mk('rect', { x: x + 1, y: OSY, width: OCW - 2, height: 24, rx: 3, fill: j === 1 ? '#FBE3BF' : '#F2F5F8', stroke: j === 1 ? AMB : '#C9D3DC', 'stroke-width': j === 1 ? 1.6 : 1 }, gOp);
-  txt(x + OCW / 2, OSY + 16.5, v.toFixed(2), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOp); });
-(() => { const g = mk('g', {}, gOp), x = 778;
+  mk('rect', { x: x + 1, y: OSY, width: OCW - 2, height: 24, rx: 3, fill: j === 1 ? '#FBE3BF' : '#F2F5F8', stroke: j === 1 ? AMB : '#C9D3DC', 'stroke-width': j === 1 ? 1.6 : 1 }, gOS[2]);
+  txt(x + OCW / 2, OSY + 16.5, v.toFixed(2), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, gOS[2]); });
+(() => { const g = mk('g', {}, gOS[3]), x = 778;
   txt(x, 160, 'G25 at the target', { 'font-size': 12.5, 'font-weight': 700, fill: AMBD }, g);
   const terms = []; pathW.forEach((sp, i) => { const v = D.pathF[i][1]; if (v > 0) terms.push([D.opw[i][1], v, i + 1]); });
   terms.forEach(([w, v, pos], k) => txt(x, 186 + k * 21, (k ? '+ ' : '   ') + w.toFixed(2) + ' × ' + v.toFixed(2), { 'font-size': 13, fill: C.ink }, g));
@@ -787,31 +801,34 @@ D.opOut.forEach((v, j) => { const x = OXG + j * OCW;
 
 // ------------------------------------------------------------------ scene 4b: architecture
 const gAr = $('gArch');
+const gAS = [0, 1, 2, 3, 4].map(() => mk('g', {}, gAr));   // build order: paths, operator, embeddings and merge, imputed matrix, layer loop and training
 const branch = (y, col, name, g) => {
-  box(62, y, 150, 56, gAr, { fill: '#FFFFFF', stroke: col, 'stroke-width': 1.4 });
-  (() => { const t = txt(137, y + 24, '8 paths on G', { 'font-size': 13, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, gAr); tsp(t, name, { 'font-size': 9.5, dy: 3 }); })();
-  txt(137, y + 42, 'per spot, per epoch', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gAr);
-  arrow(214, y + 28, 254, y + 28, gAr);
-  box(258, y, 196, 56, gAr, { fill: '#F7F4FC', stroke: '#B9AEDD' });
-  txt(356, y + 24, 'path operator op' , { 'font-size': 13, 'font-weight': 700, fill: '#5B4BB8', 'text-anchor': 'middle' }, gAr);
-  txt(356, y + 42, 'on each path, then average (Eq. 4–5)', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gAr);
-  arrow(456, y + 28, 492, y + 28, gAr);
-  for (let k = 0; k < 6; k++) mk('rect', { x: 496 + k * 13, y: y + 18, width: 11, height: 20, rx: 2, fill: mixHex('#FFFFFF', col, 0.25 + 0.12 * ((k * 5) % 6)) }, gAr);
+  box(62, y, 150, 56, gAS[0], { fill: '#FFFFFF', stroke: col, 'stroke-width': 1.4 });
+  (() => { const t = txt(137, y + 24, '8 paths on G', { 'font-size': 13, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, gAS[0]); tsp(t, name, { 'font-size': 9.5, dy: 3 }); })();
+  txt(137, y + 42, 'per spot, per epoch', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gAS[0]);
+  arrow(214, y + 28, 248.5, y + 28, gAS[1]);
+  box(250, y, 220, 56, gAS[1], { fill: '#F7F4FC', stroke: '#B9AEDD' });
+  txt(360, y + 24, 'path operator op' , { 'font-size': 13, 'font-weight': 700, fill: '#5B4BB8', 'text-anchor': 'middle' }, gAS[1]);
+  txt(360, y + 42, 'on each path, then average (Eq. 4–5)', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gAS[1]);
+  arrow(472, y + 28, 497, y + 28, gAS[2]);
+  for (let k = 0; k < 6; k++) mk('rect', { x: 500 + k * 13, y: y + 18, width: 11, height: 20, rx: 2.5, fill: mixHex('#FFFFFF', col, 0.25 + 0.12 * ((k * 5) % 6)) }, gAS[2]);
 };
 branch(116, SPC, 's'); branch(212, SIMC, 'g');
-txt(535, 126, 'spatial embedding', { 'font-size': 11.5, fill: SPC, 'text-anchor': 'middle' }, gAr);
-txt(535, 222, 'similarity embedding', { 'font-size': 11.5, fill: SIMC, 'text-anchor': 'middle' }, gAr);
-mk('path', { d: 'M576 144 C 600 144, 600 190, 622 190', fill: 'none', stroke: '#7D8C99', 'stroke-width': 1.5 }, gAr);
-mk('path', { d: 'M576 240 C 600 240, 600 194, 622 194', fill: 'none', stroke: '#7D8C99', 'stroke-width': 1.5, 'marker-end': 'url(#ah)' }, gAr);
-box(626, 162, 132, 60, gAr, { fill: '#EEF4F6', stroke: '#9DB7C3' });
-txt(692, 186, 'concatenate,', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gAr);
-txt(692, 204, 'W and ReLU (Eq. 6)', { 'font-size': 12, fill: C.ink2, 'text-anchor': 'middle' }, gAr);
-arrow(760, 192, 792, 192, gAr);
-(() => { for (let r = 0; r < 5; r++) for (let c = 0; c < 6; c++) mk('rect', { x: 798 + c * 19, y: 148 + r * 18, width: 17, height: 16, rx: 2, fill: (r === 2 && c === 2) ? '#F4C784' : mixHex('#FFFFFF', '#6FA3B6', ((r * 7 + c * 3) % 10) / 12 + 0.1) }, gAr);
-  txt(855, 252, 'imputed matrix', { 'font-size': 12, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gAr); })();
-mk('path', { d: 'M692 224 C 692 290, 300 296, 137 286 L 137 272', fill: 'none', stroke: '#9AA8B4', 'stroke-width': 1.4, 'stroke-dasharray': '5 4', 'marker-end': 'url(#ah)' }, gAr);
-txt(410, 300, 'repeat for L layers: paths of length 8 in 4 layers reach up to 28 steps', { 'font-size': 12, fill: C.ink2, 'text-anchor': 'middle' }, gAr);
-(() => { const g = mk('g', {}, gAr); box(560, 330, 362, 100, g, { fill: '#F7FAFB', stroke: '#C9D3DC' });
+txt(538, 126, 'spatial embedding', { 'font-size': 11.5, fill: SPC, 'text-anchor': 'middle' }, gAS[2]);
+txt(538, 222, 'similarity embedding', { 'font-size': 11.5, fill: SIMC, 'text-anchor': 'middle' }, gAS[2]);
+// both embeddings meet in one arrowhead at the middle of the concatenate box
+mk('path', { d: 'M579 144 C 606 144, 598 192, 625 192', fill: 'none', stroke: '#7D8C99', 'stroke-width': 1.5, 'stroke-linecap': 'round' }, gAS[2]);
+mk('path', { d: 'M579 240 C 606 240, 598 192, 625 192', fill: 'none', stroke: '#7D8C99', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'marker-end': 'url(#ah)' }, gAS[2]);
+box(626, 162, 132, 60, gAS[2], { fill: '#EEF4F6', stroke: '#9DB7C3' });
+txt(692, 186, 'concatenate,', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gAS[2]);
+txt(692, 204, 'W and ReLU (Eq. 6)', { 'font-size': 12, fill: C.ink2, 'text-anchor': 'middle' }, gAS[2]);
+arrow(760, 192, 795.5, 192, gAS[3]);
+(() => { for (let r = 0; r < 5; r++) for (let c = 0; c < 6; c++) mk('rect', { x: 798 + c * 19, y: 148 + r * 18, width: 17, height: 16, rx: 2, fill: (r === 2 && c === 2) ? '#F4C784' : mixHex('#FFFFFF', '#6FA3B6', ((r * 7 + c * 3) % 10) / 12 + 0.1) }, gAS[3]);
+  txt(855, 252, 'imputed matrix', { 'font-size': 12, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gAS[3]); })();
+// the layer loop: straight runs with rounded corners, from the concatenate box back to the path sampler
+mk('path', { d: 'M692 224 V 280 Q 692 290 682 290 H 147 Q 137 290 137 280 V 270', fill: 'none', stroke: '#7D8C99', 'stroke-width': 1.4, 'stroke-dasharray': '5 4', 'marker-end': 'url(#ah)' }, gAS[4]);
+txt(414.5, 308, 'repeat for L layers: paths of length 8 in 4 layers reach up to 28 steps', { 'font-size': 12, fill: C.ink2, 'text-anchor': 'middle' }, gAS[4]);
+(() => { const g = mk('g', {}, gAS[4]); box(560, 330, 362, 100, g, { fill: '#F7FAFB', stroke: '#C9D3DC' });
   txt(576, 352, 'Training', { 'font-size': 13, 'font-weight': 700, fill: C.head }, g);
   lines(576, 372, ['squared error on the observed non-zero values (Eq. 7)', 'paths re-sampled every epoch', 'stop when validation RMSE stalls for 50 epochs'], 18, { 'font-size': 12 }, g); })();
 
@@ -825,8 +842,9 @@ const BV = [['DLPFC 151507', '10x Visium · human', [0.337, 0.384, 0.392, 0.380,
 const BS = v => v * 150;
 const benchBars = [];
 BV.forEach(([t1, t2, vals], p) => { const x0 = 62 + p * 292;
-  txt(x0, 118, t1, { 'font-size': 14, 'font-weight': 700, fill: C.head }, gB);
+  txt(x0, 118, t1, { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, gB);
   txt(x0, 136, t2, { 'font-size': 12, fill: C.mute }, gB);
+  mk('line', { x1: x0 + 70, x2: x0 + 70, y1: 148, y2: 154 + 5 * 38 + 24, stroke: '#D5DDE3', 'stroke-width': 1 }, gB);
   vals.forEach((v, i) => { const y = 154 + i * 38;
     txt(x0, y + 13, BM[i], { 'font-size': 12.5, 'font-weight': i === 0 ? 700 : 400, fill: i === 0 ? C.teal : C.ink }, gB);
     const b = mk('rect', { x: x0 + 70, y, height: 18, rx: 3, fill: i === 0 ? C.teal : BSP[i] ? '#9FB7C4' : '#C9D1D8', width: 0 }, gB);
@@ -849,7 +867,7 @@ const rx = i => RX0 + (RX1 - RX0) * i / (RF.length - 1), ry = v => RY1 - (RY1 - 
 [0.3, 0.4, 0.5, 0.6, 0.7].forEach(v => { mk('line', { x1: RX0, x2: RX1, y1: ry(v), y2: ry(v), stroke: '#E6EBEF' }, gR); txt(RX0 - 10, ry(v) + 4, v.toFixed(1), { 'font-size': 11, fill: C.mute, 'text-anchor': 'end' }, gR); });
 RF.forEach((r, i) => txt(rx(i), RY1 + 18, String(r), { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gR));
 txt((RX0 + RX1) / 2, RY1 + 36, 'receptive field (steps)', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gR);
-txt(62, 100, 'RMSE on Stereo-seq (lower is better)', { 'font-size': 12, fill: C.mute }, gR);
+(() => { const t = txt(62, 102, 'RMSE on Stereo-seq', { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, gR); tsp(t, ' (lower is better)', { 'font-size': 12, 'font-weight': 400, fill: C.mute }); })();
 const rfLines = RS.map(([name, col, v], s) => { const g = mk('g', {}, gR), W = name === 'Impeller' ? 3 : 1.8;
   let d = '', dd = '';
   for (let i = 0; i + 1 < v.length; i++) { const a = v[i], b = v[i + 1], x1 = rx(i), x2 = rx(i + 1);
@@ -857,7 +875,8 @@ const rfLines = RS.map(([name, col, v], s) => { const g = mk('g', {}, gR), W = n
     else if (a <= RYMAX || b <= RYMAX) { const lo = a <= RYMAX ? [x1, a] : [x2, b], hi = a <= RYMAX ? [x2, b] : [x1, a], t = (RYMAX - lo[1]) / (hi[1] - lo[1]), xc = lo[0] + (hi[0] - lo[0]) * t;
       d += `M${f1(lo[0])} ${f1(ry(lo[1]))}L${f1(xc)} ${f1(ry(RYMAX))}`; } }
   const pl = mk('path', { d, fill: 'none', stroke: col, 'stroke-width': W, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', pathLength: 1, 'stroke-dasharray': '1 1' }, g);
-  v.forEach((y, i) => { if (y > RYMAX) mk('path', { d: `M${f1(rx(i))} ${RY0 - 1}l-5 9h10z`, fill: col }, g);
+  const dx = name === 'GraphSAGE' ? -5.5 : name === 'GAT' ? 5.5 : 0;      // both off-chart markers stay visible, side by side
+  v.forEach((y, i) => { if (y > RYMAX) mk('path', { d: `M${f1(rx(i) + dx)} ${RY0 - 1}l-5 9h10z`, fill: col }, g);
     else mk('circle', { cx: f1(rx(i)), cy: f1(ry(y)), r: name === 'Impeller' ? 4 : 3, fill: col }, g); });
   return { g, pl }; });
 txt(rx(5), RY0 - 9, 'GraphSAGE and GAT: 1.46–1.63', { 'font-size': 11, fill: C.ink2, 'text-anchor': 'middle' }, gR);
@@ -871,20 +890,20 @@ mk('path', { d: 'M680 322l-4.5 8h9z', fill: C.ink2 }, gR); txt(692, 330, 'value 
 const gHt = $('gHet');
 const HS = ['151507', '151508', '151509', '151510', '151669', '151670', '151671', '151672', '151673', '151674', '151675', '151676'];
 const HV = [[2.3, 3.6, -0.1, 0.7, 0.9, 0.7, 3.6, 0.5, 6.9, 17.3, 1.3, 0.8], [-0.1, 9.9, 0.8, 2.0, 0.7, 0.4, 1.4, 0.7, 3.8, 13.6, 0.9, 1.3]];
-const HX = 250, HW = 55, HY = 170, HH = 62;
+const HX = 250, HW = 55, HY = 142, HH = 62;
 const hCol = v => v < 0 ? '#E9EEF2' : v < 5 ? mixHex('#FFF4E6', '#F0A35E', v / 5) : mixHex('#F0A35E', '#9E3326', clamp((v - 5) / 12));
-txt(62, 128, 'RMSE improvement (%) from adding one graph, 12 DLPFC sections', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gHt);
+txt(62, 118, 'RMSE improvement (%) from adding one graph, 12 DLPFC sections', { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, gHt);
 const hetCells = [];
 [['add the similarity graph', 'to a spatial-only model'], ['add the spatial graph', 'to a similarity-only model']].forEach(([a, b], r) => {
   txt(62, HY + r * HH + 28, a, { 'font-size': 12.5, 'font-weight': 700, fill: r ? SPC : SIMC }, gHt);
   txt(62, HY + r * HH + 45, b, { 'font-size': 11.5, fill: C.mute }, gHt);
   HV[r].forEach((v, c) => { const x = HX + c * HW, y = HY + r * HH, g = mk('g', {}, gHt);
-    mk('rect', { x: x + 1.5, y: y + 1.5, width: HW - 3, height: HH - 3, rx: 4, fill: hCol(v) }, g);
-    txt(x + HW / 2, y + HH / 2 + 5, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1), { 'font-size': 13, 'font-weight': 700, fill: v > 6 ? '#FFFFFF' : C.ink, 'text-anchor': 'middle' }, g);
+    mk('rect', { x: x + 1.5, y: y + 1.5, width: HW - 3, height: HH - 3, rx: 3, fill: hCol(v) }, g);
+    txt(x + HW / 2, y + HH / 2 + 5, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1), { 'font-size': 13, 'font-weight': 700, fill: v > 10 ? '#FFFFFF' : C.ink, 'text-anchor': 'middle' }, g);
     hetCells.push({ g, c }); }); });
 HS.forEach((s, c) => txt(HX + c * HW + HW / 2, HY + 2 * HH + 18, s, { 'font-size': 10.5, fill: C.ink2, 'text-anchor': 'middle' }, gHt));
-txt(62, 360, '22 of 24 improvements are positive; the two exceptions are −0.1%.', { 'font-size': 13, fill: C.ink }, gHt);
-txt(62, 382, 'Largest gains: section 151674, +17.3% and +13.6%.', { 'font-size': 13, fill: C.ink }, gHt);
+txt(62, 336, '22 of 24 improvements are positive; the two exceptions are −0.1%.', { 'font-size': 13, fill: C.ink }, gHt);
+txt(62, 358, 'Largest gains: section 151674, +17.3% and +13.6%.', { 'font-size': 13, fill: C.ink }, gHt);
 
 // ------------------------------------------------------------------ scene 5d: efficiency (Table 4) and operator variants (Fig. 3)
 const gEf = $('gEff');
@@ -902,18 +921,19 @@ const effBars = EM.map(([m, par, tr, inf, rm], i) => { const y = 160 + i * 42, i
   return { b1, b2, t1, t2, tr, inf }; });
 txt(62, 384, 'Impeller also spends 1.6 ms sampling paths.', { 'font-size': 11.5, fill: C.mute }, gEf);
 (() => { const g = mk('g', {}, gEf), x = 640;
-  box(x, 104, 282, 236, g, { fill: '#F7FAFB', stroke: '#C9D3DC' });
-  txt(x + 16, 128, 'Which weights must be separate?', { 'font-size': 13, 'font-weight': 700, fill: C.head }, g);
-  txt(x + 16, 146, 'operator variants on DLPFC (Fig. 3)', { 'font-size': 11.5, fill: C.mute }, g);
+  box(x, 96, 282, 236, g, { fill: '#F7FAFB', stroke: '#C9D3DC' });
+  txt(x + 16, 118, 'Which weights must be separate?', { 'font-size': 13, 'font-weight': 700, fill: C.head }, g);
+  txt(x + 16, 136, 'operator variants on DLPFC (Fig. 3)', { 'font-size': 11.5, fill: C.mute }, g);
   const V = [['one operator for everything', false], ['separate per layer only', false], ['separate per channel only', true], ['separate per layer and channel', true]];
-  V.forEach(([s, ok], i) => { const y = 176 + i * 34;
+  V.forEach(([s, ok], i) => { const y = 168 + i * 34;
     if (ok) mk('path', { d: `M${x + 18} ${y - 4}l5 5l9 -10`, fill: 'none', stroke: '#3B9466', 'stroke-width': 2.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
     else mk('path', { d: `M${x + 19} ${y - 9}l10 10m0 -10l-10 10`, fill: 'none', stroke: C.red, 'stroke-width': 2.4, 'stroke-linecap': 'round' }, g);
     txt(x + 42, y + 1, s, { 'font-size': 12.5, fill: C.ink }, g); });
-  mk('path', { d: `M${x + 19} 307l7 7m0 -7l-7 7`, fill: 'none', stroke: C.red, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
-  txt(x + 32, 315, 'much higher RMSE', { 'font-size': 11, fill: C.mute }, g);
-  mk('path', { d: `M${x + 140} 311l3.5 3.5l6.5 -7`, fill: 'none', stroke: '#3B9466', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
-  txt(x + 156, 315, 'low RMSE, similar', { 'font-size': 11, fill: C.mute }, g); })();
+  mk('line', { x1: x + 16, x2: x + 266, y1: 288, y2: 288, stroke: '#DCE3E9' }, g);
+  mk('path', { d: `M${x + 19} 300l7 7m0 -7l-7 7`, fill: 'none', stroke: C.red, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
+  txt(x + 32, 308, 'much higher RMSE', { 'font-size': 11, fill: C.mute }, g);
+  mk('path', { d: `M${x + 140} 304l3.5 3.5l6.5 -7`, fill: 'none', stroke: '#3B9466', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  txt(x + 156, 308, 'low RMSE, similar', { 'font-size': 11, fill: C.mute }, g); })();
 
 // ------------------------------------------------------------------ scene 6: recap
 const gRc = $('gRecap');
@@ -975,12 +995,14 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
     if (smOn > 0.001) { const smL = s1.fill === 3 ? smNow : s0.sm, a = Math.floor(clamp(smL, 0, 2.999)), xi = lerp(SMI[a], SMI[a + 1], smL - a), Lr = LV[Math.round(xi)];
       smLabT.textContent = Lr === 0 ? 'Observed G25, before averaging' : 'After ' + Lr + (Lr === 1 ? ' round' : ' rounds') + ' of averaging'; }
   }
-  op(gOv, tv); op(gRing, L('ring')); op(tLab, L('tlab')); op(gTr, L('tr')); op(gLeg, L('leg'));
+  // the target label moves clear of the spatial spokes (right) and of the similarity arcs (up) while they are shown
+  op(gOv, tv); op(gRing, L('ring')); op(tLab, L('tlab')); tLab.setAttribute('x', f1(P[TG][0] + 13 + 11 * L('gs'))); tLab.setAttribute('y', f1(P[TG][1] + 4.5 - 16 * L('gg'))); op(gTr, L('tr')); op(gLeg, L('leg'));
   // walks
   const ws = L('wsp'), wg = L('wsim');
   const wdim = lerp(s0.wsim ? 0.35 : 1, s1.wsim ? 0.35 : 1, E);
-  WSP.forEach((w, j) => { op(w.g, ws * wdim); const t = grow('wsp') ? ease(stag(eIn, j, 3, 0.4)) : 1; w.p.setAttribute('stroke-dashoffset', (1 - t).toFixed(3)); w.nodes.forEach((c, m) => op(c, clamp(t * 8 - m))); });
-  WSIM.forEach((w, j) => { op(w.g, wg); const t = grow('wsim') ? ease(stag(eIn, j, 3, 0.4)) : 1; w.p.setAttribute('stroke-dashoffset', (1 - t).toFixed(3)); w.nodes.forEach((c, m) => op(c, clamp(t * 8 - m))); });
+  const drawW = (w, t) => { [w.c, w.p].forEach(p => p && p.setAttribute('stroke-dashoffset', (1 - t).toFixed(3))); w.nodes.forEach((c, m) => op(c, clamp(t * 8 - m))); };
+  WSP.forEach((w, j) => { op(w.g, ws * wdim); drawW(w, grow('wsp') ? ease(stag(eIn, j, 3, 0.4)) : 1); });
+  WSIM.forEach((w, j) => { op(w.g, wg); drawW(w, grow('wsim') ? ease(stag(eIn, j, 3, 0.4)) : 1); });
   // scene 0
   const mv = L('mat'); op(gMat, mv);
   if (mv > 0.001) { const q = lerp(s0.mm, s1.mm, E); cells.forEach(c => { if (c.q) op(c.q, q); }); op(gMatLeg, q); }
@@ -1000,7 +1022,9 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
   // scene 3 text
   op(gW1, L('wT1')); op(gW2, L('wT2')); op(gWT, Math.max(L('wT1'), L('wT2')));
   // scene 4
-  op(gOp, L('opx')); op(gAr, L('arch'));
+  const opv = L('opx'), arv = L('arch'); op(gOp, opv); op(gAr, arv);
+  if (opv > 0.001) gOS.forEach((g, i) => op(g, grow('opx') ? ease(stag(eIn, i, 4, 0.55)) : 1));
+  if (arv > 0.001) gAS.forEach((g, i) => op(g, grow('arch') ? ease(stag(eIn, i, 5, 0.6)) : 1));
   // scene 5
   const bv = L('bench'); op(gB, bv);
   if (bv > 0.001) benchBars.forEach(b => { const t = grow('bench') ? ease(stag(eIn, b.p * 6 + b.i, 18, 0.6)) : 1, w = BS(b.v) * t; b.b.setAttribute('width', f1(w)); b.t.setAttribute('x', f1(b.x0 + w + 6)); op(b.t, t); });
@@ -1065,6 +1089,8 @@ function render(k, e) {
     else if (inC) o = clamp(e * 2.2 - 1.0);
     else if (inP) o = 1 - clamp(e * 2.2);
     d.style.opacity = o.toFixed(3);
+    // text that arrives rises a few pixels into place as it fades in
+    d.style.transform = inC && !inP && o < 1 ? `translateY(${(0.32 * (1 - o)).toFixed(3)}em)` : '';
   });
 }
 

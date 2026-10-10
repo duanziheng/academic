@@ -1338,6 +1338,8 @@ function render(k, e) {
     else if (inC) o = clamp(e * 2.2 - 1.0);
     else if (inP) o = 1 - clamp(e * 2.2);
     d.style.opacity = o.toFixed(3);
+    // text that arrives rises a few pixels into place as it fades in
+    d.style.transform = inC && !inP && o < 1 ? `translateY(${(0.32 * (1 - o)).toFixed(3)}em)` : '';
   });
 }
 

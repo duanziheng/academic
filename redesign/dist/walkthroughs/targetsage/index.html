@@ -417,6 +417,22 @@ const SEQ = new Set(['grid', 'gr1', 'gr2', 'gr3', 'gr4', 'prof', 'pf2', 'pf3', '
   'macro', 'gains', 'pros', 'orr', 'abl', 'recap']);
 const EXIT = new Set([]);
 const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 14, 'font-weight': 700, fill: C.head }, attrs || {}), parent);
+// tidy connectors: rounded elbows or smooth curves ending in a small chevron at the target; drawn in with a stroke dash
+const elbowD = (pts, r) => { let d = `M${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 1; i < pts.length - 1; i++) { const [px, py] = pts[i - 1], [cx, cy] = pts[i], [nx, ny] = pts[i + 1];
+    const l1 = Math.hypot(cx - px, cy - py), l2 = Math.hypot(nx - cx, ny - cy), rr = Math.min(r, l1 / 2, l2 / 2);
+    d += `L${f1(cx - (cx - px) / l1 * rr)} ${f1(cy - (cy - py) / l1 * rr)}Q${cx} ${cy} ${f1(cx + (nx - cx) / l2 * rr)} ${f1(cy + (ny - cy) / l2 * rr)}`; }
+  const z = pts[pts.length - 1]; return d + `L${z[0]} ${z[1]}`; };
+const conn = (d, tip, ang, col, parent) => { const g = mk('g', {}, parent);
+  const p = mk('path', { d, fill: 'none', stroke: col, 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  const c = Math.cos(ang), s = Math.sin(ang), [x, y] = tip, bx = x - 7.5 * c, by = y - 7.5 * s;
+  const h = mk('path', { d: `M${f1(bx - 4.2 * s)} ${f1(by + 4.2 * c)}L${x} ${y}L${f1(bx + 4.2 * s)} ${f1(by - 4.2 * c)}`, fill: 'none', stroke: col,
+    'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  const len = p.getTotalLength() + 1;
+  return { g, p, h, draw(t) {
+    if (t >= 1) { p.removeAttribute('stroke-dasharray'); p.removeAttribute('stroke-dashoffset'); }
+    else { p.setAttribute('stroke-dasharray', f1(len) + ' ' + f1(len)); p.setAttribute('stroke-dashoffset', f1(len * (1 - t))); }
+    op(h, clamp((t - 0.82) / 0.18)); } }; };
 
 // ------------------------------------------------------------------ scene 0: the genome grid
 const gGrid = $('gGrid'), GD = D.grid, GX0 = 62, GY0 = 150, GS = 7.0;
@@ -426,19 +442,22 @@ const dots = [];
 for (let k = 0; k < GD.nc * GD.nr; k++) { const c = k % GD.nc, r = Math.floor(k / GD.nc); dots.push(mk('circle', { cx: f1(GX0 + c * GS), cy: f1(GY0 + r * GS), r: 2.45 }, gDots)); }
 const gRing = mk('g', {}, gGrid);
 GD.upg.forEach(k => { const c = k % GD.nc, r = Math.floor(k / GD.nc); mk('circle', { cx: f1(GX0 + c * GS), cy: f1(GY0 + r * GS), r: 7, fill: 'none', stroke: AMBER, 'stroke-width': 1.7 }, gRing); });
-const legItem = (x, col, s, ring) => { const g = mk('g', {}, gGrid); mk('circle', { cx: x + 4, cy: 128, r: 4.6, fill: col, stroke: ring || 'none', 'stroke-width': 1.4 }, g); txt(x + 14, 132.5, s, { 'font-size': 12.5 }, g); return g; };
+const legItem = (x, col, s, ring) => { const g = mk('g', {}, gGrid);
+  if (ring) { mk('circle', { cx: x + 5, cy: 128, r: 3.3, fill: col }, g); mk('circle', { cx: x + 5, cy: 128, r: 6.5, fill: 'none', stroke: col, 'stroke-width': 1.7 }, g); txt(x + 17, 132.5, s, { 'font-size': 12.5 }, g); }
+  else { mk('circle', { cx: x + 4, cy: 128, r: 4.6, fill: col }, g); txt(x + 14, 132.5, s, { 'font-size': 12.5 }, g); }
+  return g; };
 const lgK = legItem(62, GREEN, 'clinical target (Tclin, 2021)');
 const lgU = legItem(250, UNL, 'unlabeled');
 const lgN = legItem(250, NEG, 'treated as a negative');
-const lgA = legItem(400, AMBER, 'became a clinical target by 2025', '#8A4B12');
+const lgA = legItem(400, AMBER, 'became a clinical target by 2025', true);
 function dotCol(k, m) {
   if (isKnown.has(k)) return [GREEN, 2.45];
   if (m >= 2 && isUpg.has(k)) return [AMBER, 3.3];
   if (m >= 1) return [NEG, 2.45];
   return [UNL, 2.45];
 }
-const gGR = $('gGridR');
-const bigNum = (y, num, col, l1, l2) => { const g = mk('g', {}, gGR);
+const gGR = $('gGridR'), GRY = -14;   // right-hand column: the first number's cap height lines up with the top of the grid
+const bigNum = (y, num, col, l1, l2) => { const g = mk('g', {}, gGR); y += GRY;
   txt(570, y, num, { 'font-size': 34, 'font-weight': 700, fill: col }, g);
   txt(570, y + 23, l1, { 'font-size': 13.5, fill: C.ink }, g);
   if (l2) txt(570, y + 41, l2, { 'font-size': 12.5, fill: C.ink2 }, g);
@@ -446,57 +465,61 @@ const bigNum = (y, num, col, l1, l2) => { const g = mk('g', {}, gGR);
 const gr1 = bigNum(186, '19,032', C.ink, 'human protein-coding genes', '1 dot ≈ 10 genes');
 const gr2 = bigNum(274, '610', GREEN, 'clinical targets (Tclin) in PHAROS 2021', 'the other 18,422 genes are unlabeled');
 const gr3 = mk('g', {}, gGR);
-txt(570, 364, 'unlabeled = negative?', { 'font-size': 23, 'font-weight': 700, fill: C.red }, gr3);
-txt(570, 387, 'the classifier is told these genes are not targets', { 'font-size': 12.5 }, gr3);
+txt(570, 364 + GRY, 'unlabeled = negative?', { 'font-size': 23, 'font-weight': 700, fill: C.red }, gr3);
+txt(570, 387 + GRY, 'the classifier is told these genes are not targets', { 'font-size': 12.5 }, gr3);
 const gr4 = bigNum(364, '90', '#C07A1E', 'of those “negatives” became clinical targets', 'by 2025 (Tclin grew from 610 to 700)');
 
 // ------------------------------------------------------------------ scene 1: agentic profiling (ABL1)
 const gP = $('gProf');
 (() => { const t = txt(62, 132, '', { 'font-size': 13.5 }, gP); tsp(t, 'Structured features: 482 numbers from 15 databases', { 'font-weight': 700, fill: C.head }); tsp(t, '   ABL1, six shown', { fill: C.mute }); })();
 const FT = [['pLI', '1.00'], ['LoF obs / exp', '0.07'], ['mouse essential', 'yes'], ['protein length', '1130 aa'], ['DGIdb', '43'], ['domains', 'kinase, SH2, SH3']];
-FT.forEach(([a, b], i) => { const x = 62 + i * 106;
-  box(x, 144, i === 5 ? 114 : 100, 46, gP, { rx: 6, fill: '#FFFFFF', stroke: '#B8C5D0' });
-  txt(x + 9, 161, a, { 'font-size': 11.5, fill: C.mute }, gP);
-  txt(x + 9, 181, b, { 'font-size': b.length > 8 ? 12 : 16, 'font-weight': 700, fill: C.ink }, gP); });
-for (let i = 0; i < 40; i++) mk('rect', { x: 62 + i * 16, y: 198, width: 13, height: 9, rx: 1.5, fill: '#E3E9EE' }, gP);
+const FW = [74, 90, 103, 90, 74, 117];   // card widths fitted to their contents: the row spans x 62–650, like the profile below
+let fx = 62;
+FT.forEach(([a, b], i) => { const x = fx; fx += FW[i] + 8;
+  box(x, 144, FW[i], 46, gP, { fill: '#FFFFFF', stroke: '#B8C5D0' });
+  txt(x + 10, 161, a, { 'font-size': 11.5, fill: C.mute }, gP);
+  txt(x + 10, 181, b, { 'font-size': b.length > 8 ? 12 : 16, 'font-weight': 700, fill: C.ink }, gP); });
+for (let i = 0; i < 40; i++) mk('rect', { x: f1(62 + i * 14.75), y: 198, width: 12, height: 9, rx: 1.5, fill: '#E3E9EE' }, gP);
 txt(62, 226, '+ 476 more numbers (constraint, phenotypes, druggability, networks, expression)', { 'font-size': 11.5, fill: C.mute }, gP);
-arrow(300, 230, 300, 252, gP);
-txt(310, 246, 'Tool 1: numbers → evidence statements', { 'font-size': 11.5, 'font-weight': 700, fill: C.teal }, gP);
-box(62, 258, 612, 176, gP, { fill: '#F7FAFB', stroke: '#9DB7C3' });
+arrow(356, 230, 356, 252, gP);
+txt(366, 246, 'Tool 1: numbers → evidence statements', { 'font-size': 11.5, 'font-weight': 700, fill: C.teal }, gP);
+box(62, 258, 588, 188, gP, { fill: '#F7FAFB', stroke: '#9DB7C3' });
 txt(76, 281, 'Evidence profile · ABL1', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal }, gP);
 lines(76, 305, ['highly loss-of-function intolerant (pLI=1.00); observed/expected LoF ratio: 0.07;',
   'essential in mouse; protein length 1130 aa; 43 drug–gene interactions in DGIdb;', 'protein kinase, SH2, and SH3 domains.'], 20, { 'font-size': 13, fill: C.ink }, gP);
 const gP2 = mk('g', {}, gP);
-lines(76, 372, ['+ NCBI Gene: summary of function and disease context', '+ UniProt: molecular function, subcellular localization, tissue specificity',
-  '+ Open Targets: tractability and safety · PubMed: recent abstracts'], 19, { 'font-size': 12.5, fill: '#2E6B5A' }, gP2);
-[['NCBI Gene', 'nearly all genes'], ['UniProt', '85% of genes'], ['PubMed', 'when more evidence is needed'], ['Open Targets', '72% of genes']].forEach(([a, b], i) => {
-  const y = 144 + i * 46;
-  box(718, y, 202, 38, gP2, { rx: 7, fill: '#EDF5F1', stroke: '#9CC6B2' });
-  txt(730, y + 16, a, { 'font-size': 12.5, 'font-weight': 700, fill: '#2E6B5A' }, gP2);
-  txt(730, y + 31, b, { 'font-size': 11, fill: C.ink2 }, gP2);
-  arrow(716, y + 19, 678, 370 + i * 9, gP2, { 'stroke-width': 1.2 });
-});
+// one added line per source, in the order of the tool cards; each card's connector ends at the profile edge beside its line
+const srcLines = lines(76, 372, ['+ NCBI Gene: summary of function and disease context', '+ UniProt: molecular function, subcellular localization, tissue specificity',
+  '+ PubMed: recent abstracts', '+ Open Targets: tractability and safety'], 19, { 'font-size': 12.5, fill: '#2E6B5A' }, gP2);
+const toolConn = [['NCBI Gene', 'nearly all genes'], ['UniProt', '85% of genes'], ['PubMed', 'when more evidence is needed'], ['Open Targets', '72% of genes']].map(([a, b], i) => {
+  const y = 144 + i * 44, cy = y + 18, ty = 368 + i * 19, cx = 666 + i * 10;
+  box(712, y, 208, 36, gP2, { fill: '#EDF5F1', stroke: '#9CC6B2' });
+  txt(722, y + 15, a, { 'font-size': 12.5, 'font-weight': 700, fill: '#2E6B5A' }, gP2);
+  txt(722, y + 29, b, { 'font-size': 11, fill: C.ink2 }, gP2);
+  return conn(elbowD([[711.5, cy], [cx, cy], [cx, ty], [652, ty]], 6), [652, ty], Math.PI, '#7BAA93', gP2); });
 const gP3 = mk('g', {}, gP);
-box(718, 330, 202, 120, gP3, { rx: 7, fill: '#FBF1EF', stroke: '#E1A69E' });
-txt(730, 350, 'Tool 6 · fact-checker', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
-txt(730, 369, 'PubMed abstract for CA4:', { 'font-size': 11.5 }, gP3);
-txt(730, 388, '“… FDA approved …”', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
-mk('line', { x1: 728, x2: 852, y1: 384, y2: 384, stroke: C.red, 'stroke-width': 1.8 }, gP3);
-txt(730, 406, '→ sentence removed (label leakage)', { 'font-size': 11.5, fill: C.red }, gP3);
-txt(730, 425, 'leakage found in 1 of 19,032 genes', { 'font-size': 11.5 }, gP3);
-txt(730, 442, 'conflicts flagged in 385 genes (2.0%)', { 'font-size': 11.5 }, gP3);
+box(712, 322, 208, 124, gP3, { fill: '#FBF1EF', stroke: '#E1A69E' });
+txt(722, 342, 'Tool 6 · fact-checker', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
+txt(722, 361, 'PubMed abstract for CA4:', { 'font-size': 11.5 }, gP3);
+txt(722, 380, '“… FDA approved …”', { 'font-size': 12.5, 'font-weight': 700, fill: C.red }, gP3);
+mk('line', { x1: 720, x2: 853, y1: 376, y2: 376, stroke: C.red, 'stroke-width': 1.8 }, gP3);
+txt(722, 399, '→ sentence removed (label leakage)', { 'font-size': 11.5, fill: C.red }, gP3);
+txt(722, 418, 'leakage found in 1 of 19,032 genes', { 'font-size': 11.5 }, gP3);
+txt(722, 436, 'conflicts flagged in 385 genes (2.0%)', { 'font-size': 11.5 }, gP3);
 
 // ------------------------------------------------------------------ scene 2a: reasoning output (ERBB3)
 const gR = $('gRsn');
-box(62, 170, 176, 74, gR, { fill: '#F7FAFB', stroke: '#9DB7C3' });
-txt(150, 200, 'Evidence profile', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'middle' }, gR);
-txt(150, 220, 'ERBB3 · task context', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
-arrow(240, 207, 282, 207, gR);
-box(286, 160, 188, 94, gR, { fill: '#E8F0F3', stroke: '#9DB7C3' });
-txt(380, 192, 'Reasoning policy', { 'font-size': 14, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gR);
-txt(380, 212, 'Qwen2.5-1.5B + LoRA', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
-txt(380, 230, 'trained with GRPO', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gR);
-arrow(476, 190, 514, 160, gR); arrow(476, 207, 514, 300, gR); arrow(476, 224, 514, 412, gR);
+const RY = 236;   // the chain sits level with the attribute-score heading, so the middle connector runs straight
+box(62, RY - 37, 176, 74, gR, { fill: '#F7FAFB', stroke: '#9DB7C3' });
+txt(150, RY - 7, 'Evidence profile', { 'font-size': 13.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'middle' }, gR);
+txt(150, RY + 13, 'ERBB3 · task context', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
+arrow(240, RY, 282, RY, gR);
+box(286, RY - 47, 188, 94, gR, { fill: '#E8F0F3', stroke: '#9DB7C3' });
+txt(380, RY - 15, 'Reasoning policy', { 'font-size': 14, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gR);
+txt(380, RY + 5, 'Qwen2.5-1.5B + LoRA', { 'font-size': 12, 'text-anchor': 'middle' }, gR);
+txt(380, RY + 23, 'trained with GRPO', { 'font-size': 11.5, fill: C.mute, 'text-anchor': 'middle' }, gR);
+// one trunk that splits into three branches, each ending at the heading of what it produces
+const rsnConn = [120, RY, 400].map(ty => conn(ty === RY ? `M475 ${RY}L515 ${RY}` : elbowD([[475, RY], [496, RY], [496, ty], [515, ty]], 8), [515, ty], 0, '#7D8C99', gR));
 txt(524, 124, 'rationale', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gR);
 box(520, 132, 400, 82, gR, { rx: 6, fill: '#FFFFFF', stroke: '#C9D3DC' });
 lines(534, 156, ['“ERBB3 is unique in that it lacks a functional kinase domain,', 'which means it cannot directly initiate signaling through',
@@ -518,23 +541,23 @@ const gQ = $('gGrpo'), GQ = D.grpo;
   tsp(t, 'each rollout’s attribute scores replace gene i’s row → frozen scorer → reward = Adjusted F1'); })();
 const RN = ['antibody', 'small mol.', 'disease'];
 const RNOTE = ['reads it as an antibody target', 'mixed reading', 'reads it as a small-molecule target', 'antibody target, weaker'];
-const cards = GQ.roll.map((a, k) => { const x = 62 + k * 216, y = 138, g = mk('g', {}, gQ);
-  box(x, y, 200, 240, g, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+const cards = GQ.roll.map((a, k) => { const x = 62 + k * 218, y = 138, g = mk('g', {}, gQ);   // four cards spanning x 62–920
+  box(x, y, 204, 240, g, { fill: '#FFFFFF', stroke: '#C9D3DC' });
   txt(x + 14, y + 23, 'rollout ' + (k + 1), { 'font-size': 13.5, 'font-weight': 700, fill: C.head }, g);
   txt(x + 14, y + 40, RNOTE[k], { 'font-size': 11, fill: C.mute, 'font-style': 'italic' }, g);
   const bars = a.map((v, j) => { const yy = y + 54 + j * 24;
     txt(x + 14, yy + 11, RN[j], { 'font-size': 11.5 }, g);
-    mk('rect', { x: x + 86, y: yy + 1, width: 72, height: 12, rx: 3, fill: '#EEF2F5' }, g);
-    const b = mk('rect', { x: x + 86, y: yy + 1, width: 72 * v, height: 12, rx: 3, fill: AT[j] }, g);
-    txt(x + 164, yy + 11, v.toFixed(2), { 'font-size': 11.5, fill: C.ink }, g); return b; });
-  mk('line', { x1: x + 12, x2: x + 188, y1: y + 132, y2: y + 132, stroke: '#E1E7EC' }, g);
+    mk('rect', { x: x + 88, y: yy + 1, width: 72, height: 12, rx: 3, fill: '#EEF2F5' }, g);
+    const b = mk('rect', { x: x + 88, y: yy + 1, width: 72 * v, height: 12, rx: 3, fill: AT[j] }, g);
+    txt(x + 190, yy + 11, v.toFixed(2), { 'font-size': 11.5, fill: C.ink, 'text-anchor': 'end' }, g); return b; });
+  mk('line', { x1: x + 14, x2: x + 190, y1: y + 132, y2: y + 132, stroke: '#E1E7EC' }, g);
   txt(x + 14, y + 152, 'score of gene i', { 'font-size': 11.5 }, g);
-  txt(x + 188, y + 152, GQ.score[k].toFixed(3), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
+  txt(x + 190, y + 152, GQ.score[k].toFixed(3), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
   txt(x + 14, y + 172, 'reward (Adj. F1)', { 'font-size': 11.5 }, g);
-  txt(x + 188, y + 172, GQ.reward[k].toFixed(4), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
-  mk('line', { x1: x + 100, x2: x + 100, y1: y + 186, y2: y + 210, stroke: '#9AA8B4' }, g);
+  txt(x + 190, y + 172, GQ.reward[k].toFixed(4), { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'end' }, g);
+  mk('line', { x1: x + 102, x2: x + 102, y1: y + 186, y2: y + 210, stroke: '#9AA8B4' }, g);
   const adv = GQ.adv[k], ab = mk('rect', { y: y + 191, height: 14, rx: 3, fill: adv >= 0 ? C.teal : C.red }, g);
-  txt(x + 100, y + 228, 'advantage ' + (adv >= 0 ? '+' : '−') + Math.abs(adv).toFixed(2), { 'font-size': 12, 'font-weight': 700, fill: adv >= 0 ? C.teal : C.red, 'text-anchor': 'middle' }, g);
+  txt(x + 102, y + 228,'advantage ' + (adv >= 0 ? '+' : '−') + Math.abs(adv).toFixed(2), { 'font-size': 12, 'font-weight': 700, fill: adv >= 0 ? C.teal : C.red, 'text-anchor': 'middle' }, g);
   return { g, ab, adv, x }; });
 
 // ------------------------------------------------------------------ scene 2c: ERBB2 vs ERBB3
@@ -563,29 +586,33 @@ txt(546, 394, 'a kinase inhibitor needs an active enzyme to block', { 'font-size
 // ------------------------------------------------------------------ scene 3a: gated fusion
 const gF = $('gFus');
 const MODS = [['structured features', 'x', 'bio', '482 numbers'], ['reasoning attributes', 'x', 'attr', '23 scores'], ['rationale embedding', 'z', 'emb', '256-d']];
+const FCY = 233, FR = 36;   // gate circle: level with the middle input, large enough for its two labels
 MODS.forEach(([a, sym, sup, b], i) => { const y = 136 + i * 70;
-  box(62, y, 186, 54, gF, { fill: '#FFFFFF', stroke: MOD[i], 'stroke-width': 1.6 });
+  box(62, y, 178, 54, gF, { fill: '#FFFFFF', stroke: MOD[i], 'stroke-width': 1.6 });
   txt(76, y + 22, a, { 'font-size': 13, 'font-weight': 700, fill: MOD[i] }, gF);
   const t = txt(76, y + 41, '', { 'font-size': 12 }, gF); tsp(t, sym, { 'font-family': SERIF, 'font-weight': 700, 'font-size': 14 }); tsp(t, sup, { 'font-size': 9.5, dy: -6 }); tsp(t, '  ' + b, { dy: 6 });
-  arrow(250, y + 27, 280, y + 27, gF);
-  box(284, y + 8, 76, 38, gF, { rx: 6 });
-  txt(322, y + 32, 'MLP', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
-  arrow(362, y + 27, 404, 230, gF); });
-mk('circle', { cx: 436, cy: 230, r: 30, fill: '#F2F5F8', stroke: '#B8C5D0' }, gF);
-txt(436, 226, 'gates', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
-txt(436, 243, 'α (per gene)', { 'font-size': 10.5, fill: C.ink2, 'text-anchor': 'middle' }, gF);
-arrow(467, 230, 500, 230, gF);
-box(504, 202, 150, 56, gF, { fill: '#E8F0F3', stroke: '#9DB7C3' });
-txt(579, 226, 'discriminator D', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
-txt(579, 244, 'one per task', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
-arrow(656, 230, 690, 230, gF);
-box(694, 202, 226, 56, gF, { fill: '#FFFFFF', stroke: '#C9D3DC' });
-txt(807, 226, 'target score in [0, 1]', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
-txt(807, 244, 'used to rank all genes', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
-txt(504, 300, 'gate weights differ by gene (schematic)', { 'font-size': 12, fill: C.mute }, gF);
+  arrow(242, y + 27, 268, y + 27, gF);
+  box(272, y + 8, 72, 38, gF);
+  txt(308, y + 32, 'MLP', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+  // smooth curves that meet the gate circle at three distinct points, arriving along its radius
+  const th = (1 - i) * 35 * Math.PI / 180, ux = Math.cos(th), uy = Math.sin(th), sy = y + 27;
+  const ex = f1(436 - (FR + 2) * ux), ey = f1(FCY - (FR + 2) * uy);
+  conn(i === 1 ? `M346 ${sy}L${ex} ${ey}` : `M346 ${sy}C374 ${sy} ${f1(ex - 22 * ux)} ${f1(ey - 22 * uy)} ${ex} ${ey}`, [ex, ey], Math.atan2(uy, ux), '#7D8C99', gF); });
+mk('circle', { cx: 436, cy: FCY, r: FR, fill: '#F2F5F8', stroke: '#B8C5D0' }, gF);
+txt(436, FCY - 4, 'gates', { 'font-size': 12.5, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(436, FCY + 12, 'α (per gene)', { 'font-size': 10.5, fill: C.ink2, 'text-anchor': 'middle' }, gF);
+arrow(474, FCY, 504, FCY, gF);
+box(508, FCY - 28, 150, 56, gF, { fill: '#E8F0F3', stroke: '#9DB7C3' });
+txt(583, FCY - 4, 'discriminator D', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(583, FCY + 14, 'one per task', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
+arrow(660, FCY, 694, FCY, gF);
+box(698, FCY - 28, 222, 56, gF, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+txt(809, FCY - 4, 'target score in [0, 1]', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gF);
+txt(809, FCY + 14, 'used to rank all genes', { 'font-size': 11.5, 'text-anchor': 'middle' }, gF);
+txt(508, 300, 'gate weights differ by gene (schematic)', { 'font-size': 12, fill: C.mute }, gF);
 const GATES = [['gene A', [0.56, 0.26, 0.18]], ['gene B', [0.18, 0.30, 0.52]]];
-const gateBars = GATES.map(([nm, w], i) => { const y = 312 + i * 30; txt(504, y + 13, nm, { 'font-size': 12 }, gF);
-  let x = 560; return w.map((v, j) => { const r = mk('rect', { x, y, width: 300 * v - 2, height: 18, rx: 2, fill: MOD[j] }, gF); x += 300 * v; return r; }); });
+const gateBars = GATES.map(([nm, w], i) => { const y = 312 + i * 30; txt(508, y + 13, nm, { 'font-size': 12 }, gF);
+  let x = 564; return w.map((v, j) => { const r = mk('rect', { x: f1(x), y, width: f1(356 * v - (j < 2 ? 2 : 0)), height: 18, rx: 3, fill: MOD[j] }, gF); x += 356 * v; return r; }); });
 
 // ------------------------------------------------------------------ scene 3b: hybrid class prior
 const gPr = $('gPrior');
@@ -610,17 +637,25 @@ box(62, 120, 392, 316, gNp, { fill: '#FAFBFC', stroke: '#DDE3E8' });
 const allZ = NP.zP.concat(NP.zU);
 const zx = allZ.map(p => p[0]), zy = allZ.map(p => p[1]);
 const zmin = [Math.min(...zx), Math.min(...zy)], zmax = [Math.max(...zx), Math.max(...zy)];
-const ZX = v => 84 + (v - zmin[0]) / (zmax[0] - zmin[0]) * 348, ZY = v => 412 - (v - zmin[1]) / (zmax[1] - zmin[1]) * 262;
+// points span y 148–398, leaving a clear band above the legend row
+const ZX = v => 84 + (v - zmin[0]) / (zmax[0] - zmin[0]) * 348, ZY = v => 398 - (v - zmin[1]) / (zmax[1] - zmin[1]) * 250;
 const npRings = NP.zU.map((p, i) => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: f1(4 + 9 * Math.max(0, NP.w[i])), fill: 'none', stroke: C.teal, 'stroke-width': 1.2, opacity: 0.75 }, gNp));
 NP.zU.forEach(p => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: 3.4, fill: '#AEB9C4' }, gNp));
 NP.zP.forEach(p => mk('circle', { cx: f1(ZX(p[0])), cy: f1(ZY(p[1])), r: 4.6, fill: GREEN }, gNp));
 (() => { const x = ZX(NP.zbar[0]), y = ZY(NP.zbar[1]);
   mk('path', { d: `M${f1(x - 7)} ${f1(y)}L${f1(x + 7)} ${f1(y)}M${f1(x)} ${f1(y - 7)}L${f1(x)} ${f1(y + 7)}`, stroke: '#1F5E3D', 'stroke-width': 2.6, 'stroke-linecap': 'round' }, gNp);
-  txt(x + 10, y - 9, 'centroid of known targets', Object.assign({ 'font-size': 11.5, 'font-weight': 700, fill: '#1F5E3D' }, HALO), gNp); })();
-[[GREEN, 'known target', 0], ['#AEB9C4', 'unlabeled gene', 1]].forEach(([col, s], k) => { mk('circle', { cx: 80 + k * 120, cy: 428 - 0, r: 4.5, fill: col }, gNp); txt(90 + k * 120, 432, s, { 'font-size': 11.5 }, gNp); });
-mk('circle', { cx: 324, cy: 428, r: 7, fill: 'none', stroke: C.teal, 'stroke-width': 1.2 }, gNp); txt(336, 432, 'ring = weight w', { 'font-size': 11.5 }, gNp);
-lines(482, 300, ['w is high for unlabeled genes the discriminator scores high', 'and whose embedding points toward the known targets.', '',
-  'max(0, ·): the estimated risk of the unlabeled genes, after', 'removing the positives’ share, is not allowed to go negative;', 'this stops a flexible model from overfitting (Kiryo et al., 2017).'], 19, { 'font-size': 12.5, fill: C.ink2 }, gNp);
+  // label in the clear space just below the cluster, joined to the cross by a short leader
+  mk('line', { x1: f1(x + 1), y1: f1(y + 10), x2: f1(x + 9), y2: f1(y + 42), stroke: '#1F5E3D', 'stroke-width': 1.2, 'stroke-linecap': 'round' }, gNp);
+  lines(f1(x + 12), f1(y + 57), ['centroid of', 'known targets'], 13.5, Object.assign({ 'font-size': 11.5, 'font-weight': 700, fill: '#1F5E3D', 'text-anchor': 'middle' }, HALO), gNp); })();
+[[GREEN, 'known target', 80], ['#AEB9C4', 'unlabeled gene', 186]].forEach(([col, s, x]) => { mk('circle', { cx: x + 4.5, cy: 427, r: 4.5, fill: col }, gNp); txt(x + 14, 431, s, { 'font-size': 11.5 }, gNp); });
+mk('circle', { cx: 312, cy: 427, r: 7, fill: 'none', stroke: C.teal, 'stroke-width': 1.2 }, gNp); txt(324, 431, 'ring = weight w', { 'font-size': 11.5 }, gNp);
+// the explanation sits directly under the two equations, one paragraph per equation, each led by the term it explains
+(() => { const A = { 'font-size': 12.5, fill: C.ink2 };
+  const a = txt(482, 232, '', A, gNp); tsp(a, 'w', { 'font-family': SERIF, 'font-style': 'italic', 'font-weight': 700, 'font-size': 14, fill: C.ink });
+  tsp(a, ' is high for unlabeled genes the discriminator scores high');
+  txt(482, 251, 'and whose embedding points toward the known targets.', A, gNp);
+  const b = txt(482, 289, '', A, gNp); tsp(b, 'max(0, ·):', { 'font-weight': 700, fill: C.ink }); tsp(b, ' the estimated risk of the unlabeled genes, after');
+  lines(482, 308, ['removing the positives’ share, is not allowed to go negative;', 'this stops a flexible model from overfitting (Kiryo et al., 2017).'], 19, A, gNp); })();
 
 // ------------------------------------------------------------------ scene 4: the metric (toy)
 const gM = $('gMet'), F = D.f1toy;
@@ -634,16 +669,19 @@ const mBars = Array.from({ length: F.n }, (_, i) => mk('rect', { x: MX0 + i * MW
   fill: known2.has(i) ? GREEN : '#C3CDD6', stroke: hid2.has(i) ? AMBER : 'none', 'stroke-width': hid2.has(i) ? 1.8 : 0 }, gM));
 [[GREEN, 'known target (4)'], ['#C3CDD6', 'unlabeled gene'], ['#C3CDD6', 'unlabeled, but a true target (the metric cannot know)', AMBER]].forEach(([col, s, st], k) => {
   const x = [66, 210, 352][k]; mk('rect', { x, y: 422, width: 12, height: 12, rx: 2, fill: col, stroke: st || 'none', 'stroke-width': 1.8 }, gM); txt(x + 18, 432, s, { 'font-size': 11.5 }, gM); });
-const mR = txt(690, 186, '', { 'font-size': 13.5, fill: C.ink }, gM), mP = txt(690, 214, '', { 'font-size': 13.5, fill: C.ink }, gM);
-const mF = txt(690, 258, '', { 'font-size': 26, 'font-weight': 700, fill: C.teal }, gM);
-const mLab = txt(690, 156, '', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gM);
+// right-hand column x 672–920 (kept inside the 920 margin even for "Adjusted F1 = 10.00")
+const MCX = 672;
+const mR = txt(MCX, 186, '', { 'font-size': 13.5, fill: C.ink }, gM), mP = txt(MCX, 214, '', { 'font-size': 13.5, fill: C.ink }, gM);
+const mF = txt(MCX, 258, '', { 'font-size': 26, 'font-weight': 700, fill: C.teal }, gM);
+const mLab = txt(MCX, 156, '', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gM);
 const gCeil = mk('g', {}, gM);
-txt(690, 300, 'ceiling = n / |P| = 40 / 4 = 10', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gCeil);
-txt(690, 330, 'real task', { 'font-size': 12, fill: C.mute }, gCeil);
-txt(856, 330, 'ceiling', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
-txt(930, 330, 'TargetSage', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
-[['Clinical Targets', '27.2', '11.2'], ['Clinical & Chemical', '7.4', '3.2'], ['Ab (approved)', '276', '22.6']].forEach(([a, b, c], i) => { const y = 352 + i * 22;
-  txt(690, y, a, { 'font-size': 12.5 }, gCeil); txt(856, y, b, { 'font-size': 12.5, 'text-anchor': 'end' }, gCeil); txt(930, y, c, { 'font-size': 12.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, gCeil); });
+txt(MCX, 300, 'ceiling = n / |P| = 40 / 4 = 10', { 'font-size': 13, 'font-weight': 700, fill: C.head }, gCeil);
+txt(MCX, 330, 'real task', { 'font-size': 12, fill: C.mute }, gCeil);
+txt(846, 330, 'ceiling', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
+txt(920, 330, 'TargetSage', { 'font-size': 12, fill: C.mute, 'text-anchor': 'end' }, gCeil);
+mk('line', { x1: MCX, x2: 920, y1: 337.5, y2: 337.5, stroke: '#DDE3E8' }, gCeil);
+[['Clinical Targets', '27.2', '11.2'], ['Clinical & Chemical', '7.4', '3.2'], ['Ab (approved)', '276', '22.6']].forEach(([a, b, c], i) => { const y = 355 + i * 22;
+  txt(MCX, y, a, { 'font-size': 12.5 }, gCeil); txt(846, y, b, { 'font-size': 12.5, 'text-anchor': 'end' }, gCeil); txt(920, y, c, { 'font-size': 12.5, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, gCeil); });
 const MODELS = [F.flat, F.good, F.perfect], MNAME = ['Every gene scores 0.3', 'A useful model', 'A perfect model of the labels'];
 
 // ------------------------------------------------------------------ scene 5a: macro-average
@@ -681,10 +719,10 @@ const PXr = v => 220 + v / 55 * 680;
 txt(PXr(0), 444, 'median rank percentile in the genome (0% = top)', { 'font-size': 11.5, fill: C.mute }, gPs);
 const proDots = PRO.map(([nm, v], i) => { const y = 148 + i * 24.5;
   txt(208, y + 4, nm, { 'font-size': 12.5, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal, 'text-anchor': 'end' }, gPs);
-  mk('line', { x1: PXr(0), x2: PXr(v), y1: y, y2: y, stroke: i ? '#D5DCE2' : '#9DC0CC', 'stroke-width': 2 }, gPs);
+  const s = mk('line', { x1: PXr(0), x2: PXr(v), y1: y, y2: y, stroke: i ? '#D5DCE2' : '#9DC0CC', 'stroke-width': 2, 'stroke-linecap': 'round' }, gPs);
   const d = mk('circle', { cx: PXr(v), cy: y, r: i ? 5 : 6.5, fill: i ? '#9AA7B2' : C.teal }, gPs);
   const t = txt(PXr(v) + 11, y + 4.5, v.toFixed(1) + '%', { 'font-size': 12, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal }, gPs);
-  return { d, t, v, y }; });
+  return { s, d, t, v, y }; });
 
 // ------------------------------------------------------------------ scene 5d: top-25 shortlists vs Phase 2/3 targets
 const gO = $('gOr');
@@ -705,27 +743,30 @@ const ABL = [['Input types', [['Bio', 10.7], ['Expl.', 10.8], ['Impl.', 10.7], [
   ['Learning objective', [['BCE', 9.1], ['uPU', 10.5], ['nnPU', 11.1]]],
   ['Attribute extraction', [['static', 10.2], ['agent', 10.5], ['+ GRPO', 11.1]]]];
 const ablBars = [];
-ABL.forEach(([title, rows], c) => { const x0 = 62 + c * 222;
+ABL.forEach(([title, rows], c) => { const x0 = 62 + c * 216;   // four columns within x 62–920
   head(x0, 124, title, gA, { 'font-size': 13 });
+  mk('line', { x1: x0 + 72.5, x2: x0 + 72.5, y1: 136, y2: 140 + (rows.length - 1) * 36 + 20, stroke: '#C9D3DC' }, gA);   // bar baseline (8.5)
   rows.forEach(([nm, v], i) => { const y = 140 + i * 36, full = i === rows.length - 1;
     txt(x0, y + 13, nm, { 'font-size': 12, fill: full ? C.teal : C.ink2, 'font-weight': full ? 700 : 400 }, gA);
-    const b = mk('rect', { x: x0 + 76, y: y + 1, height: 15, rx: 3, fill: full ? C.teal : '#B5C0CA' }, gA);
+    const b = mk('rect', { x: x0 + 73, y: y + 1, height: 15, rx: 3, fill: full ? C.teal : '#B5C0CA' }, gA);
     const t = txt(0, y + 13, v.toFixed(1), { 'font-size': 12, 'font-weight': 700, fill: full ? C.teal : C.ink }, gA);
     ablBars.push({ b, t, v, x0, i, c }); }); });
-txt(62, 432, 'bars start at 8.5 to show the differences; strongest baseline: 8.1', { 'font-size': 11.5, fill: C.mute }, gA);
+txt(62, 404, 'bars start at 8.5 to show the differences; strongest baseline: 8.1', { 'font-size': 11.5, fill: C.mute }, gA);
 const AS = v => (v - 8.5) / 2.8 * 110;
 
 // ------------------------------------------------------------------ scene 6: recap
 const gRc = $('gRecap');
 const RC = [['1', 'Agentic profiling', ['features as evidence statements,', 'four external sources, fact-checked']], ['2', 'Guided reasoning', ['a rationale and 23 attribute scores,', 'GRPO with the downstream reward']],
   ['3', 'PU-aware scoring', ['gated fusion, hybrid class prior,', 'non-negative PU loss']]];
+const RCY = 30;   // the two rows sit centred in the free stage area, with a hairline between method and results
 const rcItems = RC.map(([n, a, b], k) => { const g = mk('g', {}, gRc), x = 82 + k * 284;
-  mk('circle', { cx: x + 16, cy: 168, r: 16, fill: C.teal }, g); txt(x + 16, 173.5, n, { 'font-size': 15, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
-  txt(x + 42, 164, a, { 'font-size': 18, 'font-weight': 700, fill: C.ink }, g); lines(x + 42, 187, b, 18, { 'font-size': 12.5 }, g);
-  if (k < 2) mk('line', { x1: x + 252, y1: 168, x2: x + 272, y2: 168, stroke: '#9AA8B4', 'stroke-width': 1.6, 'marker-end': 'url(#ah)' }, g); return g; });
+  mk('circle', { cx: x + 16, cy: 168 + RCY, r: 16, fill: C.teal }, g); txt(x + 16, 173.5 + RCY, n, { 'font-size': 15, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
+  txt(x + 42, 164 + RCY, a, { 'font-size': 18, 'font-weight': 700, fill: C.ink }, g); lines(x + 42, 187 + RCY, b, 18, { 'font-size': 12.5 }, g);
+  if (k < 2) mk('line', { x1: x + 252, y1: 168 + RCY, x2: x + 272, y2: 168 + RCY, stroke: '#9AA8B4', 'stroke-width': 1.6, 'marker-end': 'url(#ah)' }, g); return g; });
 const rcNums = mk('g', {}, gRc);
+mk('line', { x1: 82, x2: 878, y1: 251.5 + RCY, y2: 251.5 + RCY, stroke: '#E1E7EC' }, rcNums);
 [['11.1', 'macro-average Adjusted F1 on 15 tasks (+37%)'], ['top 7%', 'median rank of the 90 targets added 2021→2025'], ['8 of 25', 'top Tbio picks that are Phase 2/3 targets']].forEach(([a, b], k) => {
-  const x = 82 + k * 284; txt(x, 300, a, { 'font-size': 26, 'font-weight': 700, fill: C.teal }, rcNums); txt(x, 322, b, { 'font-size': 12.5 }, rcNums); });
+  const x = 82 + k * 284; txt(x, 300 + RCY + 12, a, { 'font-size': 26, 'font-weight': 700, fill: C.teal }, rcNums); txt(x, 322 + RCY + 12, b, { 'font-size': 12.5 }, rcNums); });
 
 // ------------------------------------------------------------------ render one frame
 function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
@@ -739,13 +780,15 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
   }
   ['gr1', 'gr2', 'gr3', 'gr4'].forEach((f, i) => op([gr1, gr2, gr3, gr4][i], L(f)));
   // scene 1
-  op(gP, L('prof')); op(gP2, L('pf2')); op(gP3, L('pf3'));
+  op(gP, L('prof')); const p2 = L('pf2'); op(gP2, p2); op(gP3, L('pf3'));
+  if (p2 > 0.001) toolConn.forEach((c, i) => { const t = grow('pf2') ? ease(stag(eIn, i, 4, 0.45)) : 1; c.draw(t); op(srcLines[i], clamp((t - 0.55) / 0.45)); });
   // scene 2
   const rv = L('rsn'); op(gR, rv);
+  if (rv > 0.001) rsnConn.forEach(c => c.draw(grow('rsn') ? ease(clamp(eIn * 1.6)) : 1));
   if (rv > 0.001) attrBars.forEach((a, i) => a.b.setAttribute('width', f1(170 * a.v * (grow('rsn') ? ease(stag(eIn, i, 6, 0.5)) : 1))));
   const qv = L('grpo'); op(gQ, qv);
   if (qv > 0.001) cards.forEach((c, i) => { const t = grow('grpo') ? ease(stag(eIn, i, 4, 0.45)) : 1, w = 42 * Math.abs(c.adv) * t;
-    c.ab.setAttribute('x', f1(c.adv >= 0 ? c.x + 100 : c.x + 100 - w)); c.ab.setAttribute('width', f1(w)); op(c.g, 0.25 + 0.75 * t); });
+    c.ab.setAttribute('x', f1(c.adv >= 0 ? c.x + 102 : c.x + 102 - w)); c.ab.setAttribute('width', f1(w)); op(c.g, 0.25 + 0.75 * t); });
   op(gE, L('erb')); const e2 = L('erb2'); op(gE2, e2);
   if (e2 > 0.001) { const t = grow('erb2') ? ease(clamp(eIn * 1.3 - 0.2)) : 1;
     eRows.forEach(r => { const v3 = lerp(r.v2, r.v3, t); r.r3.setAttribute('width', f1(r.scale * v3)); r.t3.setAttribute('x', f1(r.x0 + r.scale * v3 + 6)); r.t3.textContent = v3.toFixed(2); }); }
@@ -772,12 +815,13 @@ function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
     g.b0.setAttribute('width', f1(GS2(g.bl) * t)); g.b1.setAttribute('width', f1(GS2(g.ts) * t));
     g.t0.setAttribute('x', f1(256 + GS2(g.bl) * t)); g.t1.setAttribute('x', f1(256 + GS2(g.ts) * t)); op(g.t0, t); op(g.t1, t); });
   const pr = L('pros'); op(gPs, pr);
-  if (pr > 0.001) proDots.forEach((p, i) => { const t = grow('pros') ? ease(stag(eIn, i, 11, 0.5)) : 1; op(p.d, t); op(p.t, t); });
+  if (pr > 0.001) proDots.forEach((p, i) => { const t = grow('pros') ? ease(stag(eIn, i, 11, 0.5)) : 1, x = lerp(PXr(0), PXr(p.v), t);
+    p.s.setAttribute('x2', f1(x)); p.d.setAttribute('cx', f1(x)); p.t.setAttribute('x', f1(x + 11)); op(p.d, clamp(t * 4)); op(p.t, t); });
   const orv = L('orr'); op(gO, orv);
   if (orv > 0.001) orRows.forEach((r, i) => { const t = grow('orr') ? ease(stag(eIn, i, 8, 0.5)) : 1; op(r.g, t); });
   const ab = L('abl'); op(gA, ab);
   if (ab > 0.001) ablBars.forEach(a => { const t = grow('abl') ? ease(stag(eIn, a.c, 4, 0.5)) : 1, w = AS(a.v) * t;
-    a.b.setAttribute('width', f1(Math.max(0, w))); a.t.setAttribute('x', f1(a.x0 + 82 + w)); op(a.t, t); });
+    a.b.setAttribute('width', f1(Math.max(0, w))); a.t.setAttribute('x', f1(a.x0 + 79 + w)); op(a.t, t); });
   const rc = L('recap'); op(gRc, rc);
   if (rc > 0.001) { const app = grow('recap') ? eIn : 1; rcItems.forEach((g, j) => op(g, ease(stag(app, j, 4, 0.6)))); op(rcNums, ease(stag(app, 3, 4, 0.6))); }
 }
@@ -831,6 +875,8 @@ function render(k, e) {
     else if (inC) o = clamp(e * 2.2 - 1.0);
     else if (inP) o = 1 - clamp(e * 2.2);
     d.style.opacity = o.toFixed(3);
+    // text that arrives rises a few pixels into place as it fades in
+    d.style.transform = inC && !inP && o < 1 ? `translateY(${(0.32 * (1 - o)).toFixed(3)}em)` : '';
   });
 }
 
