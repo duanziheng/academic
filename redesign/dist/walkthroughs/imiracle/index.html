@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://zihengduan.cn/walkthroughs/imiracle/">
 <link rel="canonical" href="https://zihengduan.cn/walkthroughs/imiracle/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261008-2">
+<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261009-1">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}if(/[?&]embed(?:[=&]|$)/.test(location.search))document.documentElement.classList.add("embed")</script>
 <style>
 /* One 16:9 stage that always looks like a white slide (it is meant to be projected), with controls and speaker notes
@@ -350,7 +350,7 @@ const S = [
     eq: `<div class="eq">${XH} = <span class="ub"><span>${XH}<sub><i>b</i></sub></span><span class="lab">cell type</span></span> + <span class="ub"><span>Σ<sub><i>lr</i> ∈ <b>LR</b><sub><i>θ</i></sub></sub> ${XH}${SS('<i>s</i>', '<i>lr</i>′')}</span><span class="lab">neighbors, one term per LR pair</span></span>${NUM(7)}</div>`, eqPos: [500, 96],
     note: 'Here is a second cell, c prime, of the same type. The baseline is identical, because it depends only on the cell type. But c prime sits in a different neighborhood, so a different pair, LR4, explains most of its expression. Cell-type averages would hide this difference.' },
   { scene: 2, st: { cM: 'lig1', xi: 1, dur: 1700 },
-    cap: 'For each LR pair, measure the fraction of cells expressing the ligand and the receptor; keep the pair only if both exceed <i>θ</i> = 15%.',
+    cap: 'Keep an LR pair only if both its ligand and its receptor are expressed in more than <i>θ</i> = 15% of cells.',
     fn: TOYFN,
     eq: `<div class="eq"><b>LR</b><sub><i>θ</i></sub> = { <i>lr</i> | <i>ξ<sub>l</sub></i> &gt; <i>θ</i> ∧ <i>ξ<sub>r</sub></i> &gt; <i>θ</i> }${NUM(1)}</div>`, eqPos: [520, 330],
     note: `How does iMiracle build the communication network? Take one pair, LR1. Purple cells express the ligand, and cells with a dark ring express the receptor, in the observed data. A pair is kept only if both the ligand and the receptor are expressed in more than 15 percent of cells, equation 1. LR1 passes, at ${Math.round(100 * xiL1)} and ${Math.round(100 * xiR1)} percent.` },
@@ -365,7 +365,7 @@ const S = [
     eq: `<div class="eq"><b>G</b><sub><i>C</i></sub> = ∪<sub><i>lr</i></sub> <b>G</b>${SS('<i>C</i>', '<i>lr</i>')}</div>`, eqPos: [660, 430],
     note: 'Every kept pair gives its own view of the same tissue, so the tissue becomes a multi-view graph. Notice that LR4 has no graph: in the observed data, its ligand is detected in too few cells. We will come back to that.' },
   { scene: 3, st: { opT: 0, schem: 1, shA: 1, shB: 0.28, dur: 1700 },
-    cap: 'For each pair, a GNN turns the cell types and that pair’s graph into embeddings; a shared decoder maps them to expression, optionally masked by a GRN/PPI.',
+    cap: 'A GNN per pair embeds cells over its graph; a shared decoder, optionally GRN/PPI-masked, predicts expression.',
     fn: 'Duan et al., CIKM 2024, Sec. 3.2 and Fig. 1 · GraphTransformer by default, hidden size d = 32, two GNN layers',
     eq: `<div class="eq"><b>H</b><sup><i>lr</i></sup> = GNN(<b>T</b>, <b>G</b>${SS('<i>C</i>', '<i>lr</i>')})${NUM(3)} &nbsp;&nbsp; ${XH}${SS('<i>s</i>', '<i>lr</i>')} = Decoder(<b>H</b><sup><i>lr</i></sup>)${NUM(4)} &nbsp;&nbsp; ${XH}${SS('<i>s</i>', '<i>lr</i>′')} = ${XH}${SS('<i>s</i>', '<i>lr</i>')} ⊙ <b>M</b><sup><i>lr</i></sup>${NUM(5)}</div>`, eqPos: [40, 414],
     note: 'Now the model. For each pair, a graph neural network runs on that pair’s graph, with the cell types as node features, and gives every cell an embedding that summarizes what it hears through that pair. One decoder, shared by all pairs, turns each embedding into the part of expression this pair is responsible for. Optionally, prior knowledge from protein interaction and gene regulatory networks masks out genes this pair cannot regulate.' },
@@ -384,12 +384,12 @@ const S = [
     eq: `<div class="eq"><b>LR</b>${SS('<i>θ</i>', '(<i>i</i>+1)')} = { <i>lr</i> | <i>ξ</i>${SS('<i>l</i>', '(<i>i</i>+1)')} &gt; <i>θ</i> ∧ <i>ξ</i>${SS('<i>r</i>', '(<i>i</i>+1)')} &gt; <i>θ</i> }${NUM(8)}</div><div class="eq" style="margin-top:.5em"><b>G</b>${SS('<i>C</i>', '(<i>i</i>+1)')} = ∪<sub><i>lr</i> ∈ <b>LR</b><sub><i>θ</i></sub><sup>(<i>i</i>+1)</sup></sub> <b>G</b>${SS('<i>C</i>', '<i>lr</i> (<i>i</i>+1)')}${NUM(10)}</div>`, eqPos: [520, 382],
     note: `After a round of training, the model imputes the missing values, and iMiracle recomputes the expressed fractions on the imputed matrix, equation 8. Now the ligand of LR4 is expressed in ${Math.round(100 * xiL4f)} percent of cells, so LR4 passes, and its graph is added to the network, equation 10.` },
   { scene: 4, st: { cM: 'grey', e1: 1, e1w: 1, chips: 1, chip4: 1, views: 1, vlay: 1, v4: 1, vw: 1, rs: 0.66, dur: 2200 },
-    cap: 'Graphs that already exist are refreshed: 0.2 × the old graph + 0.8 × the graph rebuilt from <b class="hat">X</b>. Training repeats until no pair is added.',
+    cap: 'Existing graphs are refreshed as 0.2 × old + 0.8 × rebuilt from <b class="hat">X</b>; training repeats until no pair is added.',
     fn: 'Toy: old graph from X_obs, new graph from the counts before dropout · Duan et al., CIKM 2024, Eq. 9, α = 0.2',
     eq: `<div class="eq"><b>G</b>${SS('<i>C</i>', '<i>lr</i> (<i>i</i>+1)')} = <i>α</i> <b>G</b>${SS('<i>C</i>', '<i>lr</i> (<i>i</i>)')} + (1 − <i>α</i>) <b>G</b>${SS('<i>C</i>', '<i>lr</i> (<i>i</i>+1)')}${NUM(9)}<span class="note">α = 0.2</span></div>`, eqPos: [520, 400],
     note: 'Graphs that already existed are not thrown away: the graph rebuilt from the imputed values is blended with the old one, with alpha equal to 0.2, equation 9. Here the LR1 graph fills in. Better graphs give better imputation, and better imputation gives better graphs; iMiracle stops when no new pair can be added.' },
   { scene: 4, st: { opT: 0, fig2: 1, dur: 2000 },
-    cap: 'On real data, iterative learning adds 27–56 LR pairs per 10x Visium sample (up to 181% more), 16 on Stereo-seq and 26 on Slide-seqV2.',
+    cap: 'Iterative learning adds 27–56 LR pairs per Visium sample (up to 181% more), 16 on Stereo-seq, 26 on Slide-seqV2.',
     fn: 'Duan et al., CIKM 2024, Fig. 2 (number of LR pairs in the network, first vs. final round)',
     note: 'On real data the effect is large. On six human prefrontal cortex samples from 10x Visium, the network grows by 27 to 56 pairs, for example from 29 to 72; that is up to 181 percent more. On mouse olfactory bulb it adds 16 pairs on Stereo-seq and 26 on Slide-seqV2.' },
   { scene: 5, st: { cM: 'focus2', rank: 1, dur: 1700 },
@@ -407,11 +407,11 @@ const S = [
     fn: 'Duan et al., CIKM 2024, Fig. 3 and Sec. 4.3 (NDCG; iMiracle also leads on precision, Spearman and Kendall)',
     note: 'Real data rarely tell us which signal drives which gene, so we first test on simulated data where we know the answer, built like the toy you just saw, but with a thousand cells and fifty pairs. Measured by NDCG, iMiracle reaches 0.79, against 0.56 for SpaTalk, 0.48 for HoloNet and 0.24 for NicheNet, and it also leads on precision and both rank correlations.' },
   { scene: 6, st: { opT: 0, rmse: 1, dur: 1800 },
-    cap: 'Imputation on 8 real datasets: lower RMSE than STAGATE, the best spatial baseline, on every one; on Slide-seqV2, 0.407 vs 0.765.',
+    cap: 'Imputation on 8 real datasets: the lowest RMSE on every one; on Slide-seqV2, 0.407 vs 0.765 for STAGATE.',
     fn: 'Duan et al., CIKM 2024, Table 3 (10% of non-zero entries held out, 10 random masks; mean shown)',
     note: 'For imputation, we hide 10 percent of the observed values and ask each method to recover them. iMiracle has the lowest error on all eight datasets. The gap is largest on Slide-seqV2, 0.407 against 0.765 for STAGATE, a 47 percent improvement, which supports rebuilding the graphs from imputed values.' },
   { scene: 6, st: { opT: 0, heat: 1, dur: 1800 },
-    cap: 'Human DLPFC, gene GJA1: the top LR pairs change from region to region; two of the top three were found only by iterative learning.',
+    cap: 'Human DLPFC, GJA1: the top LR pairs change by region; two of the top three were found only by iterative learning.',
     fn: 'Duan et al., CIKM 2024, Fig. 4E and 4I (sample 151507; % of cells in each region with the pair among their top 5)',
     note: 'Now human brain data. We take GJA1, a marker gene of astrocytes, and three regions where it is highly expressed. PTN–SDC4 is in the top five for every cell in all three regions. Others are regional: LRRC4B–PTPRD is in the top five for 99.6 percent of cells in region one, but only 4.2 percent in region two. PTN–SDC4 and LRRC4B–PTPRD were found only through iterative learning.' },
   { scene: 6, st: { opT: 0, abl: 1, dur: 1700 },
@@ -419,7 +419,7 @@ const S = [
     fn: 'Duan et al., CIKM 2024, Fig. 5 and Sec. 4.5',
     note: 'Which parts matter? For the regulatory scores, removing the gene-network prior drops NDCG from 0.84 to 0.43, a separate decoder per pair drops it to 0.66, and removing iterative learning drops it to 0.78. For imputation, sharing one GNN across all pairs makes the error 25 to 32 percent worse.' },
   { scene: 7, st: { opT: 0, recap: 1, dur: 1600 },
-    cap: 'iMiracle separates cell-type and neighbor effects, completes the communication network iteratively, and scores every LR pair per cell and gene.',
+    cap: 'iMiracle separates cell-type and neighbor effects, grows the network iteratively, scores LR pairs per cell and gene.',
     fn: 'Duan, Xu, Lee, Riffle, Zhang · CIKM 2024 · github.com/aicb-ZhangLabs/iMiracle',
     note: 'To summarize: iMiracle models each cell’s expression as a cell-type baseline plus one term per ligand–receptor pair, fills in the communication network with iterative learning, and turns the pair terms into cell-specific regulatory scores. Across nine simulated and eight real datasets from three platforms, it outperformed ten imputation methods and four score-inference methods.' },
 ];
