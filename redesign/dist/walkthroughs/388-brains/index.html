@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>388 brains walkthrough · Ziheng Duan</title>
+<meta name="description" content="A step-by-step animated walkthrough of Emani et al. (Science 2024): the brainSCOPE single-cell resource for 388 human brains, with 28 cell types, regulatory elements, cell-type eQTLs, regulatory and signalling networks, and the LNCTP model.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="388 brains walkthrough · Ziheng Duan">
+<meta property="og:description" content="A step-by-step animated walkthrough of Emani et al. (Science 2024): the brainSCOPE single-cell resource for 388 human brains, with 28 cell types, regulatory elements, cell-type eQTLs, regulatory and signalling networks, and the LNCTP model.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zihengduan.cn/walkthroughs/388-brains/">
+<link rel="canonical" href="https://zihengduan.cn/walkthroughs/388-brains/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/walkthroughs/fonts/fonts.css?v=20261009-1">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")==="light"?"light":"dark"}catch(e){}if(/[?&]embed(?:[=&]|$)/.test(location.search))document.documentElement.classList.add("embed")</script>
+<style>
+/* One 16:9 stage that always looks like a white slide (it is meant to be projected), with controls and speaker notes
+   underneath that follow the viewer's theme. */
+:root {
+  --bg: #EDF1F4; --panel: #FFFFFF; --ink: #1B2630; --ink2: #4B5966; --mute: #758593; --line: #D3DCE3;
+  --accent: #2B5A6E; --accent-ink: #FFFFFF; --chip: #E2EAF0; --chip-ink: #2B5A6E;
+  --sans: "Arimo", "Liberation Sans", Arial, Helvetica, "Noto Sans Math", sans-serif;
+  --serif: "Tinos", "Liberation Serif", "Times New Roman", Times, "Noto Sans Math", "Cambria Math", "STIX Two Math", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740;
+    --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --chip-ink: #A9D0DE; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #10171C; --panel: #172128; --ink: #E6ECF0; --ink2: #B3BFC9; --mute: #8595A2; --line: #2A3740;
+  --accent: #86B9CB; --accent-ink: #0D1A20; --chip: #1F2C34; --chip-ink: #A9D0DE; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 44px; display: grid; gap: 14px; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 18px; }
+.top h1 { font-size: 21px; line-height: 1.2; margin: 0; font-weight: 700; text-wrap: balance; }
+.top p { margin: 0; color: var(--ink2); font-size: 13px; }
+.stageWrap { position: relative; display: flex; align-items: center; justify-content: center; background: #FFFFFF;
+  border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.stageWrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.stageWrap:fullscreen { width: 100vw; height: 100vh; border-radius: 0; box-shadow: none; }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; container-type: inline-size; }
+.stageWrap:fullscreen .stage { width: min(100vw, 177.78vh); }
+.stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ov { position: absolute; inset: 0; font-size: calc(100cqw / 960 * 16); pointer-events: none; color: #1D2731; font-family: var(--sans); }
+.tx { position: absolute; opacity: 0; }
+.kick { left: 2.2em; top: 1.15em; font-size: .74em; letter-spacing: .14em; text-transform: uppercase; color: #2B5A6E; font-weight: 700; }
+.ttl { left: 1.37em; top: 1.52em; font-size: 1.6em; color: #16212B; font-weight: 400; white-space: nowrap; }
+.cap { left: 2.12em; top: 29.6em; width: 55.7em; font-size: 1em; line-height: 1.36; color: #3C4A57; }
+.cap b { font-weight: 700; color: #1D2731; }
+.fn { left: 3.32em; top: 51.3em; font-size: .64em; color: #7F8D99; white-space: nowrap; }
+.eq { font-family: var(--serif); color: #1D2731; font-size: 1.12em; white-space: nowrap; }
+.eq i { font-style: italic; } .eq b { font-weight: 700; font-style: normal; }
+.eq .ss { display: inline-flex; flex-direction: column; vertical-align: 0.66em; font-size: .62em; line-height: 1.08; margin-left: .04em; }
+.eq sub, .eq sup { font-size: .64em; line-height: 0; }
+.eq .note { font-family: var(--sans); font-size: .62em; color: #6B7A87; margin-left: .8em; vertical-align: .15em; }
+.eq .num { font-family: var(--sans); font-size: .58em; color: #8796A3; margin-left: .7em; vertical-align: .2em; }
+.eq .ub { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; }
+.eq .ub > .lab { font-family: var(--sans); font-size: .52em; color: #6B7A87; border-top: 1.5px solid #9AA8B4; padding-top: .25em; margin-top: .2em; white-space: nowrap; }
+.eq .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 .2em; }
+.eq .frac > span:first-child { border-bottom: 1.2px solid #1D2731; padding: 0 .2em .1em; }
+.eq .frac > span:last-child { padding: .1em .2em 0; }
+.hat { position: relative; display: inline-block; }
+.hat::after { content: "\02C6"; position: absolute; left: 52%; top: -0.42em; transform: translateX(-50%); font-weight: 400; font-style: normal; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.btn { font: 600 14px/1 var(--sans); padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); cursor: pointer; }
+.btn:hover { border-color: var(--mute); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.count { font: 13px/1 var(--sans); color: var(--ink2); font-variant-numeric: tabular-nums; min-width: 4.5em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.chip { font: 12px/1 var(--sans); padding: 7px 10px; border-radius: 999px; background: transparent; color: var(--ink2);
+  border: 1px solid var(--line); cursor: pointer; }
+.chip[aria-current="true"] { background: var(--chip); color: var(--chip-ink); border-color: transparent; font-weight: 700; }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.notes { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: grid; gap: 6px; }
+.notes h2 { margin: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); font-weight: 700; }
+.notes p { margin: 0; font-size: 15.5px; line-height: 1.55; max-width: 72ch; color: var(--ink); }
+.keys { color: var(--mute); font-size: 12.5px; margin: 0; }
+kbd { font: 11.5px/1 var(--sans); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; color: var(--ink2); background: var(--panel); }
+@media (max-width: 640px) { .chips { margin-left: 0; } .notes p { font-size: 14.5px; } }
+
+/* Links back to the homepage (public copy) */
+.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; margin-bottom: -4px; }
+.crumbs a { color: var(--accent); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 640px) { .keys { display: none; } }  /* keyboard hints are no use on phones */
+/* Embedded on a paper page (?embed): no page title or link row; the paper page shows through */
+html.embed { color-scheme: light dark !important; overflow: hidden; }
+html.embed body { background: transparent; }
+html.embed .wrap { max-width: none; padding: 6px 6px 8px; }
+html.embed .top, html.embed .crumbs { display: none; }
+html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held at their tallest step (below) */
+
+/* Homepage colours (public copy): page, text and lines as on zihengduan.cn; panels are the page colour, outlined */
+:root[data-theme="light"] { --bg: #f7f8fa; --panel: #f7f8fa; --ink: #10283f; --ink2: #3e5468; --mute: #52677a; --line: #ccd8e3;
+  --chip: #e3eaf1; --stage: #f7f8fa; }
+:root[data-theme="dark"] { --bg: #0b121b; --panel: #0b121b; --ink: #e7edf3; --ink2: #b7c3ce; --mute: #9eacba; --line: #263746;
+  --chip: #142231; --stage: #0b121b; }
+.stageWrap { background: var(--stage); }
+</style>
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/">388 brains paper page</a></nav>
+  <div class="top">
+    <h1>Single-cell genomics of 388 human brains, step by step</h1>
+    <p>Single-cell genomics and regulatory networks for 388 human brains · Emani et al., Science 2024</p>
+  </div>
+
+  <div class="stageWrap" id="stageWrap" tabindex="0" role="region" aria-label="Animation stage. Click or press the right arrow for the next step.">
+    <div class="stage" id="stage">
+      <svg id="sv" viewBox="0 0 960 540" aria-hidden="true">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#7D8C99" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="aht" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#2B5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ahr" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#C8473D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ahb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#4F79B5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ahr2" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M1 1 L9 5 L1 9" fill="none" stroke="#C8473D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <rect x="0" y="0" width="960" height="540" fill="#FFFFFF"/>
+        <g id="gRes"></g>
+        <g id="gCell"></g>
+        <g id="gCre"></g>
+        <g id="gQtl"></g>
+        <g id="gNet"></g>
+        <g id="gAge"></g>
+        <g id="gModel"></g>
+        <g id="gRecap"></g>
+        <g id="gNav"></g>
+      </svg>
+      <div class="ov" id="ov"></div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button class="btn" id="bPrev" aria-label="Previous step">Back</button>
+    <button class="btn primary" id="bNext" aria-label="Next step">Next</button>
+    <button class="btn" id="bPlay" aria-pressed="false">Play all</button>
+    <button class="btn" id="bFull">Full screen</button>
+    <span class="count" id="count" aria-live="polite"></span>
+    <div class="chips" id="chips" role="tablist" aria-label="Scenes"></div>
+  </div>
+
+  <section class="notes" aria-label="Narration">
+    <h2>Narration</h2>
+    <p id="note"></p>
+  </section>
+  <p class="keys"><kbd>→</kbd> <kbd>Space</kbd> or a click: next · <kbd>←</kbd>: back · <kbd>F</kbd>: full screen · <kbd>P</kbd>: play all · <kbd>Home</kbd>: start</p>
+</div>
+
+<script id="toy" type="application/json">{
+  "source": "Numbers quoted from Emani et al., Science 384, eadi5199 (2024); this walkthrough uses no toy data. Drawings are schematic or labelled illustrations.",
+  "cohort": [["Control", 182], ["Schizophrenia", 77], ["Autism", 52], ["Bipolar", 34], ["Alzheimer’s", 33], ["MDD/PTSD", 10]],
+  "data": {"datasets": 447, "nuclei": "2.8 million", "raw": "nearly 4 million", "newSamples": 333, "external": 55, "atac": 59, "multiome": 40, "atacNuclei": 273502, "annotated": 2557291},
+  "types": {
+    "Excitatory": ["L2/3 IT", "L4 IT", "L5 IT", "L6 IT", "L6 IT Car3", "L5 ET", "L5/6 NP", "L6 CT", "L6b"],
+    "Inhibitory": ["Sst", "Sst Chodl", "Pvalb", "Chandelier", "Vip", "Lamp5", "Lamp5 Lhx6", "Sncg", "Pax6"],
+    "Non-neuronal": ["Astrocytes", "Oligodendrocytes", "OPCs", "Microglia", "Immune", "Endothelial", "VLMCs", "Pericytes", "Smooth muscle", "Red blood lineage"]
+  },
+  "drugTargets": 280,
+  "scCREs": 562098,
+  "qtl": {"total": "1.4 million", "perType": "85,000", "eGenes": 690, "shared": 47, "bulkOverlap": 30, "disorder": 330, "dynamic": 1692, "dynamicOf": 6255},
+  "grn": {"varExplained": 52, "lof": 77},
+  "age": {"bulkChromatin": 628},
+  "ad": {"bulkRna": 638},
+  "lnctp": {"rMajor": 0.69, "rNeuron": 0.78, "var": 38, "baseline": 34, "pairs": [["Schizophrenia", 64], ["Bipolar", 51], ["Autism", 108], ["Alzheimer’s", 34]]}
+}
+</script>
+<script>
+/* Site colours for the slides (public copy). The slides were drawn for a white screen. Light theme: the white takes the
+   colour of the homepage, and every colour is multiplied by it, which leaves the rest practically unchanged. Dark theme:
+   every colour is mapped in OKLab with its lightness inverted and its hue kept, so the white becomes the page, dark ink
+   becomes light text and light tints become dark ones (a little more saturated, so pastel fills do not turn muddy).
+   Colours reach a slide only as hex values in SVG attributes, set by its script or written in its markup, and in the
+   stylesheet for the slide text, so those are the places mapped. */
+(() => {
+  const ATTRS = new Set(['fill', 'stroke', 'stop-color', 'flood-color', 'color']);
+  const PAGE = { light: [247, 248, 250], dark: [11, 18, 27] }, INK = [231, 237, 243];   // homepage --bg, and its dark --ink
+  const lin = v => (v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  const enc = v => 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055);
+  const lab = c => {
+    const [r, g, b] = c.map(lin);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+      0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+  };
+  const rgb = ([L, A, B]) => {
+    const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3, m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3,
+      s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+      -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+  };
+  const inside = c => c.every(v => v >= -1e-4 && v <= 1 + 1e-4);
+  // t: 0 for the darkest ink (and anything darker), 1 for white. Lightness runs from the light text (t = 0) to the page
+  // (t = 1) on a curve that keeps pale fills off the page colour, and strong colours keep some lightness (a dark yellow
+  // is no longer yellow). Chroma grows for pale fills, eases for text, and fades into the page's tint near white.
+  const P = lab(PAGE.dark), T = lab(INK), LK = 0.25, GAMMA = 0.72, BOOST = 0.8, EASE = 0.45, FLOOR = 2.5;
+  const dark = c => {
+    const [L, A, B] = lab(c), t = Math.min(1, Math.max(0, (L - LK) / (1 - LK))), w = t * t;
+    const L2 = Math.max(P[0] + (T[0] - P[0]) * (1 - t) ** GAMMA, P[0] + FLOOR * Math.hypot(A, B));
+    const k = (1 + BOOST * w) * (1 - EASE * (1 - t) ** 2);
+    const at = f => rgb([L2, A * k * f + P[1] * w, B * k * f + P[2] * w]);
+    let out = at(1);
+    if (!inside(out)) {                     // out of gamut: keep the lightness and hue, cut the chroma
+      let lo = 0, hi = 1; out = at(0);
+      for (let i = 0; i < 18; i++) { const f = (lo + hi) / 2, o = at(f); if (inside(o)) { lo = f; out = o; } else hi = f; }
+    }
+    return out.map(v => enc(Math.min(1, Math.max(0, v))));
+  };
+  const light = c => c.map((v, i) => v * PAGE.light[i] / 255);
+  const hex = c => '#' + c.map(v => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0')).join('');
+  const parse = v => {
+    let m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(v.trim());
+    if (m) { const h = m[1].length === 3 ? m[1].replace(/./g, x => x + x) : m[1]; return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); }
+    m = /^rgb\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/i.exec(v.trim());
+    return m ? [+m[1], +m[2], +m[3]] : null;
+  };
+  const cache = { light: new Map(), dark: new Map() };
+  const conv = (v, th) => {
+    const key = v.toLowerCase(), C = cache[th];
+    let o = C.get(key);
+    if (o === undefined) { const c = parse(v); o = c ? hex(th === 'dark' ? dark(c) : light(c)) : v; C.set(key, o); }
+    return o;
+  };
+  const theme = () => { const r = document.documentElement; return r && r.dataset.theme === 'dark' ? 'dark' : 'light'; };
+  // every colour attribute an SVG element receives is kept as drawn (el.__c) and written as mapped
+  const set = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function (name, value) {
+    if (ATTRS.has(name) && this instanceof SVGElement) {
+      const v = String(value);
+      if (v[0] === '#') { (this.__c || (this.__c = {}))[name] = v; return set.call(this, name, conv(v, theme())); }
+      if (this.__c) delete this.__c[name];
+    }
+    return set.call(this, name, value);
+  };
+  window.__recolor = v => conv(v, theme());   // for colours a page writes into HTML
+  const init = () => {
+    for (const el of document.querySelectorAll('svg, svg *')) for (const a of ATTRS) {   // colours written in the markup
+      const v = el.getAttribute(a); if (v && v[0] === '#' && !(el.__c && a in el.__c)) el.setAttribute(a, v);
+    }
+    if (!document.getElementById('ov')) return;
+    const rules = [];   // slide text: the stylesheet's colours for the overlay classes, mapped once for the dark theme
+    for (const sh of document.styleSheets) {
+      let list; try { list = sh.cssRules; } catch (e) { continue; }
+      for (const r of list) {
+        if (!r.selectorText || !/^\.(ov|kick|ttl|cap|fn|eq)\b/.test(r.selectorText)) continue;
+        const d = [];
+        for (const p of ['color', 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color']) {
+          const v = r.style.getPropertyValue(p); if (v && parse(v)) d.push(`${p}: ${conv(v, 'dark')}`);
+        }
+        if (d.length) rules.push(r.selectorText.split(',').map(x => ':root[data-theme="dark"] ' + x.trim()).join(', ') + ` { ${d.join('; ')}; }`);
+      }
+    }
+    const st = document.createElement('style'); st.textContent = rules.join('\n'); document.head.appendChild(st);
+  };
+  let cur = theme();
+  const follow = () => new MutationObserver(() => {   // theme switched: write every kept colour again
+    const th = theme(); if (th === cur) return; cur = th;
+    for (const el of document.querySelectorAll('svg *')) { const c = el.__c; if (c) for (const a in c) set.call(el, a, conv(c[a], th)); }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.querySelector('svg')) { init(); follow(); } else document.addEventListener('DOMContentLoaded', () => { cur = theme(); init(); follow(); });
+})();
+</script>
+<script>
+(() => {
+// ------------------------------------------------------------------ shared helpers
+const D = JSON.parse(document.getElementById('toy').textContent);
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const stag = (e, i, N, spread) => clamp((e - spread * (N > 1 ? i / (N - 1) : 0)) / (1 - spread));
+const RGB = {};
+const rgbOf = h => RGB[h] || (RGB[h] = [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+const toHex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+const mixHex = (a, b, t) => { const A = rgbOf(a), B = rgbOf(b); return toHex([0, 1, 2].map(k => A[k] + (B[k] - A[k]) * t)); };
+const f1 = v => Math.round(v * 10) / 10;
+const pct = x => Math.round(100 * x) + '%';
+const C = { ink: '#1D2731', ink2: '#4B5966', mute: '#8796A3', teal: '#2B5A6E', tealL: '#7FA9B8', red: '#C8473D', green: '#3B9466',
+  amb: '#D9822B', ambD: '#8A4B12', grey: '#CDD5DC', base: '#AEB9C4', line: '#C7D1DA', panel: '#F2F5F8', plane: '#F0F3F6', head: '#2C3A47' };
+const SANS = 'Arimo, Liberation Sans, Arial, Noto Sans Math, sans-serif', SERIF = 'Tinos, Liberation Serif, Times New Roman, Noto Sans Math, Cambria Math, serif';
+const txt = (x, y, s, attrs, parent) => { const t = mk('text', Object.assign({ x, y, 'font-family': SANS, 'font-size': 13, fill: C.ink2 }, attrs || {}), parent); t.textContent = s; return t; };
+const tsp = (t, s, attrs) => { const e = mk('tspan', attrs || {}, t); e.textContent = s; return e; };
+const HALO = { 'paint-order': 'stroke', stroke: '#FFFFFF', 'stroke-width': 4, 'stroke-linejoin': 'round' };
+const SS = (sub, sup) => `<span class="ss"><span>${sup}</span><span>${sub}</span></span>`;
+const NUM = k => `<span class="num">(${k})</span>`;
+const box = (x, y, w, h, parent, opts) => mk('rect', Object.assign({ x, y, width: w, height: h, rx: 8, fill: C.panel, stroke: '#C9D3DC' }, opts || {}), parent);
+const arrow = (x1, y1, x2, y2, parent, opts) => mk('line', Object.assign({ x1, y1, x2, y2, stroke: '#7D8C99', 'stroke-width': 1.5, 'marker-end': 'url(#ah)' }, opts || {}), parent);
+const lines = (x, y, arr, dy, attrs, parent) => arr.map((s, i) => txt(x, y + i * dy, s, attrs, parent));
+const op = (el, v) => el.setAttribute('opacity', (+v).toFixed(3));
+// ================================================================== 388 brains walkthrough (numbers from the paper; drawings schematic)
+const SRC = 'Emani et al., Science 2024';
+const DX = { 'Control': ['#AEB9C4', '#5F6B76'], 'Schizophrenia': ['#5B7FBF', '#2F5591'], 'Autism': ['#4FA38A', '#2B7560'], 'Bipolar': ['#E39B2E', '#A8650C'],
+  'Alzheimer’s': ['#8E7CC3', '#5E4C9B'], 'MDD/PTSD': ['#D9776B', '#A3433A'] };
+const GRP = { 'Excitatory': ['#D9776B', '#A3433A', '#FBEAE7'], 'Inhibitory': ['#5FA36B', '#2F7A3D', '#E8F3EA'], 'Non-neuronal': ['#5E8DBF', '#2F5F93', '#E7EFF8'] };
+const HUB = '#C2408F', BOT = '#1F9FB4', WEAK = '#4F79B5', STRONG = '#C8473D';
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const DA = D.data, QT = D.qtl, LN = D.lnctp;
+const NTOT = D.cohort.reduce((a, c) => a + c[1], 0);
+
+const SCENES = [
+  ['The resource', `${NTOT} brains, ${DA.nuclei} nuclei`],
+  ['Cell types', '28 cell types, and how genes vary across them'],
+  ['Chromatin', `${fmt(D.scCREs)} regulatory elements from open chromatin`],
+  ['Genetics', 'Expression QTLs, resolved by cell type'],
+  ['Networks', 'Regulatory and signalling networks per cell type'],
+  ['Aging and disease', 'Cell types that track age and Alzheimer’s disease'],
+  ['The model', 'From genotype to cell-type expression and disease'],
+  ['Summary', `A single-cell resource for ${NTOT} human brains`],
+];
+const CHIP = ['Resource', 'Cell types', 'Chromatin', 'eQTLs', 'Networks', 'Aging', 'Model', 'Summary'];
+const BASE = { res: 0, cell: 0, cre: 0, qtl: 0, net: 0, age: 0, model: 0, recap: 0, dur: 1700 };
+
+const S = [
+  { scene: 0, st: { res: 1, dur: 1900 },
+    cap: `Prefrontal cortex from <b>${NTOT} adults</b> (${D.cohort[0][1]} controls), profiled cell by cell, with everyone genotyped.`,
+    fn: `${SRC} · PsychENCODE Consortium · data at brainscope.psychencode.org`,
+    note: `Many genetic variants that raise the risk of brain disorders act by changing gene expression, but bulk-tissue studies cannot say in which cell type. The PsychENCODE Consortium assembled single-cell data from the prefrontal cortex of ${NTOT} adults: ${D.cohort[0][1]} controls and people with schizophrenia, autism, bipolar disorder, Alzheimer’s disease, and depression or PTSD. Samples from ${DA.newSamples} brains were newly generated and ${DA.external} come from published studies. Uniform processing of ${DA.datasets} single-nucleus RNA, ATAC and multiome datasets leaves more than ${DA.nuclei} nuclei, from ${DA.raw}. Every brain also has genotypes. The resource, brainSCOPE, is public.` },
+  { scene: 1, st: { cell: 1, dur: 1900 },
+    cap: `28 cell types from ${fmt(DA.annotated)} nuclei; drug targets such as CNR1 vary more between cell types than between people.`,
+    fn: `${SRC}, Fig. 1A and Fig. 3 · cell types harmonized with the BICCN reference atlas · the variation panel is a schematic of the reported trend`,
+    note: `Cells were annotated with a common scheme that harmonizes the BICCN reference atlas with a published prefrontal cortex study, giving 28 cell types: 9 excitatory, 9 inhibitory and 10 non-neuronal, across ${fmt(DA.annotated)} high-quality nuclei. With hundreds of people, one can also ask where expression varies most. Brain-specific genes, such as those for neurotransmitter reuptake, vary more between cell types than between people, and so do ${D.drugTargets} common drug targets of the central nervous system, such as the cannabinoid receptor gene CNR1. Genes for common cellular processes, such as ATP generation, tend to vary less between cell types and more between people.` },
+  { scene: 2, st: { cre: 1, dur: 1900 },
+    cap: `${fmt(D.scCREs)} open-chromatin regions, half cell-type-specific; brain-trait variants favor excitatory-neuron ones over bulk.`,
+    fn: `${SRC}, Fig. 2 · scCRE: single-cell candidate cis-regulatory element · the matrix is a schematic`,
+    note: `From ${DA.atac} brains with single-nucleus ATAC or multiome data, ${fmt(DA.atacNuclei)} deeply sequenced nuclei, the analysis found ${fmt(D.scCREs)} open-chromatin regions, called single-cell candidate cis-regulatory elements. About half are specific to a cell type and lie away from genes. Reporter assays, STARR-seq, confirmed enhancer activity for selected elements. These elements matter for genetics: variants for brain traits are more enriched in brain bulk-tissue elements than in ENCODE’s general set, and more still in the elements of excitatory neurons.` },
+  { scene: 3, st: { qtl: 1, dur: 2000 },
+    cap: `About <b>${QT.total}</b> single-cell eQTLs across cell types; over two-thirds are missed in bulk, where cells are mixed.`,
+    fn: `${SRC}, Fig. 4 · eQTL: a variant associated with a gene’s expression · left: illustration, not data`,
+    note: `Next, expression QTLs: variants whose genotype changes a gene’s expression, here measured in each cell type. Following the GTEx procedure on pseudobulk data, the study found on average about ${QT.perType} per cell type, about ${QT.total} in total. About ${QT.shared} percent appear in more than one cell type. About ${QT.bulkOverlap} percent overlap bulk eQTLs, with the same direction of effect but larger effects, and more than two-thirds are not found in bulk data at all, despite its larger samples. The likely reason is dilution: an effect in one cell type is averaged with all the others in bulk tissue. ${QT.disorder} single-cell eQTLs involve genes for brain disorders, such as SYNE1 and MAPT in astrocytes and NLGN1 in L4 IT neurons. And for ${fmt(QT.dynamic)} of ${fmt(QT.dynamicOf)} genes in excitatory neurons, the effect changes gradually across cortical layers.` },
+  { scene: 4, st: { net: 1, dur: 2000 },
+    cap: `A regulatory network per cell type: hub TFs are shared, bottlenecks cell-type-specific; cell–cell signals shift in disease.`,
+    fn: `${SRC}, Fig. 5 and Fig. 6 · both panels are schematics of the reported findings`,
+    note: `Combining the eQTLs, open chromatin, transcription-factor binding sites and co-expression, the study built a gene regulatory network for each cell type. On average, the transcription factors in these networks explain ${D.grn.varExplained} percent of the variation in their targets’ expression. Some links were tested with CRISPR deletions of enhancers, and among transcription factors carrying loss-of-function variants in some people, ${D.grn.lof} percent showed the expected change in their targets. The most connected factors, hubs, are largely shared across cell types; bottlenecks, which connect parts of the network, are specific to cell types. Ligand–receptor pairs give a second network, of signals between cells, with three usage patterns: excitatory neurons, inhibitory neurons and glia. In schizophrenia, excitatory neurons receive less signalling and inhibitory neurons more, and Wnt signalling is weaker in both schizophrenia and bipolar disorder.` },
+  { scene: 5, st: { age: 1, dur: 1900 },
+    cap: 'Six cell types’ expression predicts age; in Alzheimer’s, some glia rise and Sst, Pvalb, L2/3 IT neurons fall.',
+    fn: `${SRC}, Fig. 7 · cell fractions from single-cell counts and from bulk data deconvolved with the single-cell profiles`,
+    note: `Population-scale data also show how cells change with age. Chandelier interneurons and oligodendrocyte precursors decline with age. A model trained on single-cell expression predicts a person’s age, with strong predictive value from six cell types: four excitatory IT neuron types, oligodendrocytes and their precursors. Genes such as FKBP5 and MKRN3 track age closely, and in ${D.age.bulkChromatin} people, chromatin patterns of microglia separate age groups. Using the single-cell profiles to deconvolve ${D.ad.bulkRna} bulk RNA samples with and without Alzheimer’s disease, certain glial fractions rise in Alzheimer’s, while Sst, Pvalb and L2/3 IT neuron fractions fall.` },
+  { scene: 6, st: { model: 1, dur: 2000 },
+    cap: `LNCTP imputes cell-type expression from genotype (r = ${LN.rMajor}, major types) and ranks disorder genes where they act.`,
+    fn: `${SRC}, Fig. 8 · LNCTP: Linear Network of Cell Type Phenotypes · baseline: earlier bulk imputation plus deconvolution`,
+    note: `Finally, an integrative model, the Linear Network of Cell Type Phenotypes, or LNCTP. It links genotype to expression in each cell type, through the eQTLs, regulatory networks and cell–cell networks, and then to traits. From genotype alone, it imputes cell-type expression with a mean correlation of ${LN.rMajor} across major cell types and about ${LN.rNeuron} in neurons, explaining ${LN.var} percent of expression variance against ${LN.baseline} percent for a baseline built from earlier methods. Its linear design keeps it interpretable, so it can rank genes in their cell type of action: ${LN.pairs[0][1]} gene–cell-type pairs for schizophrenia, ${LN.pairs[1][1]} for bipolar disorder, ${LN.pairs[2][1]} for autism and ${LN.pairs[3][1]} for Alzheimer’s disease. Examples include TCF4 in neurons for schizophrenia, LINGO2 in excitatory neurons for bipolar disorder, and RORA, important in many cell types for schizophrenia but not prioritized from bulk data.` },
+  { scene: 7, st: { recap: 1, dur: 1900 },
+    cap: `brainSCOPE: ${NTOT} brains, 28 cell types, elements, eQTLs and networks, linking genotype to cell types to disease.`,
+    fn: `${SRC} · doi.org/10.1126/science.adi5199 · brainscope.psychencode.org`,
+    note: `To summarize: brainSCOPE is a uniformly processed single-cell resource for ${NTOT} human brains, with 28 cell types. It maps regulatory elements, about ${QT.total} cell-type eQTLs, and regulatory and signalling networks for each cell type, and integrates them in a model that predicts cell-type expression from genotype and prioritizes about 250 risk genes and drug targets with their cell types. All data, networks and code are public at brainscope.psychencode.org.` },
+];
+S.forEach(s => { s.st = Object.assign({}, BASE, s.st); });
+const SEQ = new Set(['res', 'cell', 'cre', 'qtl', 'net', 'age', 'model', 'recap']);
+const EXIT = new Set([]);
+const head = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 14, 'font-weight': 700, fill: C.head }, attrs || {}), parent);
+const sub = (x, y, s, parent, attrs) => txt(x, y, s, Object.assign({ 'font-size': 11.5, fill: C.mute }, attrs || {}), parent);
+const arrowDn = (x, y, col, g) => mk('path', { d: `M${x} ${y - 7} v12 m-5 -5 l5 5 l5 -5`, fill: 'none', stroke: col, 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+const arrowUp = (x, y, col, g) => mk('path', { d: `M${x} ${y + 5} v-12 m-5 5 l5 -5 l5 5`, fill: 'none', stroke: col, 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+const chip = (x, y, w, label, grp, g, attrs) => { const [c, cd, cl] = GRP[grp];
+  mk('rect', { x, y, width: w, height: 20, rx: 4, fill: cl, stroke: mixHex(c, '#FFFFFF', 0.4) }, g);
+  mk('rect', { x, y, width: 4, height: 20, rx: 2, fill: c }, g);
+  return txt(x + 11, y + 14, label, Object.assign({ 'font-size': 11.5, fill: cd }, attrs || {}), g); };
+const rng = (seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(20240524);
+
+// ------------------------------------------------------------------ scene 0: the resource
+const gRes = $('gRes');
+head(62, 118, `${NTOT} brains, prefrontal cortex`, gRes);
+sub(62, 136, 'each dot is one person', gRes);
+const WR = 14, WS = 12.6;
+const waffle = [];
+(() => { let i = 0; D.cohort.forEach(([dx, n]) => { for (let m = 0; m < n; m++, i++) {
+  const col = Math.floor(i / WR), row = i % WR;
+  waffle.push(mk('circle', { cx: f1(68 + col * WS), cy: f1(156 + row * WS), r: 4.7, fill: DX[dx][0] }, gRes)); } }); })();
+const resLeg = D.cohort.map(([dx, n], i) => { const g = mk('g', {}, gRes), x = 62 + (i % 3) * 124, y = 352 + Math.floor(i / 3) * 26;
+  mk('circle', { cx: x + 5, cy: y - 4, r: 5, fill: DX[dx][0] }, g);
+  const t = txt(x + 15, y, dx, { 'font-size': 12, fill: C.ink }, g); tsp(t, ' ' + n, { 'font-weight': 700, fill: DX[dx][1] });
+  return g; });
+txt(62, 424, 'diverse in biological sex, ancestry and age', { 'font-size': 11.5, fill: C.mute }, gRes);
+head(470, 118, 'In the resource', gRes);
+const RESN = [[String(DA.datasets), 'single-nucleus datasets: RNA, ATAC, multiome'], [DA.nuclei, `nuclei after quality control (from ${DA.raw})`],
+  [String(NTOT), 'brains with snRNA-seq and genotypes'], [String(DA.atac), `brains with snATAC-seq (${DA.multiome} as snMultiome)`], [`${DA.newSamples} + ${DA.external}`, 'newly generated + external samples']];
+const resRows = RESN.map(([n, d], i) => { const g = mk('g', {}, gRes), y = 150 + i * 38;
+  txt(574, y, n, { 'font-size': 18, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, g);
+  txt(586, y - 1, d, { 'font-size': 12.5, fill: C.ink }, g); return g; });
+const gFrame = mk('g', {}, gRes);
+box(470, 352, 452, 82, gFrame, { fill: '#EEF4F6', stroke: '#B9CDD6' });
+txt(486, 376, 'Bulk-tissue eQTL catalogs link variants to expression,', { 'font-size': 12.5, fill: C.ink }, gFrame);
+txt(486, 395, 'but not to the cell type in which a variant acts.', { 'font-size': 12.5, fill: C.ink }, gFrame);
+txt(486, 420, 'brainSCOPE: brain single-cell omics for PsychENCODE', { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gFrame);
+
+// ------------------------------------------------------------------ scene 1: cell types and variation
+const gCell = $('gCell');
+const cellCols = Object.entries(D.types).map(([grp, list], c) => { const g = mk('g', {}, gCell), x = 62 + c * 136;
+  txt(x, 118, grp, { 'font-size': 13.5, 'font-weight': 700, fill: GRP[grp][1] }, g);
+  txt(x, 135, list.length + ' types', { 'font-size': 11.5, fill: C.mute }, g);
+  const items = list.map((l, i) => { const gi = mk('g', {}, g); chip(x, 148 + i * 26, 126, l, grp, gi); return gi; });
+  return { g, items }; });
+txt(62, 432, `${fmt(DA.annotated)} annotated nuclei (snRNA-seq)`, { 'font-size': 12.5, 'font-weight': 700, fill: C.teal }, gCell);
+txt(62, 449, 'labels harmonized with the BICCN atlas and a prefrontal cortex study', { 'font-size': 11, fill: C.mute }, gCell);
+const gVar = mk('g', {}, gCell);
+head(500, 118, 'Where expression varies', gVar);
+sub(500, 136, 'schematic of the reported trend, not data points', gVar);
+const VX0 = 540, VY0 = 410, VX1 = 912, VY1 = 160;
+mk('line', { x1: VX0, y1: VY0, x2: VX1, y2: VY0, stroke: '#7D8C99', 'stroke-width': 1.4, 'marker-end': 'url(#ah)' }, gVar);
+mk('line', { x1: VX0, y1: VY0, x2: VX0, y2: VY1, stroke: '#7D8C99', 'stroke-width': 1.4, 'marker-end': 'url(#ah)' }, gVar);
+txt(VX1, VY0 + 20, 'more variation between people', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'end' }, gVar);
+txt(VX0 - 12, (VY0 + VY1) / 2, 'more variation between cell types', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle', transform: `rotate(-90 ${VX0 - 12} ${(VY0 + VY1) / 2})` }, gVar);
+const gV1 = mk('g', {}, gVar), gV2 = mk('g', {}, gVar);
+mk('ellipse', { cx: 668, cy: 232, rx: 116, ry: 58, fill: '#F3EFFA', stroke: '#B9AEDD' }, gV1);
+txt(668, 214, 'brain-specific genes', { 'font-size': 13, 'font-weight': 700, fill: '#5E4C9B', 'text-anchor': 'middle' }, gV1);
+txt(668, 232, 'neurotransmitter reuptake,', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gV1);
+txt(668, 247, 'CNS development', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, gV1);
+(() => { const t = txt(668, 266, `${D.drugTargets} CNS drug targets, e.g. `, { 'font-size': 11.5, 'font-weight': 700, fill: '#5E4C9B', 'text-anchor': 'middle' }, gV1); tsp(t, 'CNR1', { 'font-style': 'italic' }); })();
+mk('ellipse', { cx: 790, cy: 352, rx: 124, ry: 40, fill: '#F2F5F8', stroke: '#C9D3DC' }, gV2);
+txt(790, 346, 'common cellular processes', { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gV2);
+txt(790, 364, 'ATP generation, carbohydrate homeostasis', { 'font-size': 11, fill: C.ink2, 'text-anchor': 'middle' }, gV2);
+
+// ------------------------------------------------------------------ scene 2: regulatory elements
+const gCre = $('gCre');
+head(62, 118, 'Open chromatin across cell types', gCre);
+sub(62, 136, 'schematic: each column is a region, filled where it is open', gCre);
+const CRT = [['Excitatory', 'Excitatory'], ['Inhibitory', 'Inhibitory'], ['Oligodendrocytes', 'Non-neuronal'], ['OPCs', 'Non-neuronal'], ['Astrocytes', 'Non-neuronal'], ['Microglia', 'Non-neuronal'], ['Endothelial', 'Non-neuronal']];
+const MX0 = 180, MCW = 10, MY0 = 150, MRH = 24, NCOL = 32, NSH = 6;
+const own = [];                                   // which rows a non-shared column is open in
+for (let c = NSH; c < NCOL; c++) { const r = (c * 5) % 7; own.push(c % 9 === 4 ? [0, 1] : c % 11 === 7 ? [2, 3] : [r]); }
+const creCols = [];
+CRT.forEach(([lab, grp], r) => { txt(62, MY0 + r * MRH + 16, lab, { 'font-size': 12, fill: GRP[grp][1] }, gCre);
+  mk('rect', { x: MX0, y: MY0 + r * MRH + 2, width: NCOL * MCW, height: MRH - 4, fill: '#F4F6F8' }, gCre); });
+for (let c = 0; c < NCOL; c++) { const g = mk('g', {}, gCre), rows = c < NSH ? [0, 1, 2, 3, 4, 5, 6] : own[c - NSH];
+  rows.forEach(r => mk('rect', { x: MX0 + c * MCW + 1, y: MY0 + r * MRH + 2, width: MCW - 2, height: MRH - 4, rx: 1.5, fill: GRP[CRT[r][1]][0], opacity: c < NSH ? 0.75 : 0.95 }, g));
+  creCols.push(g); }
+(() => { const g = mk('g', {}, gCre), y = MY0 + 7 * MRH + 10;
+  mk('rect', { x: MX0, y, width: NSH * MCW, height: 8, fill: C.head }, g); mk('rect', { x: MX0 + NSH * MCW, y, width: (NCOL - NSH) * MCW, height: 8, fill: '#C9D3DC' }, g);
+  txt(MX0, y + 24, 'shared, near', { 'font-size': 11.5, fill: C.ink2 }, g); txt(MX0, y + 38, 'promoters', { 'font-size': 11.5, fill: C.ink2 }, g);
+  const xm = MX0 + NSH * MCW + (NCOL - NSH) * MCW / 2 + 10;
+  txt(xm, y + 24, 'mostly specific to one', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, g); txt(xm, y + 38, 'cell type, distal to genes', { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, g); })();
+txt(62, 418, 'In the data, about half of all regions are cell-type-specific and distal.', { 'font-size': 12, fill: C.ink }, gCre);
+const CREN = [[String(DA.atac), `brains with snATAC-seq (${DA.multiome} snMultiome)`], [fmt(DA.atacNuclei), 'deeply sequenced nuclei'], [fmt(D.scCREs), 'single-cell regulatory elements (scCREs)']];
+const creRows = CREN.map(([n, d], i) => { const g = mk('g', {}, gCre), y = 124 + i * 36;
+  txt(640, y, n, { 'font-size': 18, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, g); txt(652, y - 1, d, { 'font-size': 12.5, fill: C.ink }, g); return g; });
+txt(560, 248, 'STARR-seq reporter assays confirm enhancer activity', { 'font-size': 12, fill: C.ink2 }, gCre);
+txt(560, 264, 'for selected elements', { 'font-size': 12, fill: C.ink2 }, gCre);
+const gLd = mk('g', {}, gCre);
+head(560, 304, 'Enrichment for brain-trait variants (LDSC)', gLd, { 'font-size': 13 });
+const LDS = [['ENCODE cCREs', 'all tissues', 26], ['bulk brain b-cCREs', 'brain tissue', 50], ['excitatory-neuron scCREs', 'single cell', 76]];
+const ldBars = LDS.map(([l, s, h], i) => { const x = 572 + i * 118, g = mk('g', {}, gLd);
+  const b = mk('rect', { x, y: 420, width: 90, height: 0, rx: 3, fill: i === 2 ? GRP.Excitatory[0] : i === 1 ? '#9FB7C4' : '#D3DCE3' }, g);
+  txt(x + 45, 436, l.split(' ').slice(0, -1).join(' '), { 'font-size': 10.5, fill: C.ink2, 'text-anchor': 'middle' }, g);
+  txt(x + 45, 449, l.split(' ').slice(-1)[0], { 'font-size': 10.5, 'font-weight': 700, fill: C.ink, 'text-anchor': 'middle' }, g);
+  return { b, h }; });
+txt(560, 322, 'order as reported; bar heights schematic', { 'font-size': 11, fill: C.mute }, gLd);
+
+// ------------------------------------------------------------------ scene 3: eQTLs and the dilution effect
+const gQtl = $('gQtl');
+head(62, 118, 'Why bulk tissue misses cell-type eQTLs', gQtl);
+sub(62, 136, 'illustration: one variant that acts in one cell type', gQtl);
+const panel = (x0, title, means, col, lab, g) => {
+  txt(x0, 162, title, { 'font-size': 12.5, 'font-weight': 700, fill: col }, g);
+  const Y0 = 340, Y1 = 180, sy = v => Y0 - (Y0 - Y1) * v / 4;
+  mk('line', { x1: x0 + 18, y1: Y1, x2: x0 + 18, y2: Y0, stroke: '#9AA8B4' }, g); mk('line', { x1: x0 + 18, y1: Y0, x2: x0 + 200, y2: Y0, stroke: '#9AA8B4' }, g);
+  txt(x0 + 10, (Y0 + Y1) / 2, 'expression', { 'font-size': 10.5, fill: C.mute, 'text-anchor': 'middle', transform: `rotate(-90 ${x0 + 10} ${(Y0 + Y1) / 2})` }, g);
+  const dots = [];
+  ['AA', 'AG', 'GG'].forEach((gt, k) => { const cx = x0 + 52 + k * 62;
+    txt(cx, Y0 + 16, gt, { 'font-size': 11.5, fill: C.ink2, 'text-anchor': 'middle' }, g);
+    for (let m = 0; m < 11; m++) dots.push(mk('circle', { cx: f1(cx + (rng() - 0.5) * 26), cy: f1(sy(means[k] + (rng() - 0.5) * 0.9)), r: 3.2, fill: col, opacity: 0.55 }, g)); });
+  const ln = mk('polyline', { points: means.map((v, k) => `${x0 + 52 + k * 62},${f1(sy(v))}`).join(' '), fill: 'none', stroke: col, 'stroke-width': 2.6, 'stroke-linecap': 'round', pathLength: 1, 'stroke-dasharray': '1 1' }, g);
+  txt(x0 + 110, Y0 + 36, lab, { 'font-size': 12, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, g);
+  return { dots, ln }; };
+const gPa = mk('g', {}, gQtl), gPb = mk('g', {}, gQtl);
+const PA = panel(62, 'In that cell type', [1.0, 2.0, 3.0], '#C2408F', 'large effect', gPa), PB = panel(290, 'In bulk tissue (all cells mixed)', [1.85, 2.0, 2.15], '#7D8C99', 'diluted effect', gPb);
+txt(62, 412, 'scQTLs agree in direction with bulk eQTLs, but their effects', { 'font-size': 12, fill: C.ink }, gQtl);
+txt(62, 429, 'are larger; more than two-thirds are not found in bulk data', { 'font-size': 12, fill: C.ink }, gQtl);
+const QN = [[`~${QT.total}`, 'single-cell eQTLs (scQTLs) in total'], [`~${QT.perType}`, `per cell type on average (~${QT.eGenes} genes)`], [`~${QT.shared}%`, 'found in more than one cell type'], [`~${QT.bulkOverlap}%`, 'overlap bulk eQTLs']];
+const qtlRows = QN.map(([n, d], i) => { const g = mk('g', {}, gQtl), y = 124 + i * 36;
+  txt(650, y, n, { 'font-size': 18, 'font-weight': 700, fill: C.teal, 'text-anchor': 'end' }, g); txt(662, y - 1, d, { 'font-size': 12.5, fill: C.ink }, g); return g; });
+const gQd = mk('g', {}, gQtl);
+head(530, 282, `${QT.disorder} scQTLs for brain-disorder genes`, gQd, { 'font-size': 13 });
+[['SYNE1', 'astrocytes'], ['MAPT', 'astrocytes'], ['NLGN1', 'L4 IT neurons'], ['KANSL1', 'several cell types']].forEach(([gn, ct], i) => { const x = 530 + (i % 2) * 196, y = 304 + Math.floor(i / 2) * 22;
+  const t = txt(x, y, gn, { 'font-size': 12.5, 'font-weight': 700, 'font-style': 'italic', fill: C.ink }, gQd); tsp(t, ' · ' + ct, { 'font-style': 'normal', 'font-weight': 400, fill: C.ink2 }); });
+const gQdy = mk('g', {}, gQtl);
+box(530, 362, 392, 66, gQdy, { fill: '#F7F4FC', stroke: '#C9BEE6' });
+txt(546, 386, `Dynamic eQTLs: for ${fmt(QT.dynamic)} of ${fmt(QT.dynamicOf)} excitatory-neuron genes,`, { 'font-size': 12.5, 'font-weight': 700, fill: '#5E4C9B' }, gQdy);
+txt(546, 406, 'the variant’s effect changes gradually across cortical layers', { 'font-size': 12.5, fill: C.ink2 }, gQdy);
+
+// ------------------------------------------------------------------ scene 4: networks
+const gNet = $('gNet');
+head(62, 118, 'Gene regulatory networks', gNet);
+sub(62, 136, 'schematic: two cell types share hubs, not bottlenecks', gNet);
+const net = (cx, cy, title, col, botAt, seed, botName, g) => {
+  const pts = [], R = rng; for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2 + seed, rr = 54 + ((k * 37 + seed * 10) % 22); pts.push([cx + Math.cos(a) * rr * 1.15, cy + Math.sin(a) * rr * 0.8]); }
+  const hub = [cx - 26, cy - 6], bot = [cx + botAt[0], cy + botAt[1]];
+  pts.forEach(([x, y], k) => { const fromHub = k % 3 !== 2, src = fromHub ? hub : bot;
+    mk('line', { x1: f1(src[0]), y1: f1(src[1]), x2: f1(x), y2: f1(y), stroke: fromHub ? '#E7B3D2' : '#9ED6E0', 'stroke-width': 1.3 }, g); });
+  mk('line', { x1: hub[0], y1: hub[1], x2: bot[0], y2: bot[1], stroke: '#8E9BA7', 'stroke-width': 1.8 }, g);
+  pts.forEach(([x, y]) => mk('circle', { cx: f1(x), cy: f1(y), r: 4.2, fill: '#C9D3DC' }, g));
+  mk('circle', { cx: hub[0], cy: hub[1], r: 10, fill: HUB }, g); mk('circle', { cx: bot[0], cy: bot[1], r: 8, fill: BOT }, g);
+  txt(hub[0], hub[1] + 4, 'A', { 'font-size': 11, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
+  txt(bot[0], bot[1] + 3.6, botName, { 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
+  txt(cx, cy + 92, title, { 'font-size': 12.5, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }, g); };
+const gN1 = mk('g', {}, gNet), gN2 = mk('g', {}, gNet);
+net(150, 236, 'excitatory neuron', GRP.Excitatory[1], [40, 22], 0.3, 'B', gN1); net(366, 236, 'oligodendrocyte', GRP['Non-neuronal'][1], [18, -36], 1.1, 'C', gN2);
+(() => { const g = mk('g', {}, gNet), y = 360;
+  mk('circle', { cx: 68, cy: y - 4, r: 6, fill: HUB }, g); txt(80, y, 'hub TF (A): shared', { 'font-size': 11.5, fill: C.ink2 }, g);
+  mk('circle', { cx: 208, cy: y - 4, r: 5, fill: BOT }, g); txt(220, y, 'bottleneck TFs (B, C): cell-type-specific', { 'font-size': 11.5, fill: C.ink2 }, g); })();
+const gNf = mk('g', {}, gNet);
+txt(62, 398, `TFs explain ${D.grn.varExplained}% of target-gene variation on average`, { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gNf);
+txt(62, 417, `validated with CRISPR enhancer deletions; ${D.grn.lof}% of TFs with`, { 'font-size': 12, fill: C.ink2 }, gNf);
+txt(62, 433, 'loss-of-function variants change their targets as expected', { 'font-size': 12, fill: C.ink2 }, gNf);
+const gCc = mk('g', {}, gNet);
+head(520, 118, 'Signals between cells (ligand–receptor)', gCc);
+sub(520, 136, 'schematic of the reported change in schizophrenia', gCc);
+const CC = { Excitatory: [600, 214], Inhibitory: [850, 214], 'Non-neuronal': [725, 350] };
+const ccNode = (grp, [x, y]) => { const [c, cd, cl] = GRP[grp];
+  for (let k = 0; k < 7; k++) { const a = k / 7 * Math.PI * 2; mk('circle', { cx: f1(x + Math.cos(a) * 17), cy: f1(y + Math.sin(a) * 13), r: 6, fill: c, opacity: 0.85 }, gCc); }
+  mk('circle', { cx: x, cy: y, r: 6, fill: c }, gCc);
+  txt(x, grp === 'Non-neuronal' ? y + 36 : y - 26, grp === 'Non-neuronal' ? 'glia and other' : grp.toLowerCase() + ' neurons', { 'font-size': 12, 'font-weight': 700, fill: cd, 'text-anchor': 'middle' }, gCc);
+  if (grp === 'Non-neuronal') txt(x, y + 50, 'non-neuronal cells', { 'font-size': 11, fill: cd, 'text-anchor': 'middle' }, gCc); };
+const ccArr = [];
+const ccLink = (a, b, col, w, bend) => { const [x1, y1] = CC[a], [x2, y2] = CC[b], mx = (x1 + x2) / 2, my = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+  const ux = dx / L, uy = dy / L, sx = x1 + ux * 30, sy = y1 + uy * 26, ex = x2 - ux * 34, ey = y2 - uy * 30;
+  const p = mk('path', { d: `M${f1(sx)} ${f1(sy)} Q ${f1(mx - uy * bend)} ${f1(my + ux * bend)}, ${f1(ex)} ${f1(ey)}`, fill: 'none', stroke: col, 'stroke-width': w, 'marker-end': col === STRONG ? 'url(#ahr2)' : 'url(#ahb)', pathLength: 1, 'stroke-dasharray': '1 1' }, gCc);
+  ccArr.push(p); };
+ccLink('Inhibitory', 'Excitatory', WEAK, 1.6, -30); ccLink('Non-neuronal', 'Excitatory', WEAK, 1.6, 18);
+ccLink('Excitatory', 'Inhibitory', STRONG, 3.2, -30); ccLink('Non-neuronal', 'Inhibitory', STRONG, 3.2, -18);
+Object.entries(CC).forEach(([g, p]) => ccNode(g, p));
+(() => { const g = mk('g', {}, gCc), y = 418;
+  mk('line', { x1: 520, x2: 548, y1: y - 4, y2: y - 4, stroke: WEAK, 'stroke-width': 1.6 }, g); txt(556, y, 'less incoming signalling', { 'font-size': 11.5, fill: C.ink2 }, g);
+  mk('line', { x1: 716, x2: 744, y1: y - 4, y2: y - 4, stroke: STRONG, 'stroke-width': 3.2 }, g); txt(752, y, 'more incoming signalling', { 'font-size': 11.5, fill: C.ink2 }, g);
+  txt(520, 442, 'also: Wnt signalling down in bipolar disorder and schizophrenia', { 'font-size': 12, fill: C.ink }, g); })();
+
+// ------------------------------------------------------------------ scene 5: aging and Alzheimer's disease
+const gAge = $('gAge');
+head(62, 118, 'Aging', gAge);
+sub(62, 136, 'single-cell expression and cell fractions versus age', gAge);
+txt(62, 164, 'Expression in six cell types predicts a person’s age', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gAge);
+const AGE6 = [['L2/3 IT', 'Excitatory'], ['L4 IT', 'Excitatory'], ['L5 IT', 'Excitatory'], ['L6 IT', 'Excitatory'], ['Oligodendrocytes', 'Non-neuronal'], ['OPCs', 'Non-neuronal']];
+const ageChips = AGE6.map(([l, gp], i) => { const g = mk('g', {}, gAge); chip(62 + (i % 3) * 112, 178 + Math.floor(i / 3) * 28, 104, l, gp, g); return g; });
+mk('path', { d: 'M402 206 h28', stroke: '#7D8C99', 'stroke-width': 1.6, 'marker-end': 'url(#ah)', fill: 'none' }, gAge);
+box(436, 186, 66, 40, gAge, { fill: '#EEF4F6', stroke: '#9DB7C3' });
+txt(469, 203, 'predicted', { 'font-size': 11, fill: C.head, 'text-anchor': 'middle' }, gAge); txt(469, 218, 'age', { 'font-size': 12, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, gAge);
+const gAg2 = mk('g', {}, gAge);
+(() => { const t = txt(62, 268, 'Genes that track age closely: ', { 'font-size': 12.5, fill: C.ink }, gAg2); tsp(t, 'FKBP5, MKRN3', { 'font-style': 'italic', 'font-weight': 700 }); })();
+txt(62, 304, 'Cell fractions that fall with age', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gAg2);
+[['Chandelier', 'Inhibitory'], ['OPCs', 'Non-neuronal']].forEach(([l, gp], i) => { const x = 62 + i * 140; chip(x, 316, 104, l, gp, gAg2); arrowDn(x + 118, 326, C.red, gAg2); });
+(() => { const t = txt(62, 378, 'Chromatin of ', { 'font-size': 12.5, fill: C.ink }, gAg2); tsp(t, `${D.age.bulkChromatin} people`, { 'font-weight': 700 }); tsp(t, ', deconvolved by cell type:'); })();
+txt(62, 396, 'microglia patterns separate younger and older people', { 'font-size': 12.5, fill: C.ink }, gAg2);
+const gAd = mk('g', {}, gAge);
+head(560, 118, 'Alzheimer’s disease', gAd);
+sub(560, 136, `${D.ad.bulkRna} bulk RNA-seq samples, deconvolved with the single-cell profiles`, gAd);
+txt(560, 172, 'Fall in Alzheimer’s disease', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gAd);
+const adDown = [['Sst', 'Inhibitory'], ['Pvalb', 'Inhibitory'], ['L2/3 IT', 'Excitatory']].map(([l, gp], i) => { const g = mk('g', {}, gAd), y = 186 + i * 30;
+  chip(560, y, 120, l, gp, g); arrowDn(696, y + 10, C.red, g); return g; });
+txt(560, 304, 'Rise in Alzheimer’s disease', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink }, gAd);
+(() => { const g = mk('g', {}, gAd); chip(560, 318, 160, 'certain glial fractions', 'Non-neuronal', g); arrowUp(736, 328, C.green, g); })();
+txt(560, 380, 'the glial increase is significant (P < 0.005); the neuronal', { 'font-size': 12, fill: C.ink2 }, gAd);
+txt(560, 396, 'decreases agree with previous studies', { 'font-size': 12, fill: C.ink2 }, gAd);
+
+// ------------------------------------------------------------------ scene 6: the LNCTP model
+const gMod = $('gModel');
+head(62, 118, 'LNCTP: from genotype to cell-type expression to traits', gMod);
+const flow = [['Genotype', 'variants at eQTL sites', 62, 112], ['Cell-type expression', 'imputed for each person', 214, 150], ['Traits', 'four disorders', 406, 112]];
+const flowEls = flow.map(([t, s, x, w], i) => { const g = mk('g', {}, gMod);
+  box(x, 150, w, 58, g, { fill: i === 1 ? '#EEF4F6' : '#FFFFFF', stroke: i === 1 ? '#9DB7C3' : '#C9D3DC' });
+  txt(x + w / 2, 175, t, { 'font-size': 13, 'font-weight': 700, fill: C.head, 'text-anchor': 'middle' }, g);
+  txt(x + w / 2, 194, s, { 'font-size': 11, fill: C.ink2, 'text-anchor': 'middle' }, g);
+  if (i) arrow(x - 36, 179, x - 4, 179, g); return g; });
+const gIn = mk('g', {}, gMod);
+['scQTLs', 'gene networks', 'cell–cell signals', 'cell fractions'].forEach((s, i) => { const x = 190 + (i % 2) * 102, y = 228 + Math.floor(i / 2) * 23;
+  box(x, y, 96, 19, gIn, { rx: 9.5, fill: '#F7F4FC', stroke: '#C9BEE6' }); txt(x + 48, y + 13.5, s, { 'font-size': 10.5, fill: '#5E4C9B', 'text-anchor': 'middle' }, gIn); });
+mk('path', { d: 'M289 226 v-14', stroke: '#B9AEDD', 'stroke-width': 1.4, 'marker-end': 'url(#ah)', fill: 'none' }, gIn);
+txt(62, 242, 'built from', { 'font-size': 11, fill: C.mute }, gIn); txt(62, 256, 'the resource:', { 'font-size': 11, fill: C.mute }, gIn);
+const gImp = mk('g', {}, gMod);
+head(62, 306, 'Imputing cell-type expression from genotype', gImp, { 'font-size': 13 });
+const VB = [['LNCTP', LN.var, C.teal], ['baseline', LN.baseline, '#AEBBC6']];
+const varBars = VB.map(([l, v, col], i) => { const y = 320 + i * 28;
+  txt(62, y + 13, l, { 'font-size': 12.5, 'font-weight': i ? 400 : 700, fill: i ? C.ink2 : C.teal }, gImp);
+  const b = mk('rect', { x: 140, y, width: 0, height: 18, rx: 3, fill: col }, gImp);
+  const t = txt(0, y + 14, v + '%', { 'font-size': 12.5, 'font-weight': 700, fill: i ? C.ink2 : C.teal }, gImp);
+  return { b, t, w: v * 7 }; });
+txt(62, 392, 'of expression variance explained (cross-validated)', { 'font-size': 11.5, fill: C.mute }, gImp);
+txt(62, 418, `imputed vs observed: r = ${LN.rMajor} across major cell types,`, { 'font-size': 12.5, fill: C.ink }, gImp);
+txt(62, 436, `~${LN.rNeuron} in excitatory and inhibitory neurons`, { 'font-size': 12.5, fill: C.ink }, gImp);
+const gPri = mk('g', {}, gMod);
+head(560, 118, 'Prioritized gene–cell-type pairs', gPri);
+sub(560, 136, 'per disorder', gPri);
+const priBars = LN.pairs.map(([dx, n], i) => { const y = 152 + i * 30;
+  txt(560, y + 13, dx, { 'font-size': 12.5, fill: C.ink }, gPri);
+  const b = mk('rect', { x: 670, y, width: 0, height: 18, rx: 3, fill: DX[dx][0] }, gPri);
+  const t = txt(0, y + 14, String(n), { 'font-size': 12.5, 'font-weight': 700, fill: DX[dx][1] }, gPri);
+  return { b, t, w: n * 1.9 }; });
+const gEx = mk('g', {}, gMod);
+head(560, 296, 'Examples', gEx, { 'font-size': 13 });
+[['TCF4', 'neurons · schizophrenia'], ['LINGO2', 'excitatory neurons · bipolar disorder'], ['ANKHD1', 'autism'], ['RORA', 'many cell types · schizophrenia; missed in bulk']].forEach(([gn, d], i) => {
+  const t = txt(560, 318 + i * 21, gn, { 'font-size': 12.5, 'font-weight': 700, 'font-style': 'italic', fill: C.ink }, gEx); tsp(t, '  ' + d, { 'font-style': 'normal', 'font-weight': 400, fill: C.ink2, dx: 6 }); });
+
+// ------------------------------------------------------------------ scene 7: summary
+const gRc = $('gRecap');
+const RC = [['1', 'Resource', C.teal, [`${NTOT} brains, ${DA.nuclei}`, 'nuclei and 28 cell types,', 'with genotypes for all']],
+  ['2', 'Regulation', GRP.Inhibitory[1], [`${fmt(D.scCREs)} scCREs, ~${QT.total}`, 'cell-type eQTLs, networks', 'for every cell type']],
+  ['3', 'Prediction', '#5E4C9B', ['LNCTP imputes cell-type', 'expression from genotype,', 'prioritizes about 250 genes']]];
+const rcItems = RC.map(([n, t, col, ls], i) => { const g = mk('g', {}, gRc), x = 62 + i * 292;
+  box(x, 112, 272, 250, g, { fill: '#FFFFFF', stroke: '#C9D3DC' });
+  mk('circle', { cx: x + 30, cy: 144, r: 16, fill: col }, g);
+  txt(x + 30, 149.5, n, { 'font-size': 16, 'font-weight': 700, fill: '#FFFFFF', 'text-anchor': 'middle' }, g);
+  txt(x + 56, 150, t, { 'font-size': 16, 'font-weight': 700, fill: col }, g);
+  lines(x + 20, 190, ls, 22, { 'font-size': 13.5, fill: C.ink }, g);
+  return g; });
+(() => { const g = mk('g', {}, rcItems[0]); let i = 0; D.cohort.forEach(([dx, n]) => { for (let m = 0; m < n; m += 4, i++) mk('circle', { cx: 92 + Math.floor(i / 5) * 10.5, cy: 280 + (i % 5) * 10.5, r: 3.6, fill: DX[dx][0] }, g); }); })();
+(() => { const g = mk('g', {}, rcItems[1]), cx = 62 + 292 + 136, cy = 300;
+  for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, x = cx + Math.cos(a) * 66, y = cy + Math.sin(a) * 30;
+    mk('line', { x1: k % 3 === 2 ? cx + 30 : cx - 18, y1: cy, x2: f1(x), y2: f1(y), stroke: k % 3 === 2 ? '#9ED6E0' : '#E7B3D2', 'stroke-width': 1.3 }, g); mk('circle', { cx: f1(x), cy: f1(y), r: 4, fill: '#C9D3DC' }, g); }
+  mk('line', { x1: cx - 18, y1: cy, x2: cx + 30, y2: cy, stroke: '#8E9BA7', 'stroke-width': 1.6 }, g);
+  mk('circle', { cx: cx - 18, cy, r: 8, fill: HUB }, g); mk('circle', { cx: cx + 30, cy, r: 6.5, fill: BOT }, g); })();
+(() => { const g = mk('g', {}, rcItems[2]), x0 = 62 + 584 + 22;
+  [['genotype', 0], ['expression', 84], ['traits', 168]].forEach(([s, dx], k) => { box(x0 + dx, 284, 64, 30, g, { fill: k === 1 ? '#EEF4F6' : '#FFFFFF', stroke: '#C9D3DC', rx: 6 });
+    txt(x0 + dx + 32, 303, s, { 'font-size': 10.5, fill: C.head, 'text-anchor': 'middle' }, g); if (k) arrow(x0 + dx - 18, 299, x0 + dx - 3, 299, g); }); })();
+const rcFoot = txt(62, 396, 'All data, networks and code: brainscope.psychencode.org', { 'font-size': 13, fill: C.ink2 }, gRc);
+
+// ------------------------------------------------------------------ render
+function renderScene({ k, e, E, L, eIn, s0, s1, grow }) {
+  const a = L('res'); op(gRes, a);
+  if (a > 0.001) { const app = grow('res') ? eIn : 1, n = waffle.length;
+    waffle.forEach((d, i) => op(d, ease(clamp(app * 2.2 - 1.2 * i / n))));
+    resLeg.forEach((g, i) => op(g, ease(clamp(app * 2.2 - 1.2 * i / 6))));
+    resRows.forEach((g, i) => op(g, ease(stag(app, i, 5, 0.6)))); op(gFrame, ease(clamp(app * 2 - 1))); }
+  const b = L('cell'); op(gCell, b);
+  if (b > 0.001) { const app = grow('cell') ? eIn : 1;
+    cellCols.forEach((c, j) => c.items.forEach((g, i) => op(g, ease(clamp(app * 2.4 - 0.12 * i - 0.25 * j))))); op(gV1, ease(clamp(app * 2 - 0.8))); op(gV2, ease(clamp(app * 2 - 1))); }
+  const c = L('cre'); op(gCre, c);
+  if (c > 0.001) { const app = grow('cre') ? eIn : 1;
+    creCols.forEach((g, i) => op(g, ease(clamp(app * 2.4 - 1.2 * i / NCOL))));
+    creRows.forEach((g, i) => op(g, ease(stag(app, i, 3, 0.5))));
+    ldBars.forEach((r, i) => { const t = ease(stag(clamp(app * 1.4 - 0.3), i, 3, 0.4)), h = r.h * t; r.b.setAttribute('y', f1(420 - h)); r.b.setAttribute('height', f1(h)); }); }
+  const d = L('qtl'); op(gQtl, d);
+  if (d > 0.001) { const app = grow('qtl') ? eIn : 1;
+    op(gPa, ease(clamp(app * 3))); op(gPb, ease(clamp(app * 3 - 0.8)));
+    PA.ln.setAttribute('stroke-dashoffset', (1 - ease(clamp(app * 2 - 0.3))).toFixed(3)); PB.ln.setAttribute('stroke-dashoffset', (1 - ease(clamp(app * 2 - 0.7))).toFixed(3));
+    qtlRows.forEach((g, i) => op(g, ease(stag(app, i, 4, 0.5)))); op(gQd, ease(clamp(app * 2 - 0.9))); op(gQdy, ease(clamp(app * 2 - 1))); }
+  const f = L('net'); op(gNet, f);
+  if (f > 0.001) { const app = grow('net') ? eIn : 1;
+    op(gN1, ease(clamp(app * 3))); op(gN2, ease(clamp(app * 3 - 0.6))); op(gNf, ease(clamp(app * 2 - 0.9)));
+    ccArr.forEach((p, i) => p.setAttribute('stroke-dashoffset', (1 - ease(stag(clamp(app * 1.6 - 0.4), i, 4, 0.4))).toFixed(3))); }
+  const g = L('age'); op(gAge, g);
+  if (g > 0.001) { const app = grow('age') ? eIn : 1;
+    ageChips.forEach((it, i) => op(it, ease(stag(clamp(app * 1.6), i, 6, 0.5)))); op(gAg2, ease(clamp(app * 2 - 0.7)));
+    adDown.forEach((it, i) => op(it, ease(stag(clamp(app * 1.6 - 0.3), i, 3, 0.4)))); }
+  const h = L('model'); op(gMod, h);
+  if (h > 0.001) { const app = grow('model') ? eIn : 1;
+    flowEls.forEach((it, i) => op(it, ease(stag(clamp(app * 1.8), i, 3, 0.5)))); op(gIn, ease(clamp(app * 2 - 0.6)));
+    const tb = ease(clamp(app * 2 - 0.6)); varBars.forEach(r => { r.b.setAttribute('width', f1(r.w * tb)); r.t.setAttribute('x', f1(146 + r.w * tb)); op(r.t, tb); });
+    priBars.forEach((r, i) => { const t = ease(stag(clamp(app * 1.6 - 0.2), i, 4, 0.4)); r.b.setAttribute('width', f1(r.w * t)); r.t.setAttribute('x', f1(676 + r.w * t)); op(r.t, t); });
+    op(gEx, ease(clamp(app * 2 - 1))); }
+  const r = L('recap'); op(gRc, r);
+  if (r > 0.001) { const app = grow('recap') ? eIn : 1; rcItems.forEach((it, j) => op(it, ease(stag(app, j, 4, 0.6)))); op(rcFoot, ease(stag(app, 3, 4, 0.6))); }
+}
+// ------------------------------------------------------------------ shared: nav dots, overlay text, render, playback
+const N = S.length;
+const navDots = SCENES.map((s, k) => mk('circle', { cx: 936 - (SCENES.length - 1 - k) * 20, cy: 22, r: 4.2 }, $('gNav')));
+const ov = $('ov');
+const blocks = new Map();
+function blockKey(k, kind) {
+  const s = S[k];
+  if (kind === 'h') return 'h' + s.scene;
+  if (kind === 't') return 't' + s.scene;
+  if (kind === 'c') return 'c' + k;
+  if (kind === 'e') return s.eq ? 'e:' + s.eq + (s.eqPos || []).join(',') : null;
+  if (kind === 'f') return 'f:' + s.fn;
+}
+function ensureBlock(key, html, cls, style) {
+  if (!key || blocks.has(key)) return;
+  const d = document.createElement('div'); d.className = 'tx ' + cls; d.innerHTML = html; if (style) d.setAttribute('style', style);
+  ov.appendChild(d); blocks.set(key, d);
+}
+S.forEach((s, k) => {
+  ensureBlock(blockKey(k, 'h'), SCENES[s.scene][0], 'kick', '');
+  ensureBlock(blockKey(k, 't'), SCENES[s.scene][1], 'ttl', '');
+  ensureBlock(blockKey(k, 'c'), s.cap, 'cap', '');
+  if (s.eq) ensureBlock(blockKey(k, 'e'), s.eq, 'eqb', `left:${s.eqPos[0] / 16}em; top:${s.eqPos[1] / 16}em;`);
+  ensureBlock(blockKey(k, 'f'), s.fn, 'fn', '');
+});
+const keysOf = k => ['h', 't', 'c', 'e', 'f'].map(x => blockKey(k, x)).filter(Boolean);
+
+function render(k, e) {
+  const s0 = S[Math.max(0, k - 1)].st, s1 = S[k].st;
+  const E = k === 0 ? 1 : ease(clamp(e));
+  // panels that share screen space fade out first, then the next one fades in; EXIT fields only leave early
+  const L = f => {
+    const a = +s0[f], b = +s1[f];
+    if (a === b) return b;
+    if (SEQ.has(f) || (EXIT.has(f) && b < a)) return lerp(a, b, b > a ? ease(clamp(e * 2.1 - 1.1)) : ease(clamp(e * 2.1)));
+    return lerp(a, b, E);
+  };
+  const eIn = k === 0 ? 1 : clamp((e - 0.5) / 0.5);
+  const grow = f => !!(+s1[f] && !+s0[f]);
+  renderScene({ k, e, E, L, eIn, s0, s1, grow });
+  navDots.forEach((d, j) => { const on = j === S[k].scene; d.setAttribute('fill', on ? C.teal : '#CCD6DE'); d.setAttribute('r', on ? 5 : 3.6); });
+  const prevKeys = new Set(k > 0 ? keysOf(k - 1) : []), curKeys = new Set(keysOf(k));
+  blocks.forEach((d, key) => {
+    let o = 0;
+    const inP = prevKeys.has(key), inC = curKeys.has(key);
+    if (k === 0) o = inC ? 1 : 0;
+    else if (inP && inC) o = 1;
+    else if (inC) o = clamp(e * 2.2 - 1.0);
+    else if (inP) o = 1 - clamp(e * 2.2);
+    d.style.opacity = o.toFixed(3);
+  });
+}
+
+let cur = 0, anim = null, playing = false, playTimer = null;
+const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function updateChrome() {
+  $('count').textContent = `${cur + 1} / ${N}`;
+  $('note').textContent = S[cur].note;
+  chipEls.forEach((c, j) => c.setAttribute('aria-current', j === S[cur].scene ? 'true' : 'false'));
+  $('bNext').textContent = cur === N - 1 ? 'Restart' : 'Next';
+}
+function finish() { if (anim) { cancelAnimationFrame(anim.raf); anim = null; render(cur, 1); } }
+function go(k, animate) {
+  finish();
+  k = clamp(k, 0, N - 1);
+  if (animate && k === cur + 1) {
+    cur = k; updateChrome();
+    const dur = reduce ? 250 : S[k].st.dur, t0 = performance.now();
+    const tick = now => { const e = clamp((now - t0) / dur); render(cur, e); if (e < 1) anim.raf = requestAnimationFrame(tick); else { anim = null; if (playing) schedulePlay(); } };
+    anim = { raf: requestAnimationFrame(tick) };
+  } else { cur = k; updateChrome(); render(cur, 1); if (playing) schedulePlay(); }
+}
+function next() { if (cur === N - 1) { go(0, false); return; } go(cur + 1, true); }
+function prev() { go(cur - 1, false); }
+function schedulePlay() { clearTimeout(playTimer); if (!playing) return; if (cur >= N - 1) { setPlaying(false); return; } playTimer = setTimeout(() => go(cur + 1, true), 2600); }
+function setPlaying(on) { playing = on; $('bPlay').textContent = on ? 'Pause' : 'Play all'; $('bPlay').setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) { if (cur === N - 1) go(0, false); schedulePlay(); } else clearTimeout(playTimer); }
+const chipsEl = $('chips');
+const chipEls = SCENES.map((s, j) => { const b = document.createElement('button'); b.className = 'chip'; b.type = 'button'; b.textContent = (j + 1) + ' · ' + CHIP[j];
+  b.addEventListener('click', () => { setPlaying(false); go(S.findIndex(x => x.scene === j), false); }); chipsEl.appendChild(b); return b; });
+$('bNext').addEventListener('click', () => { setPlaying(false); next(); });
+$('bPrev').addEventListener('click', () => { setPlaying(false); prev(); });
+$('bPlay').addEventListener('click', () => setPlaying(!playing));
+const wrapEl = $('stageWrap');
+async function toggleFull() { try { if (document.fullscreenElement) await document.exitFullscreen(); else await wrapEl.requestFullscreen(); } catch (err) { /* full screen is optional */ } }
+$('bFull').addEventListener('click', toggleFull);
+document.addEventListener('fullscreenchange', () => { $('bFull').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
+wrapEl.addEventListener('click', () => { setPlaying(false); next(); });
+document.addEventListener('keydown', ev => {
+  if (ev.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(ev.target.tagName)) return;
+  const key = ev.key;
+  if (key === 'ArrowRight' || key === ' ' || key === 'PageDown' || key === 'Enter') { if (ev.target.tagName === 'BUTTON' && (key === ' ' || key === 'Enter')) return; ev.preventDefault(); setPlaying(false); next(); }
+  else if (key === 'ArrowLeft' || key === 'PageUp' || key === 'Backspace') { ev.preventDefault(); setPlaying(false); prev(); }
+  else if (key === 'Home') { ev.preventDefault(); setPlaying(false); go(0, false); }
+  else if (key === 'End') { ev.preventDefault(); setPlaying(false); go(N - 1, false); }
+  else if (key === 'f' || key === 'F') { toggleFull(); }
+  else if (key === 'p' || key === 'P') { setPlaying(!playing); }
+});
+window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
+go(0, false);
+})();
+</script>
+<script>
+(() => {
+  const root = document.documentElement, setTheme = t => { root.dataset.theme = t === 'light' ? 'light' : 'dark'; };
+  addEventListener('storage', e => { if (e.key === 'theme') setTheme(e.newValue); });
+  if (!root.classList.contains('embed') || parent === window) return;
+  try { const pr = parent.document.documentElement; setTheme(pr.dataset.theme);
+    new MutationObserver(() => setTheme(pr.dataset.theme)).observe(pr, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) { /* not same-origin */ }
+  const M = window.__muse, notes = document.querySelector('.notes'), bar = document.querySelector('.bar'), count = document.getElementById('count');
+  let width = -1, last = -1;
+  const fit = () => {
+    const w = notes.clientWidth;
+    if (M && w && w !== width) {  // hold the narration and the control row at their tallest step, so the frame does not jump
+      width = w; const m = /^(\d+)/.exec(count.textContent), k = m ? +m[1] - 1 : 0;
+      notes.style.minHeight = bar.style.minHeight = ''; let hn = 0, hb = 0;
+      for (let j = 0; j < M.N; j++) { M.go(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
+      M.go(k, false); notes.style.minHeight = hn + 'px'; bar.style.minHeight = hb + 'px';
+    }
+    const h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h !== last) { last = h; parent.postMessage({ type: 'walkthrough-height', height: h }, location.origin); }
+  };
+  new ResizeObserver(() => requestAnimationFrame(fit)).observe(document.body);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { width = -1; fit(); });
+})();
+</script>
