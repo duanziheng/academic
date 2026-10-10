@@ -43,8 +43,8 @@ def links(p):
    arrow=' <span aria-hidden="true">↗</span>' if extra else ''
    parts.append('<a href="'+e(url)+'"'+extra+' aria-label="'+e(label+': '+title)+ (' (opens in a new tab)' if extra else '')+'">'+e(label)+arrow+'</a>')
  return ('<div class="resource-links">'+''.join(parts)+'</div>' if parts else '')+('<p class="muted talk-slides-note">'+e(p['slides_note'])+'</p>' if p.get('slides_note') else '')
-# A publication with a Walkthrough link shows that walkthrough on its page, above the abstract, followed by its
-# interactive explorer when site.json gives one ("explore"), for pages that support embed mode. The frames report their height in embed mode
+# A publication with a Walkthrough link shows that walkthrough on its page, above the abstract, when the page
+# supports embed mode. The frames report their height in embed mode
 # (dist/walkthroughs/*/index.html); the listener only accepts same-origin frames.
 FRAME_JS='<script>addEventListener("message",function(m){var d=m.data;if(m.origin!==location.origin||!d||d.type!=="walkthrough-height")return;document.querySelectorAll(".walkthrough-frame").forEach(function(f){if(f.contentWindow===m.source)f.style.height=Math.min(12000,Math.max(240,Math.ceil(+d.height)))+"px"})})</script>'
 def embeddable(url):
@@ -57,14 +57,8 @@ def walkthrough(p):
  return ('<section class="walkthrough" aria-labelledby="walkthrough-title"><div class="walkthrough-head"><h2 id="walkthrough-title">Walkthrough</h2>'
   '<a href="'+e(url)+'">Open full page</a></div><p class="walkthrough-lede">The paper, step by step. Click the slide or use the arrow keys to move through it.</p>'
   '<iframe class="walkthrough-frame" src="'+e(url)+'?embed" title="'+e('Animated walkthrough: '+p['title'])+'" loading="lazy" allowfullscreen></iframe></section>')
-def explore(p):
- url=p.get('explore')
- if not url or not embeddable(url):return ''
- return ('<section class="walkthrough" aria-labelledby="explore-title"><div class="walkthrough-head"><h2 id="explore-title">Explore</h2>'
-  '<a href="'+e(url)+'">Open full page</a></div><p class="walkthrough-lede">Try the ideas yourself: the controls change the figures right away.</p>'
-  '<iframe class="walkthrough-frame" src="'+e(url)+'?embed" title="'+e('Interactive explorer: '+p['title'])+'" loading="lazy"></iframe></section>')
 def frames(p):
- parts=walkthrough(p)+explore(p)
+ parts=walkthrough(p)
  return parts+FRAME_JS if parts else ''
 def selected_row(p):
  venue=p['venue'].removesuffix(' '+str(p['year']))
