@@ -1,6 +1,6 @@
 // Render walkthrough steps from a locally served build (python3 -m http.server 8765 --directory netlify-dist).
 // node scripts/previews/frames.cjs <name> <steps|all> <outdir> <light|dark> [scale]
-// Writes <outdir>/<name>-<theme>-sNN.png of the slide (#stage); card_art.py crops the 2x dark renders for cards.cjs.
+// Writes <outdir>/<name>-<theme>-sNN.png of the slide (#stage), for checking the steps.
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 const fs = require('fs'), path = require('path');
 const [,, NAME, steps, OUT, theme = 'light', scale = '2'] = process.argv;

@@ -117,3 +117,7 @@
  .paper-thumb,.talk-thumb,.slide-preview,.consortium-group>summary::before{transition:none}
  .paper.has-thumb:hover .paper-thumb{transform:none}
 }
+
+/* links inside a line of text are underlined, so they are not told apart by colour alone */
+.hero .position a{border-bottom:1px solid var(--line);padding-bottom:1px}
+.hero .position a:hover{border-bottom-color:currentColor}

@@ -1,6 +1,7 @@
 // Share cards (1200x630, assets/og/*.jpg) and PNG icons (favicon-32, apple-touch-icon, icon-192/512).
-// node scripts/previews/cards.cjs <frames dir> dist/assets
-// The paper cards use <frames dir>/vis/<name>.png, written by card_art.py; titles are set in Gelasio.
+// node scripts/previews/cards.cjs <work dir> dist/assets
+// The paper cards show <work dir>/vis/<name>.png, the dark illustration written by illustrations/make.py,
+// beside the title, which is set in Gelasio.
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 const fs = require('fs'), path = require('path');
 const HERE = path.resolve(process.argv[2]);
@@ -34,12 +35,19 @@ h1{font-family:Gelasio,serif;font-weight:400;color:#f3f7fa}
 .vis img{position:absolute;left:24px;top:16px;width:calc(100% - 48px);height:calc(100% - 32px);object-fit:contain;display:block}
 </style>`;
 function paperCard([name, eyebrow, title]) {
-  return `<!doctype html><html><head><meta charset="utf-8">${BASE}</head><body><div class="glow"></div><div class="frame">
+  return `<!doctype html><html><head><meta charset="utf-8">${BASE}<style>
+.paper{flex:1;display:flex;align-items:center;gap:44px;min-height:0;margin-top:26px}
+.paper .text{width:468px;flex:none}
+.paper .eyebrow{margin:0 0 18px}
+.paper .title{margin:0;font-size:44px;line-height:1.14;letter-spacing:-.016em}
+.paper .note{margin-top:22px;font-size:18px;color:#6f93b3}
+.paper .vis{flex:1;margin:0;aspect-ratio:2/1;background:#0b141e}
+.paper .vis img{left:0;top:0;width:100%;height:100%;object-fit:cover}
+</style></head><body><div class="glow"></div><div class="frame">
 <div class="top"><div class="brand"><span class="mono">ZD</span>Ziheng Duan</div><div class="url">zihengduan.cn</div></div>
-<p class="eyebrow">${esc(eyebrow)} <span>·&nbsp; Animated walkthrough</span></p>
-<h1 class="title">${esc(title)}</h1>
-<div class="vis"><img src="file://${path.join(HERE, 'vis', name + '.png')}"></div></div>
-<script>const t=document.querySelector('.title');let s=50;while(t.getBoundingClientRect().height>3*1.12*s+2&&s>34){s-=2;t.style.fontSize=s+'px'}</script></body></html>`;
+<div class="paper"><div class="text"><p class="eyebrow">${esc(eyebrow)}</p><h1 class="title">${esc(title)}</h1><p class="note">Paper · animated walkthrough</p></div>
+<div class="vis"><img src="file://${path.join(HERE, 'vis', name + '.png')}"></div></div></div>
+<script>const t=document.querySelector('.title');let s=44;while(t.getBoundingClientRect().height>5*1.14*s+2&&s>30){s-=2;t.style.fontSize=s+'px'}</script></body></html>`;
 }
 function homeCard() {
   return `<!doctype html><html><head><meta charset="utf-8">${BASE}<style>
@@ -80,7 +88,7 @@ font:${Math.round(size * 0.5)}px/1 Gelasio,serif;letter-spacing:${-size * 0.02}p
     const tmp = path.join(HERE, '_card.html'); fs.writeFileSync(tmp, html);
     await p.goto('file://' + tmp, { waitUntil: 'load' });
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(150);
-    const fit = await p.evaluate(() => { const t = document.querySelector('.title'); return t ? t.style.fontSize || '50px' : '' });
+    const fit = await p.evaluate(() => { const t = document.querySelector('.title'); return t ? t.style.fontSize || '44px' : '' });
     await p.screenshot({ path: path.join(A, 'og', name + '.jpg'), type: 'jpeg', quality: 88 });
     console.log('card', name, fit, fs.statSync(path.join(A, 'og', name + '.jpg')).size);
   }
