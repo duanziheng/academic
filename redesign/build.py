@@ -20,12 +20,16 @@ def walk_name(p):
  url=next((x['url'] for x in p.get('links',[]) if x['label']=='Walkthrough'),'')
  return url.strip('/').split('/')[-1] if url.startswith('/walkthroughs/') else ''
 def thumb(p,cls='paper-thumb'):
- # a still from the paper's walkthrough, in the page's light and dark colours (decorative; the title carries the link)
+ # the paper's illustration (scripts/previews/illustrations), in the page's light and dark colours
+ # (decorative; the title carries the link); phones, where it runs full width, get the 960px version
  n=walk_name(p)
  if not n or not (D/'assets/thumbs'/(n+'-light.webp')).exists():return ''
- return ('<a class="'+cls+'" href="'+e(p['path'])+'" tabindex="-1" aria-hidden="true">'
-  '<img class="thumb-light" src="/assets/thumbs/'+e(n)+'-light.webp" alt="" width="640" height="320" loading="lazy" decoding="async">'
-  '<img class="thumb-dark" src="/assets/thumbs/'+e(n)+'-dark.webp" alt="" width="640" height="320" loading="lazy" decoding="async"></a>')
+ def img(t):
+  s='/assets/thumbs/'+e(n)+'-'+t
+  big=(D/'assets/thumbs'/(n+'-'+t+'-960.webp')).exists()
+  return ('<img class="thumb-'+t+'" src="'+s+'.webp"'+(' srcset="'+s+'.webp 640w, '+s+'-960.webp 960w" sizes="(max-width: 760px) calc(100vw - 32px), 288px"' if big else '')+
+   ' alt="" width="640" height="320" loading="lazy" decoding="async">')
+ return '<a class="'+cls+'" href="'+e(p['path'])+'" tabindex="-1" aria-hidden="true">'+img('light')+img('dark')+'</a>'
 def role(p):
  a=[clean(x) for x in p['authors']]
  if a and a[0]=='Ziheng Duan':return 'first'
