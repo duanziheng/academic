@@ -270,6 +270,70 @@
       "year": 2026
     },
     {
+      "abstract": "",
+      "authors": [
+        "Che Yu Lee",
+        "Ahyeon Hwang",
+        "Delaney McRiley",
+        "Jaywon Lee",
+        "Genevieve Thibodeau",
+        "Catharine Duman",
+        "Xiangyu Zhang",
+        "Mario Skarica",
+        "Jensine Coudriet",
+        "Siwei Xu",
+        "Rosemarie Terwilliger",
+        "Alexa-Nicole Sliby",
+        "Jiawei Wang",
+        "Tuan Nguyen",
+        "Yujing Liu",
+        "Hongyu Li",
+        "Yi Dai",
+        "Ziheng Duan",
+        "Yutong Lei",
+        "Yingxin Lin",
+        "Jill R. Glausier",
+        "David A. Lewis",
+        "Joel Gelernter",
+        "Paul E. Holtzheimer",
+        "Ke Xu",
+        "Hang Zhou",
+        "Hongyu Zhao",
+        "Summer L. Thompson",
+        "John H. Krystal",
+        "Alicia Che",
+        "Jane R. Taylor",
+        "Jing Zhang",
+        "Matthew J. Girgenti"
+      ],
+      "citation_filename": "central-amygdala-single-nucleus-atlas-2026.bib",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://www.nature.com/articles/s41467-026-68351-1.pdf"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/mjgirgenti/AUDsnCEA"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/central-amygdala-single-nucleus-atlas-reveals-chromatin-and-gene-transcription-dynamics-in-human-alcohol-use-disorder/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1038/s41467-026-68351-1"
+        }
+      ],
+      "metadata_source": "https://doi.org/10.1038/s41467-026-68351-1",
+      "path": "/publication/journal/central-amygdala-single-nucleus-atlas-reveals-chromatin-and-gene-transcription-dynamics-in-human-alcohol-use-disorder/",
+      "selected": false,
+      "title": "Central amygdala single-nucleus atlas reveals chromatin and gene transcription dynamics in human alcohol use disorder",
+      "type": "Journal article",
+      "venue": "Nature Communications",
+      "year": 2026
+    },
+    {
       "abstract": "Post-traumatic stress disorder (PTSD) is a polygenic disorder occurring after extreme trauma exposure. Recent studies have begun to detail the molecular biology of PTSD. However, given the array of PTSD-perturbed molecular pathways identified so far, it is implausible that a single cell type is responsible. Here we profile the molecular responses in over two million nuclei from the dorsolateral prefrontal cortex of 111 human brains, collected post-mortem from individuals with and without PTSD and major depressive disorder. We identify neuronal and non-neuronal cell-type clusters, gene expression changes and transcriptional regulators, and map the epigenomic regulome of PTSD in a cell-type-specific manner. Our analysis revealed PTSD-associated gene alterations in inhibitory neurons, endothelial cells and microglia and uncovered genes and pathways associated with glucocorticoid signalling, GABAergic transmission and neuroinflammation. We further validated these findings using cell-type-specific spatial transcriptomics, confirming disruption of key genes such as SST and FKBP5. By integrating genetic, transcriptomic and epigenetic data, we uncovered the regulatory mechanisms of credible variants that disrupt PTSD genes, including ELFN1, MAD1L1 and KCNIP4, in a cell-type-specific context. Together, these findings provide a comprehensive characterization of the cell-specific molecular regulatory mechanisms that underlie the persisting effects of traumatic stress response on the human prefrontal cortex.",
       "authors": [
         "Ahyeon Hwang",
@@ -344,7 +408,7 @@
       "year": 2025
     },
     {
-      "abstract": "",
+      "abstract": "Recent advances in spatial transcriptomics (ST) and cost reductions have enabled large-scale multi-slice ST data generation, enhancing the statistical power to detect subtle biological signals. However, cross-slice inconsistencies and data quality variability present significant analytical challenges. To overcome these limitations, we developed MUSE, a computational framework designed for multi-slice joint embedding, spatial domain identification, and gene expression imputation. Specifically, MUSE integrates a two-module architecture to ensure robust cross-slice alignment and data harmonization. The alignment module models each slice as a graph and employs optimal transport to align cells across slices while preserving spatial continuity. The optimization module further refines integration by incorporating an alignment loss, allowing lower-quality data to leverage structural information from higher-quality slices. Additionally, MUSE generates virtual neighbors from aligned cells, enriching contextual information and mitigating data sparsity. These design principles enable seamless integration with existing single-slice methods, extending their applicability to multi-slice ST analysis. To comprehensively evaluate its performance, we applied MUSE to 12 real and 48 simulated datasets spanning a range of data qualities. Across all metrics, MUSE consistently outperformed existing methods in cross-slice consistency, spatial domain identification, and gene expression imputation. To promote accessibility and adoption, we provide MUSE as an open-source software package. As multi-slice ST datasets become increasingly prevalent, MUSE provides a robust and extensible framework designed to effectively integrate growing numbers of slices, thereby advancing the analysis of tissue architectures and spatial gene expression in complex biological systems.",
       "authors": [
         "Ziheng Duan",
         "Xi Li",
@@ -383,6 +447,108 @@
       "type": "Conference paper",
       "venue": "CIKM 2025",
       "year": 2025
+    },
+    {
+      "abstract": "",
+      "authors": [
+        "Ziheng Duan",
+        "Xi Li",
+        "Zhuoyang Zhang",
+        "James Song",
+        "Jing Zhang"
+      ],
+      "citation_filename": "DISCO-2025.bib",
+      "links": [
+        {
+          "label": "Cite",
+          "url": "/publication/conference/disco-a-diffusion-model-for-spatial-transcriptomics-data-completion/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1109/ICIP55913.2025.11084277"
+        }
+      ],
+      "metadata_source": "https://doi.org/10.1109/ICIP55913.2025.11084277",
+      "path": "/publication/conference/disco-a-diffusion-model-for-spatial-transcriptomics-data-completion/",
+      "selected": false,
+      "title": "DISCO: A Diffusion Model For Spatial Transcriptomics Data Completion",
+      "type": "Conference paper",
+      "venue": "ICIP 2025",
+      "year": 2025
+    },
+    {
+      "abstract": "",
+      "authors": [
+        "Zeyu Zou",
+        "Ziheng Duan"
+      ],
+      "citation_filename": "SpaLLM-2025.bib",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://www.frontiersin.org/journals/bioinformatics/articles/10.3389/fbinf.2025.1713975/pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/journal/spallm-a-general-framework-for-spatial-domain-identification-with-large-language-models/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.3389/fbinf.2025.1713975"
+        }
+      ],
+      "metadata_source": "https://doi.org/10.3389/fbinf.2025.1713975",
+      "path": "/publication/journal/spallm-a-general-framework-for-spatial-domain-identification-with-large-language-models/",
+      "selected": false,
+      "title": "SpaLLM: a general framework for spatial domain identification with large language models",
+      "type": "Journal article",
+      "venue": "Frontiers in Bioinformatics",
+      "year": 2025
+    },
+    {
+      "abstract": "",
+      "authors": [
+        "Sophia C. Gaynor-Gillett",
+        "Lijun Cheng",
+        "Manman Shi",
+        "Jason Liu",
+        "Gaoyuan Wang",
+        "Megan Spector",
+        "Qiuyu Guo",
+        "Le Qi",
+        "Mary Flaherty",
+        "Martha Wall",
+        "Ahyeon Hwang",
+        "Mengting Gu",
+        "Zhanlin Chen",
+        "Yuhang Chen",
+        "PsychENCODE Consortium",
+        "Jennifer R. Moran",
+        "Jing Zhang",
+        "Donghoon Lee",
+        "Mark Gerstein",
+        "Daniel Geschwind",
+        "Kevin P. White"
+      ],
+      "citation_filename": "enhancer-regions-capture-starr-seq-2025.bib",
+      "links": [
+        {
+          "label": "Cite",
+          "url": "/publication/journal/a-map-of-enhancer-regions-in-primary-human-neural-progenitor-cells-using-capture-starr-seq/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1101/gr.279584.124"
+        }
+      ],
+      "metadata_source": "https://doi.org/10.1101/gr.279584.124",
+      "path": "/publication/journal/a-map-of-enhancer-regions-in-primary-human-neural-progenitor-cells-using-capture-starr-seq/",
+      "selected": false,
+      "title": "A map of enhancer regions in primary human neural progenitor cells using capture STARR-seq",
+      "type": "Journal article",
+      "venue": "Genome Research",
+      "year": 2025,
+      "consortium_member": true
     },
     {
       "abstract": "Spatial transcriptomics has transformed genomic research by measuring spatially resolved gene expressions, allowing us to investigate how cells adapt to their microenvironment via modulating their expressed genes. This essential process usually starts from cell-cell communication (CCC) via ligand-receptor (LR) interaction, leading to regulatory changes within the receiver cell. However, few methods were developed to connect them to provide biological insights into intercellular regulation. To fill this gap, we propose iMiracle, an iterative multi-view graph neural network that models each cell’s intercellular regulation with three key features. Firstly, iMiracle integrates inter- and intra-cellular networks to jointly estimate cell-type- and micro-environment-driven gene expressions. Optionally, it allows prior knowledge of intra-cellular networks as pre-structured masks to maintain biological relevance. Secondly, iMiracle employs iterative learning to overcome the sparsity of spatial transcriptomic data and gradually fill in the missing edges in the CCC network. Thirdly, iMiracle infers a cell-specific ligand-gene regulatory score based on the contributions of different LR pairs to interpret inter-cellular regulation. We applied iMiracle to nine simulated and eight real datasets from three sequencing platforms and demonstrated that iMiracle consistently outperformed ten methods in gene expression imputation and four methods in regulatory score inference. Lastly, we developed iMiracle as an open-source software and anticipate that it can be a powerful tool in decoding the complexities of inter-cellular transcriptional regulation.",
@@ -988,6 +1154,94 @@
       "year": 2024
     },
     {
+      "abstract": "",
+      "authors": [
+        "Xi Li",
+        "Ziheng Duan",
+        "Yi Dai",
+        "Siwei Xu",
+        "Jing Zhang"
+      ],
+      "citation_filename": "iHAST-2024.bib",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://bmva-archive.org.uk/bmvc/2024/papers/Paper_991/paper.pdf"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/aicb-ZhangLabs/iHAST"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/ihast-integrating-hybrid-attention-for-super-resolution-in-spatial-transcriptomics/cite.bib"
+        }
+      ],
+      "metadata_source": "https://bmva-archive.org.uk/bmvc/2024/papers/Paper_991/paper.pdf",
+      "path": "/publication/conference/ihast-integrating-hybrid-attention-for-super-resolution-in-spatial-transcriptomics/",
+      "selected": false,
+      "title": "iHAST: Integrating Hybrid Attention for Super-Resolution in Spatial Transcriptomics",
+      "type": "Conference paper",
+      "venue": "BMVC 2024",
+      "year": 2024
+    },
+    {
+      "abstract": "",
+      "authors": [
+        "Junhao Liu",
+        "Siwei Xu",
+        "Dylan Riffle",
+        "Ziheng Duan",
+        "Martin Renqiang Min",
+        "Jing Zhang"
+      ],
+      "citation_filename": "learnable-global-subset-perturbations-2024.bib",
+      "links": [
+        {
+          "label": "PDF",
+          "url": "https://raw.githubusercontent.com/mlresearch/v260/main/assets/liu25a/liu25a.pdf"
+        },
+        {
+          "label": "Cite",
+          "url": "/publication/conference/understanding-transcriptional-regulatory-redundancy-by-learnable-global-subset-perturbations/cite.bib"
+        }
+      ],
+      "metadata_source": "https://proceedings.mlr.press/v260/liu25a.html",
+      "path": "/publication/conference/understanding-transcriptional-regulatory-redundancy-by-learnable-global-subset-perturbations/",
+      "selected": false,
+      "title": "Understanding Transcriptional Regulatory Redundancy by Learnable Global Subset Perturbations",
+      "type": "Conference paper",
+      "venue": "ACML 2024",
+      "year": 2024
+    },
+    {
+      "abstract": "",
+      "authors": [
+        "Yi Dai",
+        "Ziheng Duan",
+        "Siwei Xu",
+        "Jing Zhang"
+      ],
+      "citation_filename": "CytoFlow-2024.bib",
+      "links": [
+        {
+          "label": "Cite",
+          "url": "/publication/conference/cytoflow-a-novel-computational-method-to-construct-signal-transduction-networks-at-single-cell-resolution-based-on-flow-networks/cite.bib"
+        },
+        {
+          "label": "DOI",
+          "url": "https://doi.org/10.1109/MedAI62885.2024.00034"
+        }
+      ],
+      "metadata_source": "https://doi.org/10.1109/MedAI62885.2024.00034",
+      "path": "/publication/conference/cytoflow-a-novel-computational-method-to-construct-signal-transduction-networks-at-single-cell-resolution-based-on-flow-networks/",
+      "selected": false,
+      "title": "CytoFlow: A Novel Computational Method to Construct Signal Transduction Networks at Single-Cell Resolution Based on Flow Networks",
+      "type": "Conference paper",
+      "venue": "MedAI 2024",
+      "year": 2024
+    },
+    {
       "abstract": "Alzheimer’s disease (AD) is a prevalent neurodegenerative disorder with significant impacts on patients and their families. Therefore, accurate and early diagnosis of AD is crucial for improving patient outcomes and developing effective treatments. However, despite advancements in machine learning for AD diagnosis, current methods lack molecular-level insights and completely ignore the heterogeneity in complex human brains, thus potentially masking crucial disease mechanisms. Here, we present ExAD-GNN, an Explainable Graph Neural Network for predicting AD status from single-cell sequencing data. Leveraging K Nearest Neighbours (KNN) graphs derived from the expression profiles of individual cells, ExAD-GNN achieves two primary goals: predicting AD pathology at a cellular level and identifying cell-type-specific marker genes for AD diagnosis through a unique learnable gene importance metric. Extensive benchmarking on large-scale scRNA-seq data with state-of-the-art methods demonstrates ExAD-GNN’s noticeably improved AD prediction accuracy and robustness across various cell types and samples. Furthermore, an extensive ablation study and literature search confirm the majority of top AD risk genes highlighted by our method, demonstrating the effectiveness of ExAD-GNN’s model interpretation scheme. In summary, we develop ExAD-GNN as a publicly.",
       "authors": [
         "Ziheng Duan",
@@ -1360,7 +1614,7 @@
       "year": 2021
     },
     {
-      "abstract": "",
+      "abstract": "Purpose: To develop CADIA, a supervised deep learning model based on a region proposal network coupled with a false-positive reduction module for the detection and localization of intracranial aneurysms (IA) from computed tomography angiography (CTA), and to assess our model’s performance to a similar detection network. Methods: In this retrospective study, we evaluated 1,216 patients from two separate institutions who underwent CTA for the presence of saccular IA ≥ 2.5 mm. A two-step model was implemented: a 3D region proposal network for initial aneurysm detection and 3D DenseNets for false-positive reduction and further determination of suspicious IA. Free-response receiver operative characteristics (FROC) curve and lesion-/patient-level performance at established false positive per volume (FPPV) were also performed. Fisher’s exact test was used to compare with a similar available model. Results: CADIA’s sensitivities at 0.25 and 1 FPPV were 63.9% and 77.5%, respectively. Our model’s performance varied with size and location, and the best performance was achieved in IA between 5-10 mm and in those at anterior communicating artery, with sensitivities at 1 FPPV of 95.8% and 94%, respectively. Our model showed statistically higher patient-level accuracy, sensitivity, and specificity when compared to the available model at 0.25 FPPV and the best F-1 score (P≤0.001). At 1 FPPV threshold, our model showed better accuracy and specificity (P≤0.001) and equivalent sensitivity. Conclusions: CADIA outperformed a comparable network in the detection task of IA. The addition of a false-positive reduction module is a feasible step to improve the IA detection models.",
       "authors": [
         "Dufan Wu",
         "Daniel Montes",
@@ -1394,7 +1648,7 @@
       "year": 2020
     },
     {
-      "abstract": "",
+      "abstract": "The origins of herbal medicines are important for their treatment effect, which could be potentially distinguished by electronic nose system. Because the difference in the odor fingerprint of herbal medicines from different origins can be tiny, the discrimination of origins can be much harder than that of different categories. Therefore, better feature extraction methods are significant for this task to be more accurately done, but there lacks systematic studies on different feature extraction methods and a standardized manner to extract features from e-nose signals upon which most researchers agree. To investigate the effectiveness of multiple feature engineering approaches, we classified different origins of three categories of herbal medicines with different feature extraction methods: manual feature extraction, mathematical transformation, deep learning. With 50 repetitive experiments with bootstrapping, we compared the effectiveness of the extractions with a two-layer neural network w/o dimensionality reduction methods (principal component analysis, linear discriminant analysis) as the three base classifiers. Compared with the conventional aggregated features, the Fast Fourier Transform (FFT) method and our novel approach (longitudinal-information-in-a-line) showed an significant accuracy improvement(p < 0.05) on all 3 base classifiers and all three herbal medicine categories, with the highest median classification accuracy 0.675 and 0.7 over 30 experiments. Two of the deep learning algorithm we applied also showed partially significant improvement: one-dimensional convolution neural network(1D-CNN) and a novel graph pooling based framework - multivariate time pooling (MTPool), with the highest median accuracy 0.75 and 0.65.",
       "authors": [
         "Li Liu",
         "Xianghao Zhan",
@@ -1430,7 +1684,7 @@
       "year": 2021
     },
     {
-      "abstract": "",
+      "abstract": "Multivariate time series (MTS) forecasting has been widely used in various fields. Reasonable prediction results can help people make decisions, avoid risks, and increase profits. Generally, time series have two characteristics, namely long-term trends and short-term fluctuations. For example, stock prices will rise in the long term, but may fall slightly in the short term. These two characteristics are often relatively independent of each other. Existing forecasting methods usually do not distinguish between the two characteristics and thus cannot fully extract inherent attributes of the time series. In this paper, we propose a framework that can capture the long-term trends and short-term fluctuations of time series in parallel in order to enhance MTS forecasting performance. We formulate our model as a multi-task learning objective, the goal of which is to make predictions of long-term trends and short-term fluctuations as close as possible to the ground truth. Experiments on three real-world datasets show that the proposed method uses more supervision information and can more accurately capture the changing trends of time series, thereby improving the prediction performance.",
       "authors": [
         "Yifu Zhou",
         "Ziheng Duan",
@@ -1468,7 +1722,7 @@
       "year": 2020
     },
     {
-      "abstract": "",
+      "abstract": "In this work, we focus on large graph similarity computation problem and propose a novel “embedding-coarsening-matching” learning framework, which outperforms state-of-the-art methods in this task and has significant improvement in time efficiency. Graph similarity computation for metrics such as Graph Edit Distance (GED) is typically NP-hard, and existing heuristics-based algorithms usually achieves a unsatisfactory trade-off between accuracy and efficiency. Recently the development of deep learning techniques provides a promising solution for this problem by a data-driven approach which trains a network to encode graphs to their own feature vectors and computes similarity based on feature vectors. These deep-learning methods can be classified to two categories, embedding models and matching models. Embedding models such as GCN-MEAN and GCN-MAX, which directly map graphs to respective feature vectors, run faster but the performance is usually poor due to the lack of interactions across graphs. Matching models such as GMN, whose encoding process involves interaction across the two graphs, are more accurate but interaction between whole graphs brings a significant increase in time consumption (at least quadratic time complexity over number of nodes). Inspired by large biological molecular identification where the whole molecular is first mapped to functional groups and then identified based on these functional groups, our “embedding-coarsening-matching” learning framework first embeds and coarsens large graphs to coarsened graphs with denser local topology and then matching mechanism is deployed on the coarsened graphs for the final similarity scores. Detailed experiments on both synthetic and real datasets have been conducted and the results demonstrate the efficiency and effectiveness of our proposed framework in both similarity regression and classification tasks.",
       "authors": [
         "Haoyan Xu",
         "Runjian Chen",

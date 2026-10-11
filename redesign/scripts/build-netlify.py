@@ -13,11 +13,12 @@ if out.exists():
     shutil.rmtree(out)
 shutil.copytree(ROOT / "dist", out)
 shutil.copytree(ROOT / "large-assets", out, dirs_exist_ok=True)
-old_image = "https://zihengduan.cn/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png"
-for path in out.rglob("*.html"):
-    text = path.read_text().replace(old_image, "https://zihengduan.cn/assets/portrait.jpg")
-    text = text.replace("/assets/app.js?v=20260925-audit", "/assets/app.js?v=20260929-research")
-    path.write_text(text)
 subprocess.run([sys.executable, str(ROOT / "scripts/render-research.py"), str(out)], check=True)
+# The October 2026 refinements load last, after the research layers, on every page built from the site template.
+POLISH = '<link rel="stylesheet" href="/assets/polish.css?v=20261010-1">'
+for path in out.rglob("*.html"):
+    text = path.read_text()
+    if "/assets/style.css?" in text and POLISH not in text:
+        path.write_text(text.replace("</head>", POLISH + "</head>", 1))
 print("Netlify output:", out)
 subprocess.run([sys.executable, str(ROOT / "scripts/check-site.py"), str(out)], check=True)
