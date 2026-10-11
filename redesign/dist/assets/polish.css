@@ -121,3 +121,25 @@
 /* links inside a line of text are underlined, so they are not told apart by colour alone */
 .hero .position a{border-bottom:1px solid var(--line);padding-bottom:1px}
 .hero .position a:hover{border-bottom-color:currentColor}
+
+/* legacy blog posts, rendered from their original Markdown (scripts/render-legacy.py) */
+.legacy-post{max-width:760px;margin-top:8px;color:var(--ink);font-size:1rem;line-height:1.9}
+.legacy-post p{margin:0 0 1.1em}
+.legacy-post h1,.legacy-post h2,.legacy-post h3,.legacy-post h4{font-family:var(--serif);font-weight:500;line-height:1.3;margin:1.8em 0 .6em}
+.legacy-post h2{font-size:1.6rem}.legacy-post h3{font-size:1.3rem}.legacy-post h4{font-size:1.1rem}
+.legacy-post pre{margin:0 0 1.4em;padding:16px 18px;background:var(--soft);border:1px solid var(--line);border-radius:6px;overflow-x:auto;max-height:none;white-space:pre}
+.legacy-post pre code{font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:pre}
+.legacy-post :not(pre)>code{font:.9em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--soft);padding:1px 5px;border-radius:3px}
+.legacy-post img{max-width:100%;height:auto;margin:8px 0 18px;border-radius:4px;border:1px solid var(--line)}
+.legacy-post table{border-collapse:collapse;margin:0 0 1.4em;font-size:.9375rem}
+.legacy-post th,.legacy-post td{border:1px solid var(--line);padding:6px 10px}
+.legacy-post a{border-bottom:1px solid var(--line)}
+@media (max-width:600px){.legacy-post pre code{font-size:12px}}
+
+/* a long byline on a paper page shows its full author list on request */
+.all-authors{margin:-4px 0 14px}
+.all-authors summary{display:inline-block;cursor:pointer;color:var(--blue);font-size:.875rem;font-weight:600;list-style:none;padding:2px 0}
+.all-authors summary::-webkit-details-marker{display:none}
+.all-authors summary::after{content:' ↓';font-weight:400}
+.all-authors[open] summary::after{content:' ↑'}
+.all-authors[open] .detail-authors{margin-top:10px}

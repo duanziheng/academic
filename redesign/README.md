@@ -14,6 +14,11 @@ Live: https://zihengduan.cn/ · Repository: duanziheng/academic · Netlify: zihe
 - Main theme and responsive layout: `dist/assets/style.css`.
 - Search, filtering, citations and theme preference: `dist/assets/app.js`.
 - CV and talk PDFs: `dist/files/`.
+- Legacy blog posts: the historic `/blogs/` URLs, not linked from the navigation, rendered from the original Hugo Markdown in `content/blogs/` at the repository root.
+  - `python3 scripts/render-legacy.py` does the rendering. It needs `markdown` and Pillow; run it by hand after editing a post.
+  - It writes an HTML fragment per post to `content/legacy/`, with code blocks, line breaks and images kept, and saves WebP copies of the posts' images beside their pages in `dist/blogs/`.
+  - `build.py` uses a post's fragment when one exists.
+- Paper pages with more than twelve authors shorten the byline as the archive does. The full list sits behind an “All N authors” toggle; the Scholar tags always carry every author.
 - Refinements from October 2026 (selected-work thumbnails, the year-grouped archive, talk slide previews, search keys and highlights, the dark-mode research band, phone layout, heading font): `dist/assets/polish.css`, which `scripts/build-netlify.py` links last on every page built from the site template.
 - Preview images, made with `scripts/previews/`:
   - Selected-work thumbnails are drawn illustrations, one Python script per paper in `illustrations/` (numpy, scipy, matplotlib; Pillow and Playwright to render). `python3 scripts/previews/illustrations/make.py <work dir> dist/assets` writes `dist/assets/thumbs/<walkthrough>-light|dark.webp` (640×320) and `-960.webp` (960×480, which phones load through srcset).

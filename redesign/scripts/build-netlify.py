@@ -15,7 +15,7 @@ shutil.copytree(ROOT / "dist", out)
 shutil.copytree(ROOT / "large-assets", out, dirs_exist_ok=True)
 subprocess.run([sys.executable, str(ROOT / "scripts/render-research.py"), str(out)], check=True)
 # The October 2026 refinements load last, after the research layers, on every page built from the site template.
-POLISH = '<link rel="stylesheet" href="/assets/polish.css?v=20261010-2">'
+POLISH = '<link rel="stylesheet" href="/assets/polish.css?v=20261011-1">'
 for path in out.rglob("*.html"):
     text = path.read_text()
     if "/assets/style.css?" in text and POLISH not in text:
