@@ -1,7 +1,7 @@
 // Share cards (1200x630, assets/og/*.jpg) and PNG icons (favicon-32, apple-touch-icon, icon-192/512).
-// node scripts/previews/cards.cjs <work dir> dist/assets
-// The paper cards show <work dir>/vis/<name>.png, the dark illustration written by illustrations/make.py,
-// beside the title, which is set in Gelasio.
+// node scripts/previews/cards.cjs <work dir> dist/assets [home] [papers] [talks] [icons]   (default: all four)
+// The paper cards show <work dir>/vis/<name>.png, the dark illustration written by illustrations/make.py, and the
+// talk cards dist/files/talks/<name>.pdf's first slide, each beside the title, which is set in Gelasio.
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 const fs = require('fs'), path = require('path');
 const HERE = path.resolve(process.argv[2]);
@@ -15,6 +15,14 @@ const PAPERS = [
   ['impeller', 'Bioinformatics · 2024', 'Impeller: a path-based heterogeneous graph learning method for spatial transcriptomic data imputation'],
   ['388-brains', 'Science · 2024', 'Single-cell genomics and regulatory networks for 388 human brains'],
 ];
+// talks with public slides: card name (og/talk-<pdf name>.jpg), eyebrow, title
+const TALKS = [
+  ['ics-honors-seminar-2026', 'ICS Honors Seminar · 2026', 'Decoding Disease, Designing Interventions'],
+  ['scorch-2026', 'SCORCH 2026 Fall Meeting · 2026', 'AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming'],
+  ['scencore-2024', 'Southern California Systems Biology · 2024', 'scENCORE: Reconstructing Chromatin Compartments from Single-Cell Epigenetic Data'],
+  ['iherd-2023', 'SCORCH Consortium Meeting · 2023', 'iHerd: Identifying Key Driver Genes through Changes in Gene Networks'],
+];
+const WANT = new Set(process.argv.slice(4).length ? process.argv.slice(4) : ['home', 'papers', 'talks', 'icons']);
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const BASE = `<style>
 @font-face{font-family:Gelasio;src:url(${FONT}) format('woff2');font-weight:400}
@@ -34,19 +42,19 @@ h1{font-family:Gelasio,serif;font-weight:400;color:#f3f7fa}
 .vis{flex:1;margin-top:28px;min-height:0;background:#0a111a;border:1px solid rgba(142,185,222,.17);border-radius:12px;position:relative;overflow:hidden}
 .vis img{position:absolute;left:24px;top:16px;width:calc(100% - 48px);height:calc(100% - 32px);object-fit:contain;display:block}
 </style>`;
-function paperCard([name, eyebrow, title]) {
+function paperCard([name, eyebrow, title], img = path.join(HERE, 'vis', name + '.png'), note = 'Paper · animated walkthrough', ratio = '2/1', fit = 'cover') {
   return `<!doctype html><html><head><meta charset="utf-8">${BASE}<style>
 .paper{flex:1;display:flex;align-items:center;gap:44px;min-height:0;margin-top:26px}
 .paper .text{width:468px;flex:none}
 .paper .eyebrow{margin:0 0 18px}
 .paper .title{margin:0;font-size:44px;line-height:1.14;letter-spacing:-.016em}
 .paper .note{margin-top:22px;font-size:18px;color:#6f93b3}
-.paper .vis{flex:1;margin:0;aspect-ratio:2/1;background:#0b141e}
-.paper .vis img{left:0;top:0;width:100%;height:100%;object-fit:cover}
+.paper .vis{flex:1;margin:0;aspect-ratio:${ratio};background:#0b141e}
+.paper .vis img{left:0;top:0;width:100%;height:100%;object-fit:${fit}}
 </style></head><body><div class="glow"></div><div class="frame">
 <div class="top"><div class="brand"><span class="mono">ZD</span>Ziheng Duan</div><div class="url">zihengduan.cn</div></div>
-<div class="paper"><div class="text"><p class="eyebrow">${esc(eyebrow)}</p><h1 class="title">${esc(title)}</h1><p class="note">Paper · animated walkthrough</p></div>
-<div class="vis"><img src="file://${path.join(HERE, 'vis', name + '.png')}"></div></div></div>
+<div class="paper"><div class="text"><p class="eyebrow">${esc(eyebrow)}</p><h1 class="title">${esc(title)}</h1><p class="note">${esc(note)}</p></div>
+<div class="vis"><img src="file://${img}"></div></div></div>
 <script>const t=document.querySelector('.title');let s=44;while(t.getBoundingClientRect().height>5*1.14*s+2&&s>30){s-=2;t.style.fontSize=s+'px'}</script></body></html>`;
 }
 function homeCard() {
@@ -83,7 +91,13 @@ font:${Math.round(size * 0.5)}px/1 Gelasio,serif;letter-spacing:${-size * 0.02}p
   const b = await chromium.launch();
   fs.mkdirSync(path.join(A, 'og'), { recursive: true });
   const p = await b.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
-  const shots = [['home', homeCard()], ...PAPERS.map(x => [x[0], paperCard(x)])];
+  // a talk card shows the first slide, rendered from the deck (pdftoppm) into <work dir>/vis/talk-<name>.png
+  for (const [name] of WANT.has('talks') ? TALKS : []) {
+    require('child_process').execFileSync('pdftoppm', ['-f', '1', '-l', '1', '-singlefile', '-png', '-scale-to-x', '1400', '-scale-to-y', '-1',
+      path.join(A, '..', 'files', 'talks', name + '.pdf'), path.join(HERE, 'vis', 'talk-' + name)]);
+  }
+  const shots = [...(WANT.has('home') ? [['home', homeCard()]] : []), ...(WANT.has('papers') ? PAPERS.map(x => [x[0], paperCard(x)]) : []),
+    ...(WANT.has('talks') ? TALKS.map(x => ['talk-' + x[0], paperCard(x, path.join(HERE, 'vis', 'talk-' + x[0] + '.png'), 'Talk · slides', '16/9', 'contain')]) : [])];
   for (const [name, html] of shots) {
     const tmp = path.join(HERE, '_card.html'); fs.writeFileSync(tmp, html);
     await p.goto('file://' + tmp, { waitUntil: 'load' });
@@ -92,7 +106,7 @@ font:${Math.round(size * 0.5)}px/1 Gelasio,serif;letter-spacing:${-size * 0.02}p
     await p.screenshot({ path: path.join(A, 'og', name + '.jpg'), type: 'jpeg', quality: 88 });
     console.log('card', name, fit, fs.statSync(path.join(A, 'og', name + '.jpg')).size);
   }
-  for (const [file, size, radius] of [['favicon-32.png', 32, 5], ['apple-touch-icon.png', 180, 0], ['icon-192.png', 192, 24], ['icon-512.png', 512, 64]]) {
+  for (const [file, size, radius] of WANT.has('icons') ? [['favicon-32.png', 32, 5], ['apple-touch-icon.png', 180, 0], ['icon-192.png', 192, 24], ['icon-512.png', 512, 64]] : []) {
     const q = await b.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 });
     const tmpi = path.join(HERE, '_icon.html'); fs.writeFileSync(tmpi, icon(size, radius));
     await q.goto('file://' + tmpi, { waitUntil: 'load' });

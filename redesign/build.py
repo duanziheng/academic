@@ -82,7 +82,9 @@ PERSON={'@context':'https://schema.org','@type':'Person','name':'Ziheng Duan','u
  'jobTitle':'Postdoctoral Researcher','affiliation':{'@type':'CollegeOrUniversity','name':'Yale University','url':'https://www.yale.edu/'},
  'alumniOf':[{'@type':'CollegeOrUniversity','name':'University of California, Irvine','url':'https://uci.edu/'},{'@type':'CollegeOrUniversity','name':'Zhejiang University'}],
  'knowsAbout':['Artificial intelligence','Computational biology','Single-cell genomics','Spatial transcriptomics','Gene regulation','Drug discovery'],
- 'sameAs':['https://scholar.google.com/citations?user=wA93e-kAAAAJ','https://github.com/RRRussell','https://www.linkedin.com/in/zihengduan','https://twitter.com/Ziheng1206']}
+ 'identifier':{'@type':'PropertyValue','propertyID':'ORCID','value':'0000-0003-4696-0042'},
+ 'sameAs':['https://orcid.org/0000-0003-4696-0042','https://scholar.google.com/citations?user=wA93e-kAAAAJ','https://openreview.net/profile?id=~Ziheng_Duan3',
+  'https://github.com/RRRussell','https://www.linkedin.com/in/zihengduan','https://twitter.com/Ziheng1206']}
 def authors(p,full=False):
  a=[clean(x) for x in p['authors']]
  indices=list(range(len(a)))
@@ -193,6 +195,10 @@ def slides_thumb(t):
  url=next((x['url'] for x in t.get('links',[]) if x['label']=='Slides' and x['url'].startswith('/files/talks/')),'')
  n=url.rsplit('/',1)[-1].removesuffix('.pdf') if url else ''
  return (url,'/assets/thumbs/talk-'+n+'.webp') if n and (D/'assets/thumbs'/('talk-'+n+'.webp')).exists() else ('','')
+def talk_og(pdf):
+ # the share card made from the deck's first slide (scripts/previews/cards.cjs), when there is one
+ n=pdf.rsplit('/',1)[-1].removesuffix('.pdf') if pdf else ''
+ return '/assets/og/talk-'+n+'.jpg' if n and (D/'assets/og'/('talk-'+n+'.jpg')).exists() else OG_DEFAULT
 def talk_row(t):
  badge='<span class="upcoming" data-event-date="'+e(t['date'])+'">Upcoming</span>' if t.get('upcoming') and t.get('date','')>=TODAY else ''
  pdf,img=slides_thumb(t)
@@ -204,7 +210,7 @@ mentoring = data['mentoring']
 mentoring_section = '<article class="mentoring-service"><h3>'+e(mentoring['program'])+'</h3><p>'+e(mentoring['role'])+'</p><ul>'+''.join('<li><span class="muted">'+str(p['year'])+'</span> · <a href="'+e(p['url'])+'" target="_blank" rel="noopener"><strong>'+e(p['name'])+'</strong></a> — '+e(p['description'])+'</li>' for p in mentoring['projects'])+'</ul></article>'
 service='''<section class="wrap section" id="service"><div class="section-heading"><div><p class="eyebrow">05 / Service</p><h2>Academic community</h2></div></div><div class="service-grid"><article><h3>Teaching</h3><p>Reader · UC Irvine</p><ul><li>ICS 178 · Machine Learning and Data Mining<br><span class="muted">Winter &amp; Fall 2021</span></li><li>ICS 6D · Discrete Mathematics for Computer Science<br><span class="muted">Spring 2022</span></li></ul></article><article><h3>Reviewing (selected)</h3><p class="muted">Conferences</p><ul class="inline-list"><li>ISMB</li><li>Learning on Graphs (LoG)</li><li>IEEE BIBM</li></ul><p class="muted">Journals</p><ul class="inline-list"><li>Nature Communications</li><li>Genome Medicine</li><li>BMC Medicine</li><li>IEEE TPAMI</li><li>IEEE TKDE</li><li>Pattern Recognition</li><li>Neural Networks</li></ul></article></div></section>'''
 service = service.replace('<div class="service-grid">', '<div class="service-grid">'+mentoring_section, 1)
-contact='''<section id="contact" class="contact-band"><div class="wrap contact-grid"><div><p class="eyebrow">06 / Contact</p><h2>Let’s connect.</h2><a class="email-link" href="mailto:duanziheng1206@gmail.com">duanziheng1206@gmail.com ↗</a><div class="social-links"><a href="https://www.linkedin.com/in/zihengduan" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://twitter.com/Ziheng1206" target="_blank" rel="noopener">X / Twitter ↗</a></div></div><form id="contact-form"><label for="contact-name">Your name</label><input id="contact-name" name="name" autocomplete="name" required><label for="contact-email">Your email</label><input id="contact-email" type="email" name="email" autocomplete="email" required><label for="contact-message">Message</label><textarea id="contact-message" name="message" rows="3" required></textarea><button class="button" type="submit">Open email draft ↗</button><p class="form-note">Opens your email app with your message ready to send.</p></form></div></section></main>'''
+contact='''<section id="contact" class="contact-band"><div class="wrap contact-grid"><div><p class="eyebrow">06 / Contact</p><h2>Let’s connect.</h2><a class="email-link" href="mailto:duanziheng1206@gmail.com">duanziheng1206@gmail.com ↗</a><div class="social-links"><a href="https://www.linkedin.com/in/zihengduan" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://twitter.com/Ziheng1206" target="_blank" rel="noopener">X / Twitter ↗</a><a href="https://openreview.net/profile?id=~Ziheng_Duan3" target="_blank" rel="noopener me">OpenReview ↗</a><a href="https://orcid.org/0000-0003-4696-0042" target="_blank" rel="noopener me">ORCID ↗</a></div></div><form id="contact-form"><label for="contact-name">Your name</label><input id="contact-name" name="name" autocomplete="name" required><label for="contact-email">Your email</label><input id="contact-email" type="email" name="email" autocomplete="email" required><label for="contact-message">Message</label><textarea id="contact-message" name="message" rows="3" required></textarea><button class="button" type="submit">Open email draft ↗</button><p class="form-note">Opens your email app with your message ready to send.</p></form></div></section></main>'''
 save('/',shell('Ziheng Duan · Computational Biology',intro+selected+industry_section+talksection+service+contact,head=ld_json(PERSON)))
 years=sorted(set(p['year'] for p in pubs),reverse=True)
 filters='<div class="filters"><div class="query"><label for="publication-query">Search publications</label><input type="search" id="publication-query" placeholder="Title, author, keyword…"></div><div><label for="publication-year">Year</label><select id="publication-year"><option value="">All years</option>'+''.join(f'<option>{y}</option>' for y in years)+'</select></div><div><label for="publication-type">Type</label><select id="publication-type"><option value="">All types</option><option>Journal article</option><option>Conference paper</option><option>Preprint</option></select></div><div><label for="publication-role">Authorship</label><select id="publication-role"><option value="">All papers</option><option value="first">First author</option><option value="coauthor">Co-author</option><option value="consortium">Consortium</option></select></div></div>'
@@ -216,7 +222,7 @@ for p in pubs:
 for t in data['talks']:
  pdf,img=slides_thumb(t)
  preview=('<a class="slide-preview" href="'+e(pdf)+'" target="_blank" rel="noopener" aria-label="'+e('Open the slides: '+t['title']+' (PDF, opens in a new tab)')+'"><img src="'+img+'" alt="" width="640" height="360" loading="lazy" decoding="async"><span>Open slides (PDF) <span aria-hidden="true">↗</span></span></a>') if img else ''
- save(t['path'],shell(t['title']+' · Ziheng Duan','<main id="main" class="wrap detail page"><a class="back" href="/#talks">← Talks</a><p class="eyebrow">'+str(t['year'])+' / Talk</p><h1>'+e(t['title'])+'</h1>'+talk_context(t)+'<p class="abstract">'+e(t['summary'])+'</p>'+links(t)+preview+'</main>',summary_text(t['summary'])))
+ save(t['path'],shell(t['title']+' · Ziheng Duan','<main id="main" class="wrap detail page"><a class="back" href="/#talks">← Talks</a><p class="eyebrow">'+str(t['year'])+' / Talk</p><h1>'+e(t['title'])+'</h1>'+talk_context(t)+'<p class="abstract">'+e(t['summary'])+'</p>'+links(t)+preview+'</main>',summary_text(t['summary']),talk_og(pdf),t['title']))
 # Preserve historic blog URLs and text without adding them to primary navigation. A post rendered from its original
 # Markdown (scripts/render-legacy.py → content/legacy/) keeps its code blocks, line breaks and images.
 for b in data['blogs']:
@@ -233,4 +239,5 @@ print('Generated homepage, publication archive,',len(pubs),'publication pages,',
 (D/"sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join('<url><loc>'+e(url)+'</loc></url>' for url in page_urls)+'</urlset>')
 (D/"robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: "+SITE_URL+"/sitemap.xml\n")
 # Google Scholar takes a paper's PDF only from the directory of its abstract page, so each hosted PDF is also served there
-(D/"_redirects").write_text(''.join(served+' '+src+' 200\n' for served,src in pdf_rewrites))
+# /cv is a short link to the CV (a temporary redirect, so it can point elsewhere later)
+(D/"_redirects").write_text('/cv '+data['cv']['url']+' 302\n'+''.join(served+' '+src+' 200\n' for served,src in pdf_rewrites))
