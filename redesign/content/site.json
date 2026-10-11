@@ -270,7 +270,7 @@
       "year": 2026
     },
     {
-      "abstract": "",
+      "abstract": "Regulation of gene expression is a highly coordinated process in both the healthy and pathological brain with unique patterns across a multitude of cell types. Here we present a multi-omic single nucleus study of ~175,000 nuclei from 50 donors with alcohol use disorder (AUD) and control donors without AUD, profiling cell type specific gene expression and chromatin accessibility in the human central amygdala. We identify all major CNS cell types and neuronal subtypes and find inhibitory neurons are particularly affected by AUD. We find high numbers of differentially expressed genes (DEGs) including GABRA2, GRM8, and NCAM1 and show significant enrichment for AUD risk genes within these DEGs. We identified 51,431 cell type-specific, disease associated candidate cis-regulatory elements including an interneuron-associated set of chromatin loops at the AUD risk gene CALN1. Transcription factor footprinting identified Kruppel-like factors upstream of AUD GWAS genes and DEGs. Finally, we also perform cell type-specific fine mapping for AUD GWAS to prioritize variants within functional genomic elements.",
       "authors": [
         "Che Yu Lee",
         "Ahyeon Hwang",
@@ -449,7 +449,7 @@
       "year": 2025
     },
     {
-      "abstract": "",
+      "abstract": "Spatial transcriptomics enables the study of gene expression within the spatial context of tissues, offering valuable insights into tissue organization and function. However, technical limitations can result in large missing regions of data, which hinder accurate downstream analyses and biological interpretation. To address these challenges, we propose DISCO (DIffusion model for Spatial transcriptomics data COmpletion), a framework with three key features. First, DISCO employs a graph neural network-based region encoder to integrate spatial and gene expression information from observed regions, generating latent representations that guide the prediction of missing regions. Second, it uses two diffusion modules: a position diffusion module to predict the spatial layout of missing regions, and a gene expression diffusion module to generate gene expression profiles conditioned on the predicted coordinates. Third, DISCO incorporates neighboring region information during inference to guide the denoising process, ensuring smooth transitions and biologically coherent results. We validate DISCO across multiple sequencing platforms, species, and datasets, demonstrating its effectiveness in reconstructing large missing regions. DISCO is implemented as open-source software, providing researchers with a powerful tool to enhance data completeness and advance spatial transcriptomics research.",
       "authors": [
         "Ziheng Duan",
         "Xi Li",
@@ -477,7 +477,7 @@
       "year": 2025
     },
     {
-      "abstract": "",
+      "abstract": "Spatial transcriptomics (ST) technologies enable the profiling of gene expression while preserving spatial context, offering unprecedented insights into tissue organization. However, traditional spatial domain identification methods primarily rely on gene expression matrices and spatial coordinates while overlooking the rich biological knowledge encoded in gene functional descriptions. Here, we propose SpaLLM, a general framework that integrates large language model (LLM) embeddings of gene descriptions with conventional spatial transcriptomics analysis. Our approach leverages pre-computed GenePT embeddings from NCBI gene summaries to create biologically-informed gene representations. SpaLLM combines these LLM-derived gene features with cell-gene expression matrices through matrix multiplication, generating enriched cell representations that capture both expression patterns and functional knowledge. These enriched features are then integrated with existing graph-based spatial analysis methods for improved spatial domain identification. Extensive validation on 12 sequencing-based Visium sections and an independent imaging-based osmFISH dataset demonstrate that SpaLLM consistently enhances spatial domain identification. Our modular framework can be seamlessly integrated with existing spatial analysis pipelines, making it broadly applicable to diverse research scenarios.",
       "authors": [
         "Zeyu Zou",
         "Ziheng Duan"
@@ -506,7 +506,7 @@
       "year": 2025
     },
     {
-      "abstract": "",
+      "abstract": "Genome-wide association studies (GWASs) and expression analyses implicate noncoding regulatory regions as harboring risk factors for psychiatric disease, but functional characterization of these regions remains limited. Here, we perform capture STARR-sequencing of over 70,000 candidate regions to identify active enhancers in primary human neural progenitor cells (phNPCs). We select candidate regions by integrating data from NPCs, prefrontal cortex, developmental timepoints, and GWASs. Over 8000 regions demonstrate enhancer activity in the phNPCs, and we link these regions to over 2200 predicted target genes. These genes are involved in neuronal and psychiatric disease-associated pathways, including neuronal system, nervous system development, and developmental delay. We functionally validate a subset of these enhancers using mutation STARR-sequencing and CRISPR deletions, demonstrating the effects of genetic variation on enhancer activity and enhancer deletion on gene expression. Overall, we identify thousands of highly active enhancers and functionally validated a subset of these enhancers, improving our understanding of regulatory networks underlying brain function and disease.",
       "authors": [
         "Sophia C. Gaynor-Gillett",
         "Lijun Cheng",
@@ -1154,7 +1154,7 @@
       "year": 2024
     },
     {
-      "abstract": "",
+      "abstract": "Spatial transcriptomics (ST) technologies have transformed genomic research by facilitating spatially-resolved gene expression profiling, offering unprecedented opportunities to explore cellular communication and organization. However, most existing ST assays are constrained to resolving cell clusters or multicellular structures, resulting in the amalgamation of signals from multiple cells and obscuring the spatial dynamics of diverse cell populations. To address this limitation, we conceptualize ST data as a specific type of image, where cells represent pixels and genes are akin to channels. Consequently, we propose a novel Hybrid Attention Transformer framework, named iHAST, to enhance the spatial resolution of ST data. In support of this framework, we have curated an extensive ST dataset comprising over 800 examples from diverse cell types and sequencing technologies for training and testing purposes. Subsequently, we conducted rigorous evaluations of our approach and consistently observed performance enhancements surpassing those achieved by state-of-the-art methods, underscoring the robustness and generalizability of our iHAST model across a diverse array of biological contexts and experimental conditions.",
       "authors": [
         "Xi Li",
         "Ziheng Duan",
@@ -1186,7 +1186,7 @@
       "year": 2024
     },
     {
-      "abstract": "",
+      "abstract": "Transcriptional regulation through cis-regulatory elements (CREs) is crucial for numerous biological functions, with its disruption potentially leading to various diseases. It is well-known that these CREs often exhibit redundancy, allowing them to compensate for each other in response to external disturbances, highlighting the need for methods to identify CRE sets that collaboratively regulate gene expression effectively. To address this, we introduce GRIDS, an in silico computational method that approaches the task as a global feature explanation challenge to dissect combinatorial CRE effects in two phases. First, GRIDS constructs a differentiable surrogate function to mirror the complex gene regulatory process, facilitating cross-translations in single-cell modalities. It then employs learnable perturbations within a state transition framework to offer global explanations, efficiently navigating the combinatorial feature landscape. Through comprehensive benchmarks, GRIDS demonstrates superior explanatory capabilities compared to other leading methods. Moreover, GRIDS’s global explanations reveal intricate regulatory redundancy across cell types and states, underscoring its potential to advance our understanding of cellular regulation in biological research.",
       "authors": [
         "Junhao Liu",
         "Siwei Xu",
@@ -1215,7 +1215,7 @@
       "year": 2024
     },
     {
-      "abstract": "",
+      "abstract": "The signal transduction network is essential for eukaryotic cellular communication and response to environmental signals, with disruptions leading to various diseases. As our understanding of intracellular signaling expands, the demand for computational tools that can efficiently synthesize this information into comprehensive networks grows. To meet this need, we developed CytoFlow, a novel computational model designed to construct cell-type-specific signal transduction networks by leveraging protein-protein interaction and single-cell transcriptomics data. Specifically, it models the network from receptors to transcription factors as a penalized flow network, optimized using linear programming techniques. We validated CytoFlow's superior precision against existing methods in reconstructing the yeast mitogen-activated protein kinase pathway, and demonstrated its ability to identify cell-type-specific signaling patterns in the human prefrontal cortex and peripheral blood mononuclear cells. In summary, CytoFlow offers a precise and cost-effective solution for constructing detailed signal transduction networks, advancing our capacity to understand and analyze cellular signaling processes.",
       "authors": [
         "Yi Dai",
         "Ziheng Duan",
