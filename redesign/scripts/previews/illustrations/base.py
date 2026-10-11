@@ -36,6 +36,11 @@ def f(v):
     return ('%.2f' % v).rstrip('0').rstrip('.')
 
 
+def f4(v):
+    """for coordinates inside a scaled group (section units), where two decimals would be pixels off"""
+    return ('%.4f' % v).rstrip('0').rstrip('.')
+
+
 class SVG:
     def __init__(self, theme, w=W, h=H):
         self.theme, self.w, self.h = theme, w, h
@@ -65,12 +70,12 @@ def periodic_noise(rng, t, n=5, amp=0.05):
     return amp * sum(rng.uniform(0.3, 1) * np.sin(k * t + rng.uniform(0, 2 * np.pi)) / k ** 0.6 for k in range(2, 2 + n))
 
 
-def path_d(pts, close=True):
-    s = 'M' + ' L'.join(f'{f(x)} {f(y)}' for x, y in pts)
+def path_d(pts, close=True, fmt=f):
+    s = 'M' + ' L'.join(f'{fmt(x)} {fmt(y)}' for x, y in pts)
     return s + (' Z' if close else '')
 
 
-def smooth_path(pts, close=True, tension=0.5):
+def smooth_path(pts, close=True, tension=0.5, fmt=f):
     """Catmull-Rom through the points as cubic Beziers"""
     P = np.asarray(pts, float); n = len(P)
     if close:
@@ -79,11 +84,11 @@ def smooth_path(pts, close=True, tension=0.5):
     else:
         idx = lambda i: P[min(max(i, 0), n - 1)]
         rng_ = range(n - 1)
-    d = f'M{f(P[0][0])} {f(P[0][1])}'
+    d = f'M{fmt(P[0][0])} {fmt(P[0][1])}'
     for i in rng_:
         p0, p1, p2, p3 = idx(i - 1), idx(i), idx(i + 1), idx(i + 2)
         c1 = p1 + (p2 - p0) * tension / 3; c2 = p2 - (p3 - p1) * tension / 3
-        d += f' C{f(c1[0])} {f(c1[1])} {f(c2[0])} {f(c2[1])} {f(p2[0])} {f(p2[1])}'
+        d += f' C{fmt(c1[0])} {fmt(c1[1])} {fmt(c2[0])} {fmt(c2[1])} {fmt(p2[0])} {fmt(p2[1])}'
     return d + (' Z' if close else '')
 
 
@@ -92,11 +97,11 @@ class Section:
     cortical layers L1..L6 as curved bands parallel to it, white matter below; spots on a hex grid."""
     FR = np.array([0.10, 0.09, 0.27, 0.08, 0.20, 0.18]); FR = FR / FR.sum()
 
-    def __init__(self, seed=1, spacing=0.045, wobble=1.0, T=1.08, C=(0.12, 3.25), R0=3.98):
+    def __init__(self, seed=1, spacing=0.045, wobble=1.0, T=1.08, C=(0.12, 3.25), R0=3.98, ab=(1.12, 0.86)):
         rng = np.random.default_rng(seed)
         self.C, self.R0, self.T = np.array(C), R0, T
         t = np.linspace(0, 2 * np.pi, 220, endpoint=False)
-        n = 3.0; a, b = 1.12, 0.86
+        n = 3.0; a, b = ab
         rr = 1 + periodic_noise(rng, t, 6, 0.07 * wobble)
         x = a * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** (2 / n) * rr
         y = b * np.sign(np.sin(t)) * np.abs(np.sin(t)) ** (2 / n) * rr + 0.02
@@ -113,9 +118,10 @@ class Section:
         self.noise = smooth_noise(rng, 7, 0.022 * wobble)
         # hex grid
         s = spacing; pts = []
-        ys = np.arange(-1.0, 1.0, s * np.sqrt(3) / 2)
+        ey, ex = max(1.0, b + 0.1), max(1.3, a + 0.15)
+        ys = np.arange(-ey, ey, s * np.sqrt(3) / 2)
         for j, yy in enumerate(ys):
-            xs = np.arange(-1.3, 1.3, s) + (s / 2 if j % 2 else 0)
+            xs = np.arange(-ex, ex, s) + (s / 2 if j % 2 else 0)
             pts += [(xx, yy) for xx in xs]
         pts = np.array(pts)
         inside = self.mpath.contains_points(pts, radius=-s * 0.6)

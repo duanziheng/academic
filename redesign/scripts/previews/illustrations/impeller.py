@@ -1,8 +1,8 @@
-"""Impeller: one DLPFC section with sparse measured expression, the paths that reach a missing spot,
-and the same section after imputation."""
+"""Impeller: one DLPFC section, before and after imputation, split at a missing spot. Left of it, what is measured:
+most values come back as zero, and the spatial walks (neighbour to neighbour) and the similarity walks (to far spots
+with a similar profile) reach the missing spot. Right of it, the same section after imputation."""
 import numpy as np
 from base import *
-from muse import ap
 
 SEQ = {'light': ['#E9EEF4', '#BFD6E6', '#7FB1D3', '#3F86B8', '#1D5A8A'], 'dark': ['#1A2633', '#24445E', '#2F6C93', '#4C9CC8', '#8FD0EE']}
 
@@ -15,65 +15,69 @@ def ramp(v, theme):
 def draw(theme):
     svg = SVG(theme); lt = theme == 'light'
     rng = np.random.default_rng(5)
-    sec = Section(seed=4, spacing=0.05, T=1.35, C=(1.9, 2.0), R0=3.15)
-    dep = sec.depth(sec.spots)
+    ink, bg = INK[theme], BG[theme]
+    # a wide strip of cortex: pial surface at the top, layers running across, white matter below
+    sec = Section(seed=6, spacing=0.042, T=1.55, C=(0.1, 3.4), R0=4.12, ab=(1.52, 0.8))
+    pts, dep = sec.spots, sec.depth(sec.spots)
     # a marker of the middle layers (L3-L4): expression peaks in the band, low elsewhere
-    true = np.exp(-((dep - 0.50) / 0.17) ** 2) * 0.95 + 0.05 * rng.random(len(dep))
+    true = np.exp(-((dep - 0.48) / 0.16) ** 2) * 0.95 + 0.05 * rng.random(len(dep))
     obs_nz = rng.random(len(dep)) < 0.24
-    S = 168
-    ML = (S, 0, 0, S, 236, 252)
-    MR = (S, 0, 0, S, 724, 252)
-    # slides
-    for M in (ML, MR):
-        a, b, c, d, e, f_ = M
-        svg.add(f'<g transform="matrix({f(a)} 0 0 {f(d)} {f(e)} {f(f_ + 3)})"><rect x="-1.26" y="-1.02" width="2.52" height="2.04" rx="0.03" fill="{"#C3CDD8" if lt else "#05090E"}"/></g>')
-    # left: what is measured — most values come back as zero
-    gl = f'<g transform="matrix({S} 0 0 {S} 236 252)">'
-    frame = (f'<rect x="-1.26" y="-1.02" width="2.52" height="2.04" rx="0.03" fill="{"#FFFFFF" if lt else "#121E2B"}" stroke="{"#C3CEDA" if lt else "#2C4157"}" stroke-width="0.006"/>')
-    pd = smooth_path(sec.outline, True, 0.6)
-    tissue = f'<path d="{pd}" fill="{"#EADFE6" if lt else "#1E2530"}" stroke="{"#D5C3CE" if lt else "#33404F"}" stroke-width="0.008"/>'
-    r = sec.s * 0.44
-    zero = '#D9DEE5' if lt else '#2A3542'
+    S, X, Y = 262, 480, 232
+    scr = lambda p: np.c_[X + S * p[:, 0], Y + S * p[:, 1]]
+    # the missing spot, in the band at the middle of the section
+    cand = np.where((~obs_nz) & (np.abs(dep - 0.48) < 0.05) & (np.abs(pts[:, 0]) < 0.12))[0]
+    t = cand[np.argmin(np.abs(pts[cand, 0] - 0.02))]
+    xs = pts[t, 0]
+    svg.defn(f'<clipPath id="left{theme}"><rect x="-2" y="-1.5" width="{f4(xs + 2)}" height="3"/></clipPath>'
+             f'<clipPath id="right{theme}"><rect x="{f4(xs)}" y="-1.5" width="{f4(2 - xs)}" height="3"/></clipPath>'
+             '<filter id="tshadow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>')
+    pd = smooth_path(sec.outline, True, 0.6, f4)
+    r = sec.s * 0.4
+    zero = '#D6DCE3' if lt else '#2A3542'
     cols = ramp(true * (0.75 + 0.5 * rng.random(len(true))), theme)
-    spots_l = ''.join(f'<circle cx="{f(x)}" cy="{f(y)}" r="{f(r if nz else r * 0.62)}" fill="{c if nz else zero}"/>'
-                      for (x, y), nz, c in zip(sec.spots, obs_nz, cols))
-    svg.add(gl + frame + tissue + spots_l + '</g>')
-    # the target: a missing spot in the band
-    cand = np.where((~obs_nz) & (np.abs(dep - 0.5) < 0.05) & (np.abs(sec.spots[:, 0]) < 0.35))[0]
-    t = cand[np.argmin(np.abs(sec.spots[cand, 1] - 0.05))]
-    pts = sec.spots
-    def scr(i, M=ML): return ap(M, pts[[i]])[0]
-    # spatial walks: neighbour to neighbour
-    nb = lambda i: np.where((np.hypot(*(pts - pts[i]).T) < sec.s * 1.05) & (np.arange(len(pts)) != i))[0]
-    walks = []
-    for w in range(4):
-        cur, path = t, [t]
-        for _ in range(6):
-            n = nb(cur); cur = rng.choice(n); path.append(cur)
-        walks.append(path)
-    for path in walks:
-        P = ap(ML, pts[path])
-        svg.add(f'<path d="{path_d(P, False)}" fill="none" stroke="{"#24476B" if lt else "#9CC6EA"}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>')
-        svg.add(''.join(f'<circle cx="{f(x)}" cy="{f(y)}" r="2.6" fill="{"#24476B" if lt else "#9CC6EA"}"/>' for x, y in P[1:]))
-    # similarity walks: jumps to far spots with a similar profile (same band)
-    far = np.where(obs_nz & (np.abs(dep - 0.5) < 0.08) & (np.hypot(*(pts - pts[t]).T) > 0.45))[0]
-    hops = rng.choice(far, 5, replace=False)
-    p0 = scr(t)
-    for h in hops:
-        p1 = scr(h); mx, my = (p0 + p1) / 2; dx, dy = p1 - p0
-        cx, cy = mx - dy * 0.28, my + dx * 0.28 - 22
-        svg.add(f'<path d="M{f(p0[0])} {f(p0[1])} Q{f(cx)} {f(cy)} {f(p1[0])} {f(p1[1])}" fill="none" stroke="{"#7B4FC2" if lt else "#C3A6F2"}" stroke-width="2" stroke-dasharray="5 4" opacity="0.95"/>'
-                f'<circle cx="{f(p1[0])}" cy="{f(p1[1])}" r="4.2" fill="none" stroke="{"#7B4FC2" if lt else "#C3A6F2"}" stroke-width="1.8"/>')
-    svg.add(f'<circle cx="{f(p0[0])}" cy="{f(p0[1])}" r="7.5" fill="{BG[theme]}" stroke="{INK[theme]}" stroke-width="2.4"/>'
-            f'<circle cx="{f(p0[0])}" cy="{f(p0[1])}" r="2.4" fill="{INK[theme]}"/>')
-    # right: the imputed section
     colsR = ramp(true, theme)
-    spots_r = ''.join(f'<circle cx="{f(x)}" cy="{f(y)}" r="{f(r)}" fill="{c}"/>' for (x, y), c in zip(sec.spots, colsR))
-    svg.add(f'<g transform="matrix({S} 0 0 {S} 724 252)">' + frame + tissue + spots_r + '</g>')
-    q = scr(t, MR)
-    svg.add(f'<circle cx="{f(q[0])}" cy="{f(q[1])}" r="7.5" fill="{colsR[t]}" stroke="{INK[theme]}" stroke-width="2.4"/>')
-    # arrow between the two
-    ac = INK[theme]
-    svg.add(f'<path d="M455 252 H500" stroke="{ac}" stroke-width="3" stroke-linecap="round"/><path d="M492 242 L505 252 L492 262" fill="none" stroke="{ac}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
+    left = ''.join(f'<circle cx="{f4(x)}" cy="{f4(y)}" r="{f4(r if nz else r * 0.58)}" fill="{cc if nz else zero}"/>'
+                   for (x, y), nz, cc in zip(pts, obs_nz, cols))
+    right = ''.join(f'<circle cx="{f4(x)}" cy="{f4(y)}" r="{f4(r)}" fill="{cc}"/>' for (x, y), cc in zip(pts, colsR))
+    tissue, rim = ('#EFE6EB', '#DCCBD5') if lt else ('#1C2430', '#33404F')
+    svg.add(f'<g filter="url(#tshadow)" opacity="{0.14 if lt else 0.6}"><g transform="translate({X + 8} {Y + 18}) scale({S})">'
+            f'<path d="{pd}" fill="{"#28405A" if lt else "#000000"}"/></g></g>')
+    svg.add(f'<g transform="translate({X} {Y}) scale({S})"><path d="{pd}" fill="{tissue}" stroke="{rim}" stroke-width="0.006"/>'
+            f'<g clip-path="url(#left{theme})">{left}</g><g clip-path="url(#right{theme})">{right}</g></g>')
+    # the split between measured and imputed, through the missing spot
+    top = sec.outline[np.argmin(np.abs(sec.outline[:, 0] - xs) + 9 * (sec.outline[:, 1] > 0))]
+    botm = sec.outline[np.argmin(np.abs(sec.outline[:, 0] - xs) + 9 * (sec.outline[:, 1] < 0))]
+    (x1, y1), (x2, y2) = scr(np.array([top, botm]))
+    svg.add(f'<line x1="{f(x1)}" y1="{f(y1 - 16)}" x2="{f(x2)}" y2="{f(y2 + 16)}" stroke="{ink}" stroke-width="1.6" stroke-opacity="0.5"/>')
+    # spatial walks on the measured side
+    nb = lambda i: np.where((np.hypot(*(pts - pts[i]).T) < sec.s * 1.05) & (np.arange(len(pts)) != i) & (pts[:, 0] < xs + 1e-6))[0]
+    walk_c = '#24476B' if lt else '#9CC6EA'
+    for ang in (150, 180, 212):        # three walks, heading up-left, left and down-left
+        u = np.array([np.cos(np.radians(ang)), -np.sin(np.radians(ang))])
+        cur, path = t, [t]
+        for _ in range(8):
+            n = nb(cur); n = n[~np.isin(n, path)]
+            if not len(n):
+                break
+            score = (pts[n] - pts[cur]) @ u / sec.s + rng.normal(0, 0.3, len(n))
+            cur = n[np.argmax(score)]; path.append(cur)
+        P = scr(pts[path])
+        svg.add(f'<path d="{smooth_path(P, False, 0.5)}" fill="none" stroke="{walk_c}" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" opacity="0.92"/>'
+                + ''.join(f'<circle cx="{f(x)}" cy="{f(y)}" r="2.6" fill="{walk_c}"/>' for x, y in P[1:]))
+    # similarity walks: jumps to far measured spots with a similar profile (the same band)
+    far = np.where(obs_nz & (np.abs(dep - 0.48) < 0.07) & (pts[:, 0] < xs - 0.4))[0]
+    far = far[np.argsort(pts[far, 0])]
+    hop_c = '#7B4FC2' if lt else '#C3A6F2'
+    p0 = scr(pts[[t]])[0]
+    for h in far[np.linspace(0, len(far) - 1, 4).astype(int)]:
+        p1 = scr(pts[[h]])[0]; dx = p1[0] - p0[0]
+        cx, cy = (p0[0] + p1[0]) / 2, min(p0[1], p1[1]) - 34 - 0.12 * abs(dx)
+        svg.add(f'<path d="M{f(p0[0])} {f(p0[1])} Q{f(cx)} {f(cy)} {f(p1[0])} {f(p1[1])}" fill="none" stroke="{hop_c}" stroke-width="2" stroke-dasharray="5 4" opacity="0.95"/>'
+                f'<circle cx="{f(p1[0])}" cy="{f(p1[1])}" r="4.6" fill="none" stroke="{hop_c}" stroke-width="1.8"/>')
+    # the missing spot: empty on the measured side, its imputed value on the other
+    x0, y0 = p0
+    svg.defn(f'<clipPath id="half{theme}"><rect x="{f(x0)}" y="{f(y0 - 20)}" width="20" height="40"/></clipPath>')
+    svg.add(f'<circle cx="{f(x0)}" cy="{f(y0)}" r="9" fill="{bg}"/>'
+            f'<circle cx="{f(x0)}" cy="{f(y0)}" r="9" fill="{colsR[t]}" clip-path="url(#half{theme})"/>'
+            f'<circle cx="{f(x0)}" cy="{f(y0)}" r="9" fill="none" stroke="{ink}" stroke-width="2.4"/>')
     return svg.text()
-
