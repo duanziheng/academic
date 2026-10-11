@@ -96,6 +96,12 @@ def authors(p,full=False):
   if a[i]=='Ziheng Duan' and p.get('corresponding'):name+='<sup aria-label="Corresponding author">*</sup>'
   result.append(name);previous=i
  return ', '.join(result)
+def detail_authors(p):
+ # a long byline (consortium papers run to 80+ names) is shortened, with the full list one click away
+ n=len(p['authors'])
+ if n<=12:return '<p class="detail-authors">'+authors(p,True)+'</p>'
+ return ('<p class="detail-authors">'+authors(p)+'</p><details class="all-authors"><summary>All '+str(n)+' authors</summary>'
+  '<p class="detail-authors">'+authors(p,True)+'</p></details>')
 def author_note(p):
  notes=[]
  if p.get('equal_contribution'):notes.append('† Equal contribution')
@@ -204,16 +210,21 @@ years=sorted(set(p['year'] for p in pubs),reverse=True)
 filters='<div class="filters"><div class="query"><label for="publication-query">Search publications</label><input type="search" id="publication-query" placeholder="Title, author, keyword…"></div><div><label for="publication-year">Year</label><select id="publication-year"><option value="">All years</option>'+''.join(f'<option>{y}</option>' for y in years)+'</select></div><div><label for="publication-type">Type</label><select id="publication-type"><option value="">All types</option><option>Journal article</option><option>Conference paper</option><option>Preprint</option></select></div><div><label for="publication-role">Authorship</label><select id="publication-role"><option value="">All papers</option><option value="first">First author</option><option value="coauthor">Co-author</option><option value="consortium">Consortium</option></select></div></div>'
 save('/publication/',shell('Publications · Ziheng Duan','<main id="main" class="wrap page"><p class="eyebrow">Research archive</p><h1 class="page-title">Publications<span>.</span></h1>'+filters+f'<p id="publication-count" class="muted" role="status">{len(pubs)} publications</p><div class="papers year-groups" id="publication-list">'+year_groups(pubs)+'</div><div id="no-results" hidden><h2>No matching publications</h2><p>Try another keyword or clear the filters.</p><button class="button" id="clear-filters">Clear filters</button></div></main>'))
 for p in pubs:
- body='<main id="main" class="wrap detail page"><a class="back" href="/publication/">← Publications</a><p class="eyebrow">'+e(str(p['year'])+' / '+p['type'])+'</p><h1>'+e(p['title'])+'</h1><p class="detail-authors">'+authors(p,True)+'</p>'+author_note(p)+'<p class="venue">'+e(p['venue'])+'</p>'+links(p)+frames(p)+('<section class="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>' if p['abstract'] else '')+'</main>'
+ body='<main id="main" class="wrap detail page"><a class="back" href="/publication/">← Publications</a><p class="eyebrow">'+e(str(p['year'])+' / '+p['type'])+'</p><h1>'+e(p['title'])+'</h1>'+detail_authors(p)+author_note(p)+'<p class="venue">'+e(p['venue'])+'</p>'+links(p)+frames(p)+('<section class="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>' if p['abstract'] else '')+'</main>'
  description=summary_text(p['abstract'] or p.get('summary') or (p['title']+' — '+p['venue']+', '+str(p['year'])+'.'))
  save(p['path'],shell(p['title']+' · Ziheng Duan',body,description,og_image(p),p['title'],head=paper_head(p)))
 for t in data['talks']:
  pdf,img=slides_thumb(t)
  preview=('<a class="slide-preview" href="'+e(pdf)+'" target="_blank" rel="noopener" aria-label="'+e('Open the slides: '+t['title']+' (PDF, opens in a new tab)')+'"><img src="'+img+'" alt="" width="640" height="360" loading="lazy" decoding="async"><span>Open slides (PDF) <span aria-hidden="true">↗</span></span></a>') if img else ''
  save(t['path'],shell(t['title']+' · Ziheng Duan','<main id="main" class="wrap detail page"><a class="back" href="/#talks">← Talks</a><p class="eyebrow">'+str(t['year'])+' / Talk</p><h1>'+e(t['title'])+'</h1>'+talk_context(t)+'<p class="abstract">'+e(t['summary'])+'</p>'+links(t)+preview+'</main>',summary_text(t['summary'])))
-# Preserve historic blog URLs and text without adding them to primary navigation.
+# Preserve historic blog URLs and text without adding them to primary navigation. A post rendered from its original
+# Markdown (scripts/render-legacy.py → content/legacy/) keeps its code blocks, line breaks and images.
 for b in data['blogs']:
- save(b['relpermalink'],shell(b['title']+' · Ziheng Duan','<main id="main" class="wrap detail page"><a class="back" href="/">← Home</a><h1>'+e(b['title'])+'</h1><div class="legacy-text">'+e(b['content'])+'</div></main>'))
+ frag=R/'content/legacy'/(urllib.parse.unquote(b['relpermalink']).strip('/').replace('/','__')+'.html')
+ when=(b.get('publishdate') or '')[:4]
+ eyebrow='<p class="eyebrow">'+e(' · '.join(x for x in (when,str(b.get('categories') or '').title()) if x))+'</p>'
+ text='<div class="legacy-post">'+frag.read_text(encoding='utf-8')+'</div>' if frag.exists() else '<div class="legacy-text">'+e(b['content'])+'</div>'
+ save(b['relpermalink'],shell(b['title']+' · Ziheng Duan','<main id="main" class="wrap detail page" lang="'+('zh-CN' if re.search(r'[\u4e00-\u9fff]',b['title']+b['content']) else 'en')+'"><a class="back" href="/" lang="en">← Home</a>'+eyebrow+'<h1>'+e(b['title'])+'</h1>'+text+'</main>',summary_text(html.unescape(b.get('summary') or b['title']))))
 (D/'404.html').write_text(shell('Page not found · Ziheng Duan','<main id="main" class="wrap page missing-page"><p class="eyebrow">404 / Page not found</p><div class="unannotated-cell" aria-hidden="true"><span>?</span></div><h1 class="page-title">This cell hasn’t been annotated yet.</h1><p class="muted">The page you’re looking for may have moved, or the address may be incomplete.</p><div class="missing-actions"><a class="button" href="/">Return home</a><button type="button" class="button secondary" data-open-search>Search website</button></div></main>').replace('<meta name="description"','<meta name="robots" content="noindex"><meta name="description"',1))
 (D/'assets/content.json').write_text(json.dumps({'publications':pubs,'talks':data['talks'],'news':data.get('news',[])},ensure_ascii=False))
 print('Generated homepage, publication archive,',len(pubs),'publication pages,',len(data['talks']),'talk pages, and',len(data['blogs']),'legacy pages.')

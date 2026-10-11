@@ -1,0 +1,114 @@
+<p>汉诺塔（Tower of Hanoi）是根据一个传说形成的数学问题：</p>
+<p>有三根杆子A，B，C。 A杆上有 N 个 (N&gt;1) 穿孔圆盘，盘的尺寸由下到上依次变小。要求按下列规则将所有圆盘移至 C 杆：</p>
+<p>每次只能移动一个圆盘；
+大盘不能叠在小盘上面。
+提示：可将圆盘临时置于 B 杆，也可将从 A 杆移出的圆盘重新移回 A 杆，但都必须遵循上述两条规则。</p>
+<p>问：如何移？最少要移动多少次？</p>
+<p>递归版本：</p>
+<pre tabindex="0"><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;time.h&gt;
+int count = 0;
+using namespace std;
+void hanio(int n, char a, char c, char b)
+{
+    if(n == 1)
+    {
+        cout&lt;&lt;a&lt;&lt;&quot; -&gt; &quot;&lt;&lt;b&lt;&lt;endl;
+        count++;
+    }
+    else
+    {
+        hanio(n - 1, a, b, c);
+        cout&lt;&lt;a&lt;&lt;&quot; -&gt; &quot;&lt;&lt;b&lt;&lt;endl;
+        count++;
+        hanio(n - 1, c, a, b);
+    }
+}
+
+int main()
+{
+     int n;
+    cin&gt;&gt;n;
+    clock_t time_start = clock();
+    hanio(n, 'a', 'b', 'c');
+    clock_t time_end = clock();
+    cout&lt;&lt;&quot;The program takes &quot;&lt;&lt;(time_end - time_start)/1.0/1000&lt;&lt;&quot; milliseconds&quot;&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+<p>非递归版本：</p>
+<pre tabindex="0"><code class="language-C">#include &lt;iostream&gt;
+#include &lt;memory.h&gt;
+#include &lt;math.h&gt;
+#include &lt;time.h&gt;
+
+using namespace std;
+
+int max_k(int i)
+{
+    if(i==0)
+        return 0;
+    int k = 0;
+    while(i%2==0)
+    {
+        i/=2;
+        k++;
+    }
+    return k;
+}
+
+int main()
+{
+    int n, k;
+    cin&gt;&gt;n;
+    clock_t time_start = clock();
+    char* a = new char[n];
+    memset(a, 'a', n);
+    if(n%2==0)
+    {
+        for(int i=1;i&lt;=pow(2,n)-1;i++)
+        {
+            k = max_k(i);
+            if((k+1)%2)
+            {
+                char now = a[k];//k+1号盘子现在在哪根柱子上
+                char next = (a[k]=='c')?'a':(a[k]+1);//k+1号盘子要移动到哪根柱子上
+                cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl;
+                a[k] = next;
+            }
+            else
+            {
+                char now = a[k];//k+1号盘子现在在哪根柱子上
+                char next = (a[k]=='a')?'c':(a[k]-1);//k+1号盘子要移动到哪根柱子上
+                cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl;
+                a[k] = next;
+            }
+        }
+    }
+    else
+    {
+        for(int i=1;i&lt;=pow(2,n)-1;i++)
+        {
+            k = max_k(i);
+            if((k+1)%2)
+            {
+                char now = a[k];//k+1号盘子现在在哪根柱子上
+                char next = (a[k]=='a')?'c':(a[k]-1);//k+1号盘子要移动到哪根柱子上
+                cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl;
+                a[k] = next;
+            }
+            else
+            {
+                char now = a[k];//k+1号盘子现在在哪根柱子上
+                char next = (a[k]=='c')?'a':(a[k]+1);//k+1号盘子要移动到哪根柱子上
+                cout&lt;&lt;now&lt;&lt;&quot; -&gt; &quot;&lt;&lt;next&lt;&lt;endl;
+                a[k] = next;
+            }
+        }
+    }
+    clock_t time_end = clock();
+    cout&lt;&lt;&quot;The program takes &quot;&lt;&lt;(time_end - time_start)/1.0/1000&lt;&lt;&quot; seconds&quot;&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+<p>最后还输出计算时间，n较小时两者差不多，n大了之后明显非递归更快</p>
