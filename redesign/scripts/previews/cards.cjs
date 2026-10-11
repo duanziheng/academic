@@ -19,8 +19,8 @@ const PAPERS = [
 const TALKS = [
   ['ics-honors-seminar-2026', 'ICS Honors Seminar · 2026', 'Decoding Disease, Designing Interventions'],
   ['scorch-2026', 'SCORCH 2026 Fall Meeting · 2026', 'AI-Driven Therapeutic Target Discovery and Cell-State Reprogramming'],
-  ['scencore-2024', 'Southern California Systems Biology · 2024', 'scENCORE: Reconstructing Chromatin Compartments from Single-Cell Epigenetic Data'],
-  ['iherd-2023', 'SCORCH Consortium Meeting · 2023', 'iHerd: Identifying Key Driver Genes through Changes in Gene Networks'],
+  ['scencore-2024', 'Southern California Systems Biology · 2024', 'scENCORE: Leveraging Single-Cell Epigenetic Data to Predict Chromatin Conformation Using Graph Embedding'],
+  ['iherd-2023', 'SCORCH Consortium Meeting · 2023', 'iHerd: An Integrative Hierarchical Graph Representation Learning Framework to Quantify Network Changes and Prioritize Risk Genes in Disease'],
 ];
 const WANT = new Set(process.argv.slice(4).length ? process.argv.slice(4) : ['home', 'papers', 'talks', 'icons']);
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
