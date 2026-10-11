@@ -9,10 +9,10 @@ from base import *
 from ptsd import BRAIN
 
 # excitatory neurons by cortical layer, from the surface down
-L23, L4, L5, L6 = '#F5B935', '#F2862E', '#E2445A', '#BC3A88'
-INN = ['#27B072', '#86C95A', '#12A39B']                     # inhibitory neurons
-WM = (['#3D7FD9', '#7A5FE0', '#2CB5C8', '#A86B4A', '#E9C84E'],  # OLG, OPC, AST, MG, END
-      [0.56, 0.14, 0.14, 0.09, 0.07])
+L23, L4, L5, L6 = '#F2BC48', '#EF953C', '#E05A5C', '#BE4486'
+INN = ['#2BAE73', '#7FC25E', '#1AA39B']                     # inhibitory neurons
+WM = (['#4A7FD4', '#7A64D8', '#2FAFC0', '#A87055', '#E2C25A'],  # OLG, OPC, AST, MG, END
+      [0.6, 0.14, 0.13, 0.08, 0.05])
 CBL = ['#8C6FD8', '#A88BE6', '#6F5BC9']                      # cerebellar granule cells
 
 
@@ -88,8 +88,11 @@ def draw(theme):
     edge = '#CDBFBA' if lt else '#3B3445'
     # the many brains of the resource: a stack of silhouettes fanning up and to the right behind the front one
     back = '#E6DCD8' if lt else '#262130'
+    svg.defn('<filter id="stackblur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="1.3"/></filter>')
+    svg.add('<g filter="url(#stackblur)">')
     for k in range(4, 0, -1):
         svg.add(silhouette(X0 + 15 * k, Y0 - 12 * k, S, mix(back, bg, 0.12 + 0.2 * k), mix(edge, bg, 0.35 + 0.15 * k), 1.0 / S))
+    svg.add('</g>')
     # the front brain: a silhouette, then its cells
     svg.add(silhouette(X0, Y0, S, tissue, edge, 1.3 / S))
     cer = svg_to_mpath(BRAIN['cerebrum'], S, X0, Y0)
@@ -100,11 +103,11 @@ def draw(theme):
     folia = np.vstack([curve_points(d, S, X0, Y0) for d in BRAIN['cbl_lines']])
     t_out, t_sul, t_fol = cKDTree(outline), cKDTree(sulci), cKDTree(folia)
     noise = smooth_noise(np.random.default_rng(5), 6, 1.0)
-    P = jitter_grid(rng, (X0, Y0, X0 + 410 * S, Y0 + 300 * S), 4.1, 0.9)
+    P = jitter_grid(rng, (X0, Y0, X0 + 410 * S, Y0 + 300 * S), 3.95, 0.55)
     dots = []
 
     def dot(x, y, c, r=None, op=0.95):
-        r = rng.uniform(1.5, 1.95) if r is None else r
+        r = rng.uniform(1.55, 1.8) if r is None else r
         dots.append(f'<circle cx="{f(x)}" cy="{f(y)}" r="{f(r)}" fill="{tone(c, theme, 0.06)}" fill-opacity="{op}"/>')
 
     # cerebrum: depth below the nearest surface (the outer edge or a sulcus) sets the layer
@@ -120,9 +123,9 @@ def draw(theme):
                 dot(x, y, WM[0][2] if r < 0.15 else INN[0], op=0.8)
             continue
         if d < 20.5:
-            if r < 0.17:
+            if r < 0.1:
                 c = INN[rng.integers(3)]
-            elif r < 0.23:
+            elif r < 0.13:
                 c = rng.choice(WM[0], p=WM[1])
             else:
                 c = L23 if d < 8.5 else L4 if d < 11.5 else L5 if d < 16 else L6
@@ -143,6 +146,13 @@ def draw(theme):
     svg.add(f'<g transform="translate({X0} {Y0}) scale({S})" fill="none" stroke="{sul}" stroke-width="{f(1.6 / S)}" stroke-linecap="round">'
             + ''.join(f'<path d="{d}"/>' for d in BRAIN['sulci'] + BRAIN['cbl_lines']) + '</g>')
     svg.add(''.join(dots))
+    hx, hy = X0 + 120 * S, Y0 + 50 * S
+    svg.defn(f'<clipPath id="cer{theme}"><path transform="translate({X0} {Y0}) scale({S})" d="{BRAIN["cerebrum"]}"/></clipPath>'
+             f'<radialGradient id="vol{theme}" gradientUnits="userSpaceOnUse" cx="{f(hx)}" cy="{f(hy)}" r="{f(330 * S)}">'
+             f'<stop offset="0" stop-color="#FFFFFF" stop-opacity="{0.2 if lt else 0.1}"/>'
+             f'<stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>'
+             f'<stop offset="1" stop-color="{"#14263C" if lt else "#000000"}" stop-opacity="{0.24 if lt else 0.42}"/></radialGradient>')
+    svg.add(f'<rect x="{X0}" y="{Y0}" width="{f(410 * S)}" height="{f(300 * S)}" fill="url(#vol{theme})" clip-path="url(#cer{theme})"/>')
     # the numbers
     svg.add(f'<text x="604" y="132" font-family="Gelasio, Georgia, serif" font-size="112" fill="{ink}" letter-spacing="-2">388</text>'
             f'<text x="812" y="132" font-size="26" fill="{ink}">brains</text>'
@@ -156,8 +166,8 @@ def draw(theme):
             rr = rng.uniform(34, 60); tx, ty = hx_ + rr * np.cos(a), hy + rr * np.sin(a)
             bend = rng.uniform(-0.25, 0.25)
             mx, my = (hx_ + tx) / 2 - (ty - hy) * bend, (hy + ty) / 2 + (tx - hx_) * bend
-            edges.append(f'<path d="M{hx_} {hy} Q{f(mx)} {f(my)} {f(tx)} {f(ty)}" fill="none" stroke="{c}" stroke-width="1.5" stroke-opacity="0.6"/>')
-            nodes.append(f'<circle cx="{f(tx)}" cy="{f(ty)}" r="3.5" fill="{gene}"/>')
+            edges.append(f'<path d="M{hx_} {hy} Q{f(mx)} {f(my)} {f(tx)} {f(ty)}" fill="none" stroke="{c}" stroke-width="1.3" stroke-opacity="0.6"/>')
+            nodes.append(f'<circle cx="{f(tx)}" cy="{f(ty)}" r="3.2" fill="{gene}"/>')
     for i, j in [(0, 1), (1, 2), (0, 3), (3, 2)]:
         (x1, y1, c1), (x2, y2, c2) = hubs[i], hubs[j]
         gx, gy = (x1 + x2) / 2 + rng.uniform(-8, 8), (y1 + y2) / 2 + rng.uniform(-8, 8)
@@ -166,8 +176,8 @@ def draw(theme):
         nodes.append(f'<circle cx="{f(gx)}" cy="{f(gy)}" r="5" fill="{ink}" fill-opacity="0.55" stroke="{bg}" stroke-width="2"/>')
     svg.add(''.join(edges) + ''.join(nodes))
     for hx_, hy, c in hubs:
-        svg.add(f'<circle cx="{hx_}" cy="{hy}" r="21" fill="{c}" fill-opacity="0.16"/>'
-                f'<circle cx="{hx_}" cy="{hy}" r="13" fill="{tone(c, theme, 0.04)}" stroke="{bg}" stroke-width="3"/>')
+        svg.add(f'<circle cx="{hx_}" cy="{hy}" r="20" fill="{c}" fill-opacity="0.15"/>'
+                f'<circle cx="{hx_}" cy="{hy}" r="11.5" fill="{tone(c, theme, 0.04)}" stroke="{bg}" stroke-width="3"/>')
     # a variant in the DNA tied to one cell type's regulation (an eQTL)
     ys = 446; xs = np.linspace(604, 930, 120)
     for ph in (0, np.pi):

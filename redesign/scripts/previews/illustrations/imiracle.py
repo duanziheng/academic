@@ -100,18 +100,26 @@ def draw(theme):
         dd = np.hypot(*(bg - bg[i]).T)
         for j in np.argsort(dd)[1:4]:
             if i < j: E.append((i, j))
+    # the surrounding tissue sits out of focus behind the pair: softened and slightly blurred
+    svg.defn('<filter id="dof" x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation="1.7"/></filter>'
+             '<filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>')
+    svg.add(f'<g filter="url(#dof)" opacity="{0.62 if lt else 0.55}">')
     for i, j in E:
         c = LR[rng.integers(0, 4)]
-        svg.add(f'<line x1="{f(bg[i][0])}" y1="{f(bg[i][1])}" x2="{f(bg[j][0])}" y2="{f(bg[j][1])}" stroke="{c}" stroke-width="{f(rng.uniform(1, 3.2))}" stroke-opacity="{0.28 if lt else 0.35}" stroke-linecap="round"/>')
+        svg.add(f'<line x1="{f(bg[i][0])}" y1="{f(bg[i][1])}" x2="{f(bg[j][0])}" y2="{f(bg[j][1])}" stroke="{c}" stroke-width="{f(rng.uniform(1, 2.6))}" stroke-opacity="{0.3 if lt else 0.38}" stroke-linecap="round"/>')
     for p, ta in zip(bg, types):
         r = rng.uniform(22, 30)
         P = blob(p[0], p[1], r, rng, 40, 0.07)
-        svg.add('<g opacity="0.55">' if lt else '<g opacity="0.6">')
+        svg.add('<g opacity="0.6">')
         cell(svg, P, TA if ta else TB, theme, nuc=(p[0] + rng.uniform(-4, 4), p[1] + rng.uniform(-4, 4), r * 0.42), rng=rng)
         svg.add('</g>')
+    svg.add('</g>')
     # the two cells in focus
     S = (262, 248, 146); R = (706, 244, 150)
     Ps = blob(S[0], S[1], S[2], rng, 90, 0.035); Pr = blob(R[0], R[1], R[2], rng, 90, 0.035)
+    sh = ('#22364F', 0.16) if lt else ('#000000', 0.5)
+    for (cx_, cy_, r_) in (S, R):
+        svg.add(f'<ellipse cx="{cx_ + 8}" cy="{cy_ + 18}" rx="{r_ * 0.97}" ry="{r_ * 0.93}" fill="{sh[0]}" opacity="{sh[1]}" filter="url(#shadow)"/>')
     # ligands in flight between them
     for k in range(12):
         t = rng.uniform(0.08, 0.92)
@@ -124,8 +132,8 @@ def draw(theme):
     # vesicles releasing ligands at the sender's right side
     for k, a in enumerate(np.radians([-34, -12, 10, 30])):
         x, y = S[0] + (S[2] - 6) * np.cos(a), S[1] + (S[2] - 6) * np.sin(a)
-        svg.add(f'<circle cx="{f(x)}" cy="{f(y)}" r="11" fill="{mix(LR[k], "#FFFFFF", 0.7) if lt else mix(LR[k], BG["dark"], 0.6)}" stroke="{LR[k]}" stroke-width="1.6"/>')
-        ligand(svg, x - 1, y, LR[k], theme, 0.55, 20 * k)
+        svg.add(f'<circle cx="{f(x)}" cy="{f(y)}" r="10" fill="{mix(LR[k], "#FFFFFF", 0.78) if lt else mix(LR[k], BG["dark"], 0.62)}" stroke="{mix(LR[k], "#FFFFFF", 0.25) if lt else LR[k]}" stroke-width="1.2"/>')
+        ligand(svg, x - 1, y, LR[k], theme, 0.5, 20 * k)
     # receptors on the receiver's left side, some with their ligand bound
     angs = [-38, -19, 0, 19, 38]
     for k, a in enumerate(angs):

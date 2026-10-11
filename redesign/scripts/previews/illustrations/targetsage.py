@@ -12,7 +12,7 @@ CHR = [('1', 248.9, 123.4), ('2', 242.2, 93.9), ('3', 198.3, 90.9), ('4', 190.2,
        ('21', 46.7, 12.0), ('22', 50.8, 15.0), ('X', 156.0, 60.6), ('Y', 57.2, 10.4)]
 GOLD = '#E3A21A'
 AIM = '#E4553F'
-SPECTRUM = ['#3E6FD6', '#2AA3D6', '#27B08A', '#93C645', '#EDB532', '#EE803A', '#DE4F4C']
+SPECTRUM = ['#3B57C4', '#3A7FD5', '#2EA2CF', '#29B3A6', '#4DBE86']   # N to C terminus, in cool hues so the drug stands out
 
 
 def spectrum(t):
@@ -21,14 +21,15 @@ def spectrum(t):
 
 
 # ---------------------------------------------------------------- karyotype
-KX, KP, KW, KY, KS = 44, 18.2, 11.5, 188, 0.95          # first x, pitch, width, centromere line, px per Mb
+KX, KP, KW, KY, KS = 52, 18.2, 11.5, 194, 0.97          # first x, pitch, width, centromere line, px per Mb
 
 
 def karyotype(theme, rng):
     lt = theme == 'light'
-    base = '#E9EEF3' if lt else '#203044'
-    shades = (['#C5CFD9', '#9AA8B6', '#6F7F90', '#4D5B6B'] if lt else ['#33475D', '#4A6079', '#647C96', '#8299B2'])
-    acen = '#E7A3A0' if lt else '#7D4A55'
+    base = '#EEF2F6' if lt else '#1C2B3D'
+    shades = (['#D3DBE3', '#B3BFCB', '#8E9DAD', '#6E7E8F'] if lt else ['#2B3D52', '#3E536B', '#566E88', '#7189A3'])
+    acen = '#E9B4B0' if lt else '#6E4450'
+    edge = '#B9C5D1' if lt else '#3A4E64'
     out, clips = [], []
     for i, (name, L, cen) in enumerate(CHR):
         x = KX + i * KP
@@ -45,10 +46,10 @@ def karyotype(theme, rng):
         while y < bot:
             h = rng.uniform(2.2, 7.5)
             if dark:
-                g.append(f'<rect x="{f(x)}" y="{f(y)}" width="{KW}" height="{f(h)}" fill="{shades[rng.choice(4, p=[0.3, 0.3, 0.25, 0.15])]}"/>')
+                g.append(f'<rect x="{f(x)}" y="{f(y)}" width="{KW}" height="{f(h)}" fill="{shades[rng.choice(4, p=[0.35, 0.3, 0.22, 0.13])]}"/>')
             y += h; dark = not dark
         g.append(f'<rect x="{f(x)}" y="{f(KY - 3)}" width="{KW}" height="6" fill="{acen}"/></g>')
-        g.append(f'<path d="{d}" fill="none" stroke="{shades[1]}" stroke-width="0.8" stroke-opacity="0.8"/>')
+        g.append(f'<path d="{d}" fill="none" stroke="{edge}" stroke-width="0.9"/>')
         out.append(''.join(g))
     return ''.join(clips), ''.join(out)
 
@@ -109,7 +110,7 @@ def rotation(rx, ry):
 def protein(theme, cx, cy, s, rng):
     lt = theme == 'light'; bg = BG[theme]
     R = rotation(np.radians(14), np.radians(-24))
-    sse = [('H', (-12, -19.5, 2), (10, -21, -3)),
+    sse = [('H', (-11, -17.6, 3), (9.5, -18.8, -2)),
            ('E', (-7.2, -12, -11), (-7.2, 10, -11)), ('E', (-2.4, 11, -12), (-2.4, -11, -12)),
            ('E', (2.4, -11, -12), (2.4, 11, -12)), ('E', (7.2, 11, -11), (7.2, -10, -11)),
            ('H', (15.5, -12, -3), (17, 12.5, 1)), ('H', (12, 19.5, 3), (-11, 18.5, 2)),
@@ -142,9 +143,9 @@ def protein(theme, cx, cy, s, rng):
         if kind == 'L':
             for j in range(len(Pr) - 1):
                 z = (Pr[j, 2] + Pr[j + 1, 2]) / 2
-                c = fade(mix(spectrum((idx + j) / total), '#8A97A6', 0.35), z)
+                c = fade(mix(spectrum((idx + j) / total), '#8C9AAB', 0.45), z)
                 (x1, y1), (x2, y2) = scr(Pr[j]), scr(Pr[j + 1])
-                items.append((z, f'<line x1="{f(x1)}" y1="{f(y1)}" x2="{f(x2)}" y2="{f(y2)}" stroke="{c}" stroke-width="{f(0.5 * s)}" stroke-linecap="round"/>'))
+                items.append((z, f'<line x1="{f(x1)}" y1="{f(y1)}" x2="{f(x2)}" y2="{f(y2)}" stroke="{c}" stroke-width="{f(0.42 * s)}" stroke-linecap="round"/>'))
             idx += len(Pr); continue
         Wr = Wv @ R.T
         for j in range(len(Pr) - 1):
@@ -159,7 +160,10 @@ def protein(theme, cx, cy, s, rng):
             z = np.mean([v[2] for v in q])
             c = fade(c, z)
             pts = ' '.join(f'{f(cx + s * v[0])},{f(cy + s * v[1])}' for v in q)
-            items.append((z, f'<polygon points="{pts}" fill="{c}" stroke="{c}" stroke-width="0.7" stroke-linejoin="round"/>'))
+            ec = mix(c, '#0E1A2A', 0.42) if lt else mix(c, '#000000', 0.5)
+            (ax, ay), (bx, by), (qx, qy), (dx_, dy_) = [(cx + s * v[0], cy + s * v[1]) for v in q]
+            items.append((z, f'<polygon points="{pts}" fill="{c}" stroke="{c}" stroke-width="0.7" stroke-linejoin="round"/>'
+                             f'<path d="M{f(ax)} {f(ay)} L{f(dx_)} {f(dy_)} M{f(bx)} {f(by)} L{f(qx)} {f(qy)}" stroke="{ec}" stroke-width="0.9" stroke-linecap="round"/>'))
         idx += len(Pr)
     # the drug: a small fused-ring molecule with an amide side chain, in the pocket over the sheet
     ang = np.radians(np.arange(6) * 60 + 30)
@@ -173,13 +177,13 @@ def protein(theme, cx, cy, s, rng):
         atoms.append((p, el))
     bonds += [(8, 10), (10, 11), (10, 12), (12, 13), (3, 14), (1, 15)]
     double = {(10, 11), (0, 1), (2, 3), (4, 5), (6, 7)}
-    M = np.array([a[0] for a in atoms]); M = 1.25 * (M - M.mean(0))
+    M = np.array([a[0] for a in atoms]); M = 1.45 * (M - M.mean(0))
     D3 = np.c_[M, np.zeros(len(M))] @ rotation(np.radians(-28), np.radians(18)).T + [0.4, 0.4, 5.0]
     Dr = D3 @ R.T
     elc = {'C': GOLD, 'N': '#2F63DC', 'O': '#E2453F', 'F': '#2FB566'}
     dc = np.mean(Dr, 0)
     gx, gy = scr(dc)
-    items.append((dc[2] - 3, f'<circle cx="{f(gx)}" cy="{f(gy)}" r="{f(7.2 * s)}" fill="{GOLD}" fill-opacity="{0.2 if lt else 0.16}"/>'))
+    items.append((dc[2] - 3, f'<circle cx="{f(gx)}" cy="{f(gy)}" r="{f(6.8 * s)}" fill="url(#glow{theme})"/>'))
     bond_c = '#7F8B98' if lt else '#9AA7B5'
     for a, b in bonds:
         (x1, y1), (x2, y2) = scr(Dr[a]), scr(Dr[b]); z = (Dr[a, 2] + Dr[b, 2]) / 2 - 0.05
@@ -190,7 +194,7 @@ def protein(theme, cx, cy, s, rng):
         else:
             items.append((z, f'<line x1="{f(x1)}" y1="{f(y1)}" x2="{f(x2)}" y2="{f(y2)}" stroke="{bond_c}" stroke-width="3.4"/>'))
     for (p, el), q in zip(atoms, Dr):
-        x, y = scr(q); r = (0.74 if el in 'CN' else 0.8) * s
+        x, y = scr(q); r = (0.8 if el in 'CN' else 0.86) * s
         c = elc[el]
         items.append((q[2], f'<circle cx="{f(x)}" cy="{f(y)}" r="{f(r)}" fill="{c}"/>'
                             f'<circle cx="{f(x - 0.28 * r)}" cy="{f(y - 0.3 * r)}" r="{f(0.38 * r)}" fill="#FFFFFF" fill-opacity="0.38"/>'))
@@ -212,11 +216,14 @@ def draw(theme):
     ink, mute, bg = INK[theme], MUTE[theme], BG[theme]
     clips, kar = karyotype(theme, rng)
     svg.defn(clips)
+    svg.defn(f'<radialGradient id="glow{theme}"><stop offset="0" stop-color="{GOLD}" stop-opacity="{0.34 if lt else 0.3}"/>'
+             f'<stop offset="1" stop-color="{GOLD}" stop-opacity="0"/></radialGradient>'
+             '<filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>')
     # known targets on the chromosomes (filled) and new predictions among the unlabeled genes (rings)
     marks = []
     for i, (name, L, cen) in enumerate(CHR):
         for _ in range(rng.integers(0, 3) if i < 23 else 0):
-            mb = rng.uniform(6, L - 6); x, y = chr_xy(i, mb)
+            mb = rng.uniform(6, L - 6)
             marks.append((i, mb, rng.random() < 0.3))
     target = (22, 30.0)                                      # the gene the magnifier finds (on chrX)
     mk = []
@@ -226,31 +233,38 @@ def draw(theme):
             continue
         x2 = x + KW / 2 + 3.2
         mk.append(f'<line x1="{f(x + KW / 2 - 1)}" y1="{f(y)}" x2="{f(x2)}" y2="{f(y)}" stroke="{GOLD}" stroke-width="1.4"/>'
-                  + (f'<circle cx="{f(x2 + 2.4)}" cy="{f(y)}" r="2.6" fill="{bg}" stroke="{GOLD}" stroke-width="1.5"/>' if new else
-                     f'<circle cx="{f(x2 + 2.4)}" cy="{f(y)}" r="3" fill="{GOLD}"/>'))
+                  + (f'<circle cx="{f(x2 + 2.6)}" cy="{f(y)}" r="2.8" fill="{bg}" stroke="{GOLD}" stroke-width="1.5"/>' if new else
+                     f'<circle cx="{f(x2 + 2.6)}" cy="{f(y)}" r="3.2" fill="{GOLD}"/>'))
     tx, ty = chr_xy(*target)
     tband = f'<rect x="{f(tx - KW / 2 - 0.5)}" y="{f(ty - 2.2)}" width="{KW + 1}" height="4.4" fill="{GOLD}"/>'
     svg.defn(f'<g id="kar{theme}">{kar}{"".join(mk)}{tband}</g>')
     svg.add(f'<use href="#kar{theme}"/>')
-    svg.add(f'<text x="44" y="398" font-size="34" font-weight="700" fill="{ink}">19,032<tspan dx="9" font-size="19" font-weight="400" fill="{mute}">protein-coding genes</tspan></text>')
+    svg.add(f'<text x="52" y="414" font-family="Gelasio, Georgia, serif" font-size="46" fill="{ink}">19,032'
+            f'<tspan dx="12" font-family="Inter, Helvetica, Arial, sans-serif" font-size="19" fill="{mute}">protein-coding genes</tspan></text>')
     # the magnifier over the target gene
     lx, ly, lr, mag = tx, ty, 48, 2.3
+    rim = '#51637A' if lt else '#B4C3D3'
     svg.defn(f'<clipPath id="lens{theme}"><circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}"/></clipPath>')
-    hx1, hy1 = lx + lr * 0.72, ly + lr * 0.72
-    svg.add(f'<line x1="{f(hx1 + 3)}" y1="{f(hy1 + 3)}" x2="{f(hx1 + 40)}" y2="{f(hy1 + 40)}" stroke="{ink}" stroke-width="11" stroke-linecap="round"/>')
+    hx1, hy1 = lx + lr * 0.71, ly + lr * 0.71
+    svg.add(f'<line x1="{f(hx1 + 2)}" y1="{f(hy1 + 2)}" x2="{f(hx1 + 42)}" y2="{f(hy1 + 42)}" stroke="{rim}" stroke-width="10" stroke-linecap="round"/>'
+            f'<line x1="{f(hx1 + 2)}" y1="{f(hy1 + 2)}" x2="{f(hx1 + 12)}" y2="{f(hy1 + 12)}" stroke="{mix(rim, ink, 0.4)}" stroke-width="13" stroke-linecap="round"/>')
     svg.add(f'<circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}" fill="{bg}"/>'
             f'<g clip-path="url(#lens{theme})"><use href="#kar{theme}" transform="translate({f(lx)} {f(ly)}) scale({mag}) translate({f(-lx)} {f(-ly)})"/></g>'
-            f'<circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}" fill="#FFFFFF" fill-opacity="{0.10 if lt else 0.04}"/>')
+            f'<circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}" fill="#FFFFFF" fill-opacity="{0.10 if lt else 0.04}"/>'
+            f'<path d="M{f(lx - lr * 0.72)} {f(ly - lr * 0.18)} A{f(lr * 0.74)} {f(lr * 0.74)} 0 0 1 {f(lx - lr * 0.2)} {f(ly - lr * 0.7)}" fill="none" '
+            f'stroke="#FFFFFF" stroke-opacity="{0.75 if lt else 0.35}" stroke-width="3.5" stroke-linecap="round"/>')
     svg.add(reticle(lx, ly, 15, AIM, 2.2, 8))
-    svg.add(f'<circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}" fill="none" stroke="{ink}" stroke-width="5"/>')
-    # the target's protein with a drug in its pocket
-    prot, (gx, gy) = protein(theme, 776, 240, 6.0, rng)
+    svg.add(f'<circle cx="{f(lx)}" cy="{f(ly)}" r="{lr}" fill="none" stroke="{rim}" stroke-width="4.5"/>')
+    # the target's protein with a drug in its pocket, floating over a soft shadow
+    pcx, pcy = 784, 236
+    svg.add(f'<ellipse cx="{pcx + 6}" cy="{pcy + 150}" rx="104" ry="11" fill="{"#1D3046" if lt else "#000000"}" opacity="{0.13 if lt else 0.55}" filter="url(#soft)"/>')
+    prot, (gx, gy) = protein(theme, pcx, pcy, 6.2, rng)
     svg.add(prot)
-    svg.add(reticle(gx, gy, 60, AIM, 2.6, 12))
+    svg.add(reticle(gx, gy, 58, AIM, 2.2, 11))
     # from the gene to its protein
-    sx_, sy_ = lx + lr + 6, ly - 10
-    svg.add(f'<path d="M{f(sx_)} {f(sy_)} C{f(sx_ + 60)} {f(sy_ - 40)} {f(gx - 150)} {f(gy - 120)} {f(gx - 64)} {f(gy - 46)}" fill="none" '
-            f'stroke="{mute}" stroke-width="2" stroke-dasharray="5 5"/>'
-            f'<path d="M{f(gx - 64)} {f(gy - 46)} l-11 -1 M{f(gx - 64)} {f(gy - 46)} l-3 -10" stroke="{mute}" stroke-width="2.2" stroke-linecap="round"/>')
+    sx_, sy_ = lx + lr + 8, ly - 12
+    ex, ey = gx - 70, gy - 44
+    svg.add(f'<path d="M{f(sx_)} {f(sy_)} C{f(sx_ + 70)} {f(sy_ - 46)} {f(ex - 90)} {f(ey - 70)} {f(ex)} {f(ey)}" fill="none" '
+            f'stroke="{mute}" stroke-width="2.6" stroke-dasharray="0.1 7" stroke-linecap="round"/>'
+            f'<path d="M{f(ex - 10)} {f(ey - 3)} L{f(ex)} {f(ey)} L{f(ex - 4)} {f(ey - 10)}" fill="none" stroke="{mute}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>')
     return svg.text()
-
