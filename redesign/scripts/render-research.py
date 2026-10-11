@@ -91,13 +91,13 @@ def render(content: dict) -> str:
     cards = []
     for number, item in enumerate(content['interests'], 1):
         cards.append(
-            f'<article class="current-interest" id="{esc(item["id"])}" '
+            f'<div class="current-interest" id="{esc(item["id"])}" '
             f'aria-labelledby="{esc(item["id"])}-heading" data-scene="{number - 1}" '
             f'role="button" tabindex="0" aria-pressed="{str(number == 1).lower()}" '
             f'aria-controls="cellular-model">'
             f'<span class="research-number" aria-hidden="true">{number}</span>'
             f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
-            f'<p>{esc(item["description"])}</p></article>'
+            f'<p>{esc(item["description"])}</p></div>'
         )
     phd = content['phd']
     rows = []

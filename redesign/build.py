@@ -38,6 +38,51 @@ OG_DEFAULT='/assets/og/home.jpg'
 def og_image(p):
  n=walk_name(p)
  return '/assets/og/'+n+'.jpg' if n and (D/'assets/og'/(n+'.jpg')).exists() else OG_DEFAULT
+def bib(p):
+ # the paper's BibTeX record (dist/<path>/cite.bib): entry type and fields
+ f=D/urllib.parse.unquote(p['path'].strip('/'))/'cite.bib'
+ if not f.exists():return '',{}
+ t=f.read_text(encoding='utf-8')
+ kind=re.match(r'\s*@(\w+)\{',t).group(1).lower()
+ return kind,{k.lower():v.strip('{}').strip() for k,v in re.findall(r'^\s*(\w+)\s*=\s*\{(.*)\},?\s*$',t,flags=re.M)}
+def local_pdf(p):
+ # a PDF hosted on this site, served (through a rewrite) from the paper's own directory, as Google Scholar asks
+ url=next((x['url'] for x in p['links'] if x['label']=='PDF' and x['url'].startswith('/')),'')
+ return (url,p['path']+url.rsplit('/',1)[-1]) if url else ('','')
+pdf_rewrites=[]
+def ld_json(obj):
+ return '<script type="application/ld+json">'+json.dumps(obj,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+'</script>'
+def paper_head(p):
+ # Google Scholar's citation_* tags and schema.org ScholarlyArticle data for a publication page
+ kind,b=bib(p);names=[clean(a) for a in p['authors']]
+ m=[('citation_title',p['title'])]+[('citation_author',a) for a in names]+[('citation_publication_date',str(p['year']))]
+ if kind=='article' and b.get('journal'):m.append(('citation_journal_title',b['journal']))
+ if kind=='inproceedings' and b.get('booktitle'):m.append(('citation_conference_title',b['booktitle']))
+ if b.get('volume'):m.append(('citation_volume',b['volume']))
+ if b.get('number'):m.append(('citation_issue',b['number']))
+ first,_,last=(b.get('pages') or b.get('eid') or '').replace('--','-').partition('-')
+ if first:m.append(('citation_firstpage',first.strip()))
+ if last:m.append(('citation_lastpage',last.strip()))
+ if b.get('doi'):m.append(('citation_doi',b['doi']))
+ src,served=local_pdf(p)
+ if served:
+  pdf_rewrites.append((served,src));m.append(('citation_pdf_url',SITE_URL+served))
+ m.append(('citation_abstract_html_url',SITE_URL+p['path']))
+ tags=''.join('<meta name="'+k+'" content="'+e(v)+'">' for k,v in m)
+ venue=b.get('journal') or b.get('booktitle') or p['venue']
+ art={'@context':'https://schema.org','@type':'ScholarlyArticle','headline':p['title'][:110],'name':p['title'],
+  'author':[{'@type':'Person','name':a,**({'url':SITE_URL+'/'} if a=='Ziheng Duan' else {})} for a in names],
+  'datePublished':str(p['year']),'url':SITE_URL+p['path'],'image':SITE_URL+og_image(p),
+  'isPartOf':{'@type':'Periodical' if kind=='article' and b.get('journal') else 'CreativeWork','name':venue}}
+ if p.get('abstract'):art['abstract']=p['abstract']
+ if b.get('doi'):
+  art['sameAs']='https://doi.org/'+b['doi'];art['identifier']={'@type':'PropertyValue','propertyID':'DOI','value':b['doi']}
+ return tags+ld_json(art)
+PERSON={'@context':'https://schema.org','@type':'Person','name':'Ziheng Duan','url':SITE_URL+'/','image':SITE_URL+'/assets/portrait-720.jpg',
+ 'jobTitle':'Postdoctoral Researcher','affiliation':{'@type':'CollegeOrUniversity','name':'Yale University','url':'https://www.yale.edu/'},
+ 'alumniOf':[{'@type':'CollegeOrUniversity','name':'University of California, Irvine','url':'https://uci.edu/'},{'@type':'CollegeOrUniversity','name':'Zhejiang University'}],
+ 'knowsAbout':['Artificial intelligence','Computational biology','Single-cell genomics','Spatial transcriptomics','Gene regulation','Drug discovery'],
+ 'sameAs':['https://scholar.google.com/citations?user=wA93e-kAAAAJ','https://github.com/RRRussell','https://www.linkedin.com/in/zihengduan','https://twitter.com/Ziheng1206']}
 def authors(p,full=False):
  a=[clean(x) for x in p['authors']]
  indices=list(range(len(a)))
@@ -111,13 +156,13 @@ def year_groups(pubs):
  return ''.join(out)
 HEADER='''<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><div class="brand"><button type="button" class="monogram" id="graph-hello" aria-label="Animate a small gene network"><span class="monogram-letters" aria-hidden="true">ZD</span><svg class="monogram-graph" viewBox="0 0 38 38" aria-hidden="true"><path d="M8 11 19 8 30 16 25 29 10 27 8 11 25 29M19 8 10 27M8 11 30 16" fill="none" stroke="currentColor" stroke-width="1.2"/><g fill="currentColor"><circle cx="8" cy="11" r="2.6"/><circle cx="19" cy="8" r="2.6"/><circle cx="30" cy="16" r="2.6"/><circle cx="25" cy="29" r="2.6"/><circle cx="10" cy="27" r="2.6"/></g></svg></button><a href="/" aria-label="Ziheng Duan homepage">Ziheng Duan</a></div><nav aria-label="Main navigation"><a href="/#news">News</a><a href="/#research">Research</a><a href="/#publication">Publications</a><a href="/#experience">Experience</a><a href="/#talks">Talks</a><a href="/#service">Service</a><a href="/#contact">Contact</a></nav><div class="header-tools"><button class="icon-button" id="search-open" aria-label="Search website"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button class="icon-button" id="theme-toggle" aria-label="Switch to light mode" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.5 14A8.8 8.8 0 0 1 10 3.5 8.8 8.8 0 1 0 20.5 14Z"/></svg></button><button class="menu-toggle" aria-controls="mobile-nav" aria-expanded="false">Menu</button></div></div><nav id="mobile-nav" aria-label="Mobile navigation" hidden><a href="/#news">News</a><a href="/#research">Research</a><a href="/#publication">Publications</a><a href="/#experience">Experience</a><a href="/#talks">Talks</a><a href="/#service">Service</a><a href="/#contact">Contact</a></nav></header>'''
 FOOTER='''<footer><a class="brand" href="/">Ziheng Duan</a><span>© 2026 Ziheng Duan</span><a href="#top">Back to top ↑</a></footer><dialog id="search-dialog" aria-labelledby="search-heading"><div class="dialog-top"><h2 id="search-heading">Search</h2><button data-close aria-label="Close search">✕</button></div><label class="sr-only" for="site-search">Search publications, talks and pages</label><input id="site-search" type="search" placeholder="Search publications, talks, research…" autocomplete="off" aria-controls="search-results" aria-describedby="search-keys"><p id="search-keys" class="search-keys"><kbd>↑</kbd> <kbd>↓</kbd> to move · <kbd>Enter</kbd> to open · <kbd>/</kbd> to search from any page</p><div id="search-results" aria-live="polite"></div></dialog><dialog id="cite-dialog" aria-labelledby="cite-heading"><div class="dialog-top"><h2 id="cite-heading">Citation</h2><button data-close aria-label="Close citation">✕</button></div><p id="citation-work" class="muted"></p><pre id="citation-text" tabindex="0"></pre><div class="dialog-actions"><button class="button" id="copy-citation">Copy BibTeX</button><a class="button secondary" id="download-citation" download="citation.bib">Download .bib</a></div><p id="cite-status" role="status"></p></dialog><script src="/assets/app.js?v=20261010-polish" defer></script>'''
-def shell(title,body,description='Ziheng Duan — computational methods for single-cell gene regulation, spatial transcriptomics, and drug discovery.',image=OG_DEFAULT,image_alt='Ziheng Duan — AI and computational biology'):
+def shell(title,body,description='Ziheng Duan — computational methods for single-cell gene regulation, spatial transcriptomics, and drug discovery.',image=OG_DEFAULT,image_alt='Ziheng Duan — AI and computational biology',head=''):
  # Share cards are 1200x630 (assets/og); theme-color follows the saved theme, as the page colours do.
  img=SITE_URL+image
  return ('<!doctype html><html lang="en" id="top" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="'+e(description)+'"><meta name="color-scheme" content="light dark"><meta name="theme-color" content="#071522">'
   '<meta property="og:site_name" content="Ziheng Duan"><meta property="og:title" content="'+e(title)+'"><meta property="og:description" content="'+e(description)+'"><meta property="og:type" content="website">'
   '<meta property="og:image" content="'+e(img)+'"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="'+e(image_alt)+'">'
-  '<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+e(img)+'"><title>'+e(title)+'</title>'
+  '<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+e(img)+'">'+head+'<title>'+e(title)+'</title>'
   '<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">'
   '<link rel="stylesheet" href="/assets/style.css?v=20261008-walkthrough-v17">'
   '<script>try{var t=localStorage.getItem("theme")==="light"?"light":"dark";document.documentElement.dataset.theme=t;document.querySelector(\'meta[name="theme-color"]\').content=t==="light"?"#f7f8fa":"#071522"}catch{}</script></head><body>'+HEADER+body+FOOTER+'</body></html>')
@@ -154,14 +199,14 @@ mentoring_section = '<article class="mentoring-service"><h3>'+e(mentoring['progr
 service='''<section class="wrap section" id="service"><div class="section-heading"><div><p class="eyebrow">05 / Service</p><h2>Academic community</h2></div></div><div class="service-grid"><article><h3>Teaching</h3><p>Reader · UC Irvine</p><ul><li>ICS 178 · Machine Learning and Data Mining<br><span class="muted">Winter &amp; Fall 2021</span></li><li>ICS 6D · Discrete Mathematics for Computer Science<br><span class="muted">Spring 2022</span></li></ul></article><article><h3>Reviewing (selected)</h3><p class="muted">Conferences</p><ul class="inline-list"><li>ISMB</li><li>Learning on Graphs (LoG)</li><li>IEEE BIBM</li></ul><p class="muted">Journals</p><ul class="inline-list"><li>Nature Communications</li><li>Genome Medicine</li><li>BMC Medicine</li><li>IEEE TPAMI</li><li>IEEE TKDE</li><li>Pattern Recognition</li><li>Neural Networks</li></ul></article></div></section>'''
 service = service.replace('<div class="service-grid">', '<div class="service-grid">'+mentoring_section, 1)
 contact='''<section id="contact" class="contact-band"><div class="wrap contact-grid"><div><p class="eyebrow">06 / Contact</p><h2>Let’s connect.</h2><a class="email-link" href="mailto:duanziheng1206@gmail.com">duanziheng1206@gmail.com ↗</a><div class="social-links"><a href="https://www.linkedin.com/in/zihengduan" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://twitter.com/Ziheng1206" target="_blank" rel="noopener">X / Twitter ↗</a></div></div><form id="contact-form"><label for="contact-name">Your name</label><input id="contact-name" name="name" autocomplete="name" required><label for="contact-email">Your email</label><input id="contact-email" type="email" name="email" autocomplete="email" required><label for="contact-message">Message</label><textarea id="contact-message" name="message" rows="3" required></textarea><button class="button" type="submit">Open email draft ↗</button><p class="form-note">Opens your email app with your message ready to send.</p></form></div></section></main>'''
-save('/',shell('Ziheng Duan · Computational Biology',intro+selected+industry_section+talksection+service+contact))
+save('/',shell('Ziheng Duan · Computational Biology',intro+selected+industry_section+talksection+service+contact,head=ld_json(PERSON)))
 years=sorted(set(p['year'] for p in pubs),reverse=True)
 filters='<div class="filters"><div class="query"><label for="publication-query">Search publications</label><input type="search" id="publication-query" placeholder="Title, author, keyword…"></div><div><label for="publication-year">Year</label><select id="publication-year"><option value="">All years</option>'+''.join(f'<option>{y}</option>' for y in years)+'</select></div><div><label for="publication-type">Type</label><select id="publication-type"><option value="">All types</option><option>Journal article</option><option>Conference paper</option><option>Preprint</option></select></div><div><label for="publication-role">Authorship</label><select id="publication-role"><option value="">All papers</option><option value="first">First author</option><option value="coauthor">Co-author</option><option value="consortium">Consortium</option></select></div></div>'
 save('/publication/',shell('Publications · Ziheng Duan','<main id="main" class="wrap page"><p class="eyebrow">Research archive</p><h1 class="page-title">Publications<span>.</span></h1>'+filters+f'<p id="publication-count" class="muted" role="status">{len(pubs)} publications</p><div class="papers year-groups" id="publication-list">'+year_groups(pubs)+'</div><div id="no-results" hidden><h2>No matching publications</h2><p>Try another keyword or clear the filters.</p><button class="button" id="clear-filters">Clear filters</button></div></main>'))
 for p in pubs:
  body='<main id="main" class="wrap detail page"><a class="back" href="/publication/">← Publications</a><p class="eyebrow">'+e(str(p['year'])+' / '+p['type'])+'</p><h1>'+e(p['title'])+'</h1><p class="detail-authors">'+authors(p,True)+'</p>'+author_note(p)+'<p class="venue">'+e(p['venue'])+'</p>'+links(p)+frames(p)+('<section class="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>' if p['abstract'] else '')+'</main>'
  description=summary_text(p['abstract'] or p.get('summary') or (p['title']+' — '+p['venue']+', '+str(p['year'])+'.'))
- save(p['path'],shell(p['title']+' · Ziheng Duan',body,description,og_image(p),p['title']))
+ save(p['path'],shell(p['title']+' · Ziheng Duan',body,description,og_image(p),p['title'],head=paper_head(p)))
 for t in data['talks']:
  pdf,img=slides_thumb(t)
  preview=('<a class="slide-preview" href="'+e(pdf)+'" target="_blank" rel="noopener" aria-label="'+e('Open the slides: '+t['title']+' (PDF, opens in a new tab)')+'"><img src="'+img+'" alt="" width="640" height="360" loading="lazy" decoding="async"><span>Open slides (PDF) <span aria-hidden="true">↗</span></span></a>') if img else ''
@@ -176,3 +221,5 @@ print('Generated homepage, publication archive,',len(pubs),'publication pages,',
 
 (D/"sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join('<url><loc>'+e(url)+'</loc></url>' for url in page_urls)+'</urlset>')
 (D/"robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: "+SITE_URL+"/sitemap.xml\n")
+# Google Scholar takes a paper's PDF only from the directory of its abstract page, so each hosted PDF is also served there
+(D/"_redirects").write_text(''.join(served+' '+src+' 200\n' for served,src in pdf_rewrites))
