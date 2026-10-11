@@ -12,6 +12,7 @@ Live: https://zihengduan.cn/ · Repository: duanziheng/academic · Netlify: zihe
 - Base page templates, affiliations, other biography text and metadata: `build.py`.
 - Search metadata, also in `build.py`. Every publication page carries Google Scholar's `citation_*` tags, built from `site.json` and the paper's `cite.bib`, and schema.org ScholarlyArticle JSON-LD; the homepage carries Person JSON-LD. Scholar reads a PDF only from the directory of its abstract page, so the build writes `dist/_redirects` (generated, not committed). Its rewrite rules also serve each hosted PDF from its paper's own directory, which is where `citation_pdf_url` points.
 - Main theme and responsive layout: `dist/assets/style.css`.
+- Response headers: `dist/_headers`. It sets `nosniff`, a referrer policy and a permissions policy on every page, and long caching for fonts: a year for `assets/fonts/`, whose files are never replaced under the same name, and a week for `walkthroughs/fonts/`, which are regenerated in place. Everything else revalidates on each visit, because images and stylesheets are replaced under the same names. Netlify itself adds the HTTPS redirect and HSTS.
 - Search, filtering, citations and theme preference: `dist/assets/app.js`.
 - CV and talk PDFs: `dist/files/`.
 - Legacy blog posts: the historic `/blogs/` URLs, not linked from the navigation, rendered from the original Hugo Markdown in `content/blogs/` at the repository root.
