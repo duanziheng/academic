@@ -1,6 +1,6 @@
 // Share cards (1200x630, assets/og/*.jpg) and PNG icons (favicon-32, apple-touch-icon, icon-192/512).
 // node scripts/previews/cards.cjs <frames dir> dist/assets
-// The paper cards use <frames dir>/vis/<name>.png, written by thumbs.py; titles are set in Gelasio.
+// The paper cards use <frames dir>/vis/<name>.png, written by card_art.py; titles are set in Gelasio.
 const { chromium } = require(process.env.PLAYWRIGHT || 'playwright');
 const fs = require('fs'), path = require('path');
 const HERE = path.resolve(process.argv[2]);
