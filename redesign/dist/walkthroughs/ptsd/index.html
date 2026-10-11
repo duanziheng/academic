@@ -830,6 +830,11 @@ function updateChrome() {
   $('note').textContent = S[cur].note;
   chipEls.forEach((c, j) => c.setAttribute('aria-current', j === S[cur].scene ? 'true' : 'false'));
   $('bNext').textContent = cur === N - 1 ? 'Restart' : 'Next';
+  // the address names the step (#step-N), so a step can be linked; not in an embedded copy
+  if (!document.documentElement.classList.contains('embed') && (cur > 0 || /step-/.test(location.hash))) {
+    const full = /(^#|&)full\b/.test(location.hash) ? '&full' : '';
+    try { history.replaceState(history.state, '', '#step-' + (cur + 1) + full); } catch (err) { /* optional */ }
+  }
 }
 function finish() { if (anim) { cancelAnimationFrame(anim.raf); anim = null; render(cur, 1); } }
 function go(k, animate) {
@@ -857,7 +862,14 @@ const wrapEl = $('stageWrap');
 // phone is upright. An embedded copy without the API opens the full page, which then shows the overlay (#full).
 const canFull = !!(document.fullscreenEnabled && wrapEl.requestFullscreen);
 const fullLabel = () => { $('bFull').textContent = (document.fullscreenElement || wrapEl.classList.contains('pseudo-full')) ? 'Exit full screen' : 'Full screen'; };
-function pseudoFull(on) { wrapEl.classList.toggle('pseudo-full', on); document.documentElement.classList.toggle('pseudo-full-on', on); fullLabel(); if (on) wrapEl.focus({ preventScroll: true }); }
+function pseudoFull(on) {
+  wrapEl.classList.toggle('pseudo-full', on); document.documentElement.classList.toggle('pseudo-full-on', on); fullLabel();
+  if (on) wrapEl.focus({ preventScroll: true });
+  else if (/(^#|&)full\b/.test(location.hash)) {   // leaving the overlay drops it from the address, so a reload does not reopen it
+    const h = location.hash.replace(/(^#|&)full\b/, '$1').replace(/[#&]$/, '');
+    try { history.replaceState(history.state, '', h || location.pathname + location.search); } catch (err) { /* optional */ }
+  }
+}
 async function toggleFull() {
   if (wrapEl.classList.contains('pseudo-full')) return pseudoFull(false);
   if (canFull) {
@@ -871,7 +883,7 @@ async function toggleFull() {
     return;
   }
   if (document.documentElement.classList.contains('embed')) {
-    try { window.top.location.href = location.pathname + '#full'; return; } catch (err) { /* not same-origin: use the overlay here */ }
+    try { window.top.location.href = location.pathname + '#step-' + (+(/^(\d+)/.exec($('count').textContent) || [0, 1])[1]) + '&full'; return; } catch (err) { /* not same-origin: use the overlay here */ }
   }
   pseudoFull(true);
 }
@@ -879,7 +891,7 @@ $('bFull').addEventListener('click', toggleFull);
 $('bFullClose').addEventListener('click', ev => { ev.stopPropagation(); pseudoFull(false); });
 document.addEventListener('fullscreenchange', fullLabel);
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && wrapEl.classList.contains('pseudo-full')) pseudoFull(false); });
-if (location.hash === '#full' && !canFull) pseudoFull(true);
+if (/(^#|&)full\b/.test(location.hash) && !canFull) pseudoFull(true);
 wrapEl.addEventListener('click', () => { setPlaying(false); next(); });
 document.addEventListener('keydown', ev => {
   if (ev.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(ev.target.tagName)) return;
@@ -892,7 +904,9 @@ document.addEventListener('keydown', ev => {
   else if (key === 'p' || key === 'P') { setPlaying(!playing); }
 });
 window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
-go(0, false);
+const stepLink = /step-(\d+)/.exec(location.hash);   // #step-12 opens step 12
+go(stepLink ? clamp(+stepLink[1], 1, N) - 1 : 0, false);
+window.addEventListener('hashchange', () => { const m = /step-(\d+)/.exec(location.hash); if (m) go(clamp(+m[1], 1, N) - 1, false); });
 })();
 </script>
 <script>
