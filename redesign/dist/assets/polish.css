@@ -1,0 +1,119 @@
+/* October 2026 refinements. Loaded last on every page built from the site template
+   (scripts/build-netlify.py adds the link after the research layers). */
+
+/* Headings: Georgia where it is installed; elsewhere (Android, Linux) the metric-compatible
+   Gelasio, self-hosted, so headings look the same on every platform. Only 400 and 700 are
+   declared, so weight 500 resolves to 400 exactly as it does with Georgia. */
+@font-face{font-family:Gelasio;font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/gelasio-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Gelasio;font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/gelasio-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Gelasio;font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/gelasio-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--serif:Georgia,Gelasio,'Times New Roman',serif}
+
+/* Selected work: a still from each paper's walkthrough, in the page's light or dark colours. */
+#publication .paper.selected-paper.has-thumb{grid-template-columns:minmax(0,1fr) 288px;column-gap:44px;align-items:center}
+.paper-thumb{display:block;aspect-ratio:2/1;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#f7f7f9;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.paper-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.paper-thumb .thumb-dark{display:none}
+[data-theme=dark] .paper-thumb{background:#0a111a;border-color:rgba(88,127,159,.26)}
+[data-theme=dark] .paper-thumb .thumb-light{display:none}
+[data-theme=dark] .paper-thumb .thumb-dark{display:block}
+.paper.has-thumb:hover .paper-thumb{border-color:var(--blue);box-shadow:0 10px 26px rgba(16,40,63,.10);transform:translateY(-1px)}
+[data-theme=dark] .paper.has-thumb:hover .paper-thumb{border-color:#5b8fc0;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+@media (max-width:760px){
+ #publication .paper.selected-paper.has-thumb{grid-template-columns:minmax(0,1fr);row-gap:14px}
+ #publication .selected-paper .paper-thumb{order:-1}
+}
+
+/* Publications archive: one block per year, the year shown once and kept in view. */
+.papers.year-groups{border-top:0}
+.year-group{display:grid;grid-template-columns:90px minmax(0,1fr);column-gap:25px;border-top:1px solid var(--line)}
+.year-group:last-child{border-bottom:1px solid var(--line)}
+.year-label{position:sticky;top:112px;align-self:start;margin:0;padding:30px 0 0;font:400 1.3rem/1.2 var(--serif);letter-spacing:-.01em;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.year-papers{min-width:0}
+.year-papers .paper{grid-template-columns:minmax(0,1fr);border-bottom:0;border-top:1px solid var(--line)}
+.year-papers>.paper:first-child,.year-papers>.paper.first-visible{border-top:0}
+.year-papers>.paper.has-thumb{grid-template-columns:minmax(0,1fr) 196px;column-gap:36px;align-items:center}
+.archive-thumb{border-radius:5px}
+[data-theme=dark] .year-group{border-color:rgba(88,127,159,.24)}
+[data-theme=dark] .year-papers .paper{border-color:rgba(88,127,159,.12)}
+/* Seven papers in 2024 came through the PsychENCODE Consortium; they fold into one group. */
+.consortium-group{margin:6px 0 30px;border:1px solid var(--line);border-radius:6px;background:var(--soft)}
+.consortium-group>summary{list-style:none;display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;padding:16px 20px;cursor:pointer;border-radius:6px}
+.consortium-group>summary::-webkit-details-marker{display:none}
+.consortium-group>summary::before{content:'';flex:none;width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(-45deg);transition:transform .18s ease;margin:0 4px 0 2px}
+.consortium-group[open]>summary::before{transform:rotate(45deg)}
+.consortium-group>summary:hover .consortium-title{color:var(--blue)}
+.consortium-title{font:400 1.15rem/1.3 var(--serif);color:var(--ink)}
+.consortium-count{font-size:.75rem;font-weight:600;line-height:1.6;color:var(--blue);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 9px}
+.consortium-hint{font-size:.8125rem;color:var(--muted)}
+.consortium-group .paper{padding:20px 22px 22px;border-top:1px solid var(--line)}
+.consortium-group .paper h3{font-size:1.25rem}
+.consortium-group .author-note{display:none}
+[data-theme=dark] .consortium-group{background:rgba(12,32,50,.55);border-color:rgba(88,127,159,.24)}
+[data-theme=dark] .consortium-group .paper{border-color:rgba(88,127,159,.16)}
+@media (max-width:760px){
+ .year-group{grid-template-columns:48px minmax(0,1fr);column-gap:15px}
+ .year-label{font-size:1.05rem;padding-top:25px}
+ .year-papers>.paper.has-thumb{grid-template-columns:minmax(0,1fr)}
+ .archive-thumb{display:none}
+}
+@media (max-width:490px){
+ .year-group{display:block}
+ .year-label{top:72px;z-index:2;padding:12px 0 10px;background:var(--bg);border-bottom:1px solid var(--line)}
+ [data-theme=dark] .year-label{border-color:rgba(88,127,159,.2)}
+ .year-papers>.paper:first-child,.year-papers>.paper.first-visible{border-top:0}
+ .consortium-group .paper{padding:18px 16px 20px}
+ .consortium-group>summary{padding:14px 16px}
+}
+
+/* Talks: the first slide of decks that are public. */
+.talk.has-thumb{grid-template-columns:90px minmax(0,1fr) 168px}
+.talk-thumb{display:block;align-self:start;margin-top:5px;aspect-ratio:16/9;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--soft);transition:border-color .18s ease}
+.talk-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.talk.has-thumb:hover .talk-thumb{border-color:var(--blue)}
+[data-theme=dark] .talk-thumb{border-color:rgba(88,127,159,.26);background:#0a111a}
+[data-theme=dark] .talk-thumb img,[data-theme=dark] .slide-preview img{filter:brightness(.86)}
+@media (max-width:760px){.talk.has-thumb{grid-template-columns:48px minmax(0,1fr)}.talk-thumb{display:none}}
+@media (max-width:490px){.talk.has-thumb{grid-template-columns:1fr}}
+.slide-preview{display:block;max-width:560px;margin:30px 0 6px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg);transition:border-color .18s ease,box-shadow .18s ease}
+.slide-preview img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#fff}
+.slide-preview>span{display:flex;gap:6px;padding:12px 16px;font-size:.875rem;font-weight:500;border-top:1px solid var(--line)}
+.slide-preview:hover{border-color:var(--blue);box-shadow:0 12px 30px rgba(16,40,63,.10)}
+[data-theme=dark] .slide-preview{border-color:rgba(88,127,159,.26)}
+[data-theme=dark] .slide-preview:hover{border-color:#5b8fc0;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+
+/* Reviewing lists wrap between venues, never inside one, and no line starts with a separator. */
+.service-grid ul.inline-list{list-style:none;margin:0 0 1rem;padding:0;line-height:1.75}
+.service-grid ul.inline-list li{display:inline-block;white-space:nowrap;margin:0;padding:0;border:0}
+.service-grid ul.inline-list li::before{content:none}
+.service-grid ul.inline-list li:not(:last-child)::after{content:'·';margin:0 .5em;color:var(--muted)}
+
+/* Dark mode: keep the research band distinct from the sections around it, as it is in light mode. */
+[data-theme=dark] .research-overview{background:radial-gradient(ellipse at 84% 10%,rgba(80,133,184,.24) 0%,rgba(0,53,107,.20) 26%,transparent 52%),linear-gradient(180deg,#0c1c2e 0%,#0f2338 50%,#0c1b2c 100%);box-shadow:inset 0 1px 0 rgba(142,185,222,.18),inset 0 -1px 0 rgba(142,185,222,.12)}
+
+/* Search: keyboard hints, the active result and matched words. */
+.search-keys{margin:10px 2px 4px;font-size:.75rem;color:var(--muted)}
+.search-keys kbd{display:inline-block;min-width:1.5em;text-align:center;font:600 .6875rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--soft);color:var(--ink)}
+@media (pointer:coarse){.search-keys{display:none}}
+#search-results a{padding-inline:12px;margin-inline:-12px;border-radius:4px}
+#search-results a:focus-visible,#search-results a.is-active{background:var(--soft);outline:none;box-shadow:inset 3px 0 0 var(--blue)}
+#search-results mark{background:rgba(0,53,107,.12);color:inherit;border-radius:2px;padding:0 1px}
+[data-theme=dark] #search-results mark{background:rgba(142,185,222,.24)}
+
+/* Phones: the square portrait spans the text column instead of sitting in one corner, and
+   the PhD heading keeps its small slice drawing beside the title rather than on a row of its own.
+   (research.css places that drawing with !important rules, hence the !important here.) */
+@media (max-width:760px){
+ .hero .portrait{width:100%;max-width:none;justify-self:stretch}
+ .research-overview .phd-research .phd-heading-row{display:grid!important;grid-template-columns:minmax(0,1fr) 84px;column-gap:18px;row-gap:14px;align-items:center}
+ .research-overview .phd-heading-row>.phd-identity{grid-area:1/1!important;order:0!important}
+ .research-overview .phd-heading-row>.atlas-journey{grid-area:1/2!important;order:0!important;width:84px!important;max-width:84px!important;margin:0!important;align-self:center!important;justify-self:end}
+ .research-overview .phd-heading-row>.dissertation-link{grid-area:2/1/3/3!important;order:0!important;margin:0!important}
+ .research-overview .multislice-study #atlas-model{width:84px;height:100px}
+ .research-overview .multislice-study .slice-plane{left:16px;top:22px;width:52px;height:52px}
+}
+
+@media (prefers-reduced-motion:reduce){
+ .paper-thumb,.talk-thumb,.slide-preview,.consortium-group>summary::before{transition:none}
+ .paper.has-thumb:hover .paper-thumb{transform:none}
+}
