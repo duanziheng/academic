@@ -33,7 +33,7 @@ Live: https://zihengduan.cn/ · Repository: duanziheng/academic · Netlify: zihe
 
 News labels use month and year; full dates can remain in the data for ordering. Search includes research interests, doctoral work, News, publications and talks. Past talk badges are omitted during builds and also expire in the browser. Publications retain full bylines and BibTeX; homepage selected papers show a short byline only when Ziheng is first author.
 
-Talks use title case while preserving project names such as scENCORE and iHerd. Each entry presents the research title, followed by Talk, the event or institution, the date and any known location. Preserve the precision of known dates; do not invent days or locations. Past talks omit clock times and use retrospective descriptions rather than future-tense agendas. Resource labels describe their content: Slides, Abstracts, Event and Recording. Keep historical talk routes and original resource URLs intact. Do not infer Invited or Contributed status.
+Talks use title case while preserving project names such as scENCORE and iHerd. Each entry presents the title given in the event's program or abstracts and on the slides, followed by Talk, the event or institution, the date and any known location. Preserve the precision of known dates; do not invent days or locations. Past talks omit clock times and use retrospective descriptions rather than future-tense agendas. Resource labels describe their content: Slides, Abstracts, Event and Recording. Keep historical talk routes and original resource URLs intact. Do not infer Invited or Contributed status.
 
 ## Build and deployment
 
