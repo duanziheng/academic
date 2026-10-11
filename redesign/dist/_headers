@@ -1,0 +1,16 @@
+# Netlify response headers (https://docs.netlify.com/routing/headers/). The HTTPS redirect and HSTS come from Netlify.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# The Gelasio files never change under the same name: if one is ever replaced, give it a new file name.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The walkthrough fonts are cut down to the characters the pages use and are regenerated in place with them.
+/walkthroughs/fonts/*
+  Cache-Control: public, max-age=604800
+
+/site.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8

@@ -14,6 +14,7 @@ Live: https://zihengduan.cn/ · Repository: duanziheng/academic · Netlify: zihe
 - Main theme and responsive layout: `dist/assets/style.css`.
 - Search, filtering, citations and theme preference: `dist/assets/app.js`.
 - CV and talk PDFs: `dist/files/`.
+- Response headers: `dist/_headers`. It sets `nosniff`, a referrer policy and a permissions policy on every page, and long caching for fonts: a year for `assets/fonts/`, whose files are never replaced under the same name, and a week for `walkthroughs/fonts/`, which are regenerated in place. Everything else revalidates on each visit, because images and stylesheets are replaced under the same names. Netlify itself adds the HTTPS redirect and HSTS.
 - Refinements from October 2026 (selected-work thumbnails, the year-grouped archive, talk slide previews, search keys and highlights, the dark-mode research band, phone layout, heading font): `dist/assets/polish.css`, which `scripts/build-netlify.py` links last on every page built from the site template.
 - Preview images, made with `scripts/previews/`:
   - Selected-work thumbnails are drawn illustrations, one Python script per paper in `illustrations/` (numpy, scipy, matplotlib; Pillow and Playwright to render). `python3 scripts/previews/illustrations/make.py <work dir> dist/assets` writes `dist/assets/thumbs/<walkthrough>-light|dark.webp` (640×320) and `-960.webp` (960×480, which phones load through srcset).
