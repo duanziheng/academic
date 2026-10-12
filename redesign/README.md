@@ -52,7 +52,7 @@ Root `netlify.toml` uses base `redesign`, command `python3 scripts/build-netlify
 
 ## Content notes
 
-Current Research Interests presents three directions: Virtual Cells for Precision Medicine, AI for Therapeutic Discovery, and Closed-Loop AI for Science. These are interests, not claims that all corresponding systems or experiments have been completed. In the first heading, virtual cells are the modeling direction and precision medicine is the application goal, not a parallel category.
+Current Research Interests presents three directions: Virtual Cell Modeling, Therapeutic Intervention Design, and Closed-Loop Scientific Discovery. They are three steps of one line of work, in order: modeling cells, designing interventions, and learning from experiments. The section's introduction and the three labels of its animation follow the same order, and the homepage biography, the page description and the home share card name the directions with the same words. Keep the headings parallel, each a noun phrase naming a step, and each description a gerund phrase with its purpose; application goals such as precision medicine go in the descriptions. These are interests, not claims that all corresponding systems or experiments have been completed.
 
 PhD Research — From Cells to Atlases follows the dissertation's three-part structure: genomic/cellular analysis (scENCORE, iHerd, ExAD-GNN), microenvironments/intercellular regulation (Impeller, iMIRACLE), and region completion/multi-slice integration (DISCO, MUSE). The dissertation entry points to the owner's supplied public ProQuest record; the large thesis attachment is not republished in the repository.
 

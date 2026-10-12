@@ -66,6 +66,7 @@ function homeCard() {
 .pos span{color:#6f93b3;padding:0 8px}
 .lab{font-size:21px;color:#a9bccb;margin-bottom:34px}
 .interests{font-size:18px;line-height:1.55;color:#8eb9de;max-width:600px}
+.interests span{white-space:nowrap}
 .site{position:absolute;left:76px;bottom:46px;font-size:19px;color:#6f93b3;letter-spacing:.02em}
 .pic{position:relative}
 .pic:before{content:'';position:absolute;left:0;top:-18px;width:66px;height:4px;background:#8eb9de}
@@ -75,7 +76,7 @@ function homeCard() {
 <h1 class="name">Ziheng Duan</h1>
 <p class="pos">Postdoctoral researcher<span>·</span>Yale University</p>
 <p class="lab">Prof. Mark Gerstein’s lab</p>
-<p class="interests">Virtual cells for precision medicine · AI for therapeutic discovery · Closed-loop AI for science</p>
+<p class="interests"><span>Virtual cell modeling</span> · <span>Therapeutic intervention design</span> · <span>Closed-loop scientific discovery</span></p>
 </div><figure class="pic"><img src="file://${path.join(A, 'portrait-1080.webp')}"></figure></div>
 <p class="site">zihengduan.cn</p></body></html>`;
 }
