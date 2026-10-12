@@ -132,3 +132,9 @@
  .research-overview .phd-research .eyebrow{margin-bottom:14px!important}
  .research-overview .phd-summary{margin-top:34px!important}
 }
+/* the interest toggle: a button in the card's heading whose ::after covers the card, so the focus ring outlines the card */
+.current-interest{position:relative;cursor:pointer}
+.interest-toggle{all:unset;display:block;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.interest-toggle::after{content:'';position:absolute;inset:0;border-radius:3px}
+.interest-toggle:focus-visible{outline:none}
+.interest-toggle:focus-visible::after{outline:3px solid #5b87ff;outline-offset:4px}

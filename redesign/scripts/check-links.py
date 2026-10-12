@@ -2,7 +2,7 @@
 
     python3 redesign/scripts/check-links.py https://zihengduan.cn report.md
 
-Reads the sitemap and collects every link and resource on every page:
+Reads the sitemap and collects every link and resource on every page, and every link in the CV PDF (/cv):
 - Pages and files on the site itself must answer 200.
 - DOI links are checked with doi.org's handle API, since publishers often refuse automated requests.
 - GitHub repositories are checked with the GitHub API. Set GITHUB_TOKEN to raise the rate limit.
@@ -21,6 +21,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import zlib
 from html.parser import HTMLParser
 
 UA = 'Mozilla/5.0 (compatible; zihengduan.cn link check; +https://zihengduan.cn/)'
@@ -38,6 +39,18 @@ class Links(HTMLParser):
             v = a.get(key)
             if v and not v.startswith(('mailto:', 'tel:', 'javascript:', 'data:', '#')):
                 self.found.append(v)
+
+
+def pdf_links(data):
+    """the link targets (/URI) in a PDF, including those in compressed object streams, where pdfTeX writes them"""
+    found = set(re.findall(rb'/URI\s*\(([^)]*)\)', data))
+    for m in re.finditer(rb'stream\r?\n', data):
+        start = m.end()
+        try:
+            found.update(re.findall(rb'/URI\s*\(([^)]*)\)', zlib.decompress(data[start:data.find(b'endstream', start)])))
+        except zlib.error:
+            pass                                    # not a Flate stream
+    return sorted(u.decode('latin-1').replace('\\(', '(').replace('\\)', ')') for u in found)
 
 
 def fetch(url, method='GET', timeout=30, headers=None):
@@ -102,6 +115,14 @@ def main(base, out):
             if urllib.parse.urlsplit(url).netloc == host:
                 url = base + urllib.parse.urlsplit(url).path + (('?' + urllib.parse.urlsplit(url).query) if urllib.parse.urlsplit(url).query else '')
             where.setdefault(url, set()).add(urllib.parse.urlsplit(page).path)
+    try:                                             # the CV's links: DOIs, labs, project pages
+        _, cv = fetch(base + '/cv')
+        cv_links = [u for u in pdf_links(cv) if u.startswith(('http://', 'https://'))]
+        for link in cv_links:
+            where.setdefault(link.split('#')[0], set()).add('the CV (/cv)')
+    except Exception as e:
+        cv_links = None
+        print('Could not read the CV PDF:', type(e).__name__, e)
 
     def judge(url):
         u = urllib.parse.urlsplit(url)
@@ -125,7 +146,8 @@ def main(base, out):
         results = list(ex.map(judge, sorted(where)))
     broken = [r for r in results if r[1] == 'broken']
     unverified = [r for r in results if r[1] == 'unverified']
-    lines = [f'Checked {len(results)} links on {len(pages)} pages of {base} ({time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}).', '']
+    cv_note = f' and {len(cv_links)} in the CV PDF' if cv_links else (' (the CV PDF could not be read)' if cv_links is None else '')
+    lines = [f'Checked {len(results)} links on {len(pages)} pages of {base}{cv_note} ({time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}).', '']
     if broken:
         lines += [f'### Broken ({len(broken)})', '']
         lines += [f'- {url} — {why}; on {", ".join(sorted(where[url])[:3])}' + (' …' if len(where[url]) > 3 else '') for url, _, why in broken]

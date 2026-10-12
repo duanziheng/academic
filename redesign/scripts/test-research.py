@@ -145,10 +145,13 @@ class ResearchTests(unittest.TestCase):
         text = research.render(CONTENT)
         for phrase in ['motion-toggle', 'motion-icon', 'Play motion', 'Pause motion', 'View animation', 'Play research animations']:
             self.assertNotIn(phrase, text)
-        self.assertEqual(text.count('<button'), 0)
+        # the only buttons are the three interest toggles, one in each card's heading
+        self.assertEqual(text.count('<button'), 3)
+        self.assertEqual(text.count('<button type="button" class="interest-toggle"'), 3)
+        self.assertEqual(text.count('aria-pressed="true"'), 1)
+        self.assertNotIn('role="button"', text)
         for number in ['1', '2', '3']:
             self.assertIn('class="research-number" aria-hidden="true">' + number + '</span>', text)
-        self.assertEqual(text.count('role="button" tabindex="0"'), 3)
 
     def test_orbit_geometry(self):
         subprocess.run(['node', str(ROOT / 'scripts/test-research-geometry.cjs')], check=True, timeout=20)
