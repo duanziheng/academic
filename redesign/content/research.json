@@ -1,24 +1,24 @@
 {
-  "hero": "I develop AI methods to model biological systems and guide therapeutic discovery. My current interests include virtual cells for precision medicine, therapeutic intervention design, and closed-loop AI for science.",
-  "description": "Ziheng Duan — virtual cells for precision medicine, AI for therapeutic discovery, and closed-loop AI for science, grounded in graph learning for single-cell and spatial omics.",
+  "hero": "I develop AI methods to model biological systems and guide therapeutic discovery. My current interests include virtual cell modeling, therapeutic intervention design, and closed-loop scientific discovery.",
+  "description": "Ziheng Duan — virtual cell modeling, therapeutic intervention design, and closed-loop scientific discovery, grounded in graph learning for single-cell and spatial omics.",
   "doctoral_bio": "My doctoral research developed graph learning methods for single-cell and spatial omics, from genomic regulation to multi-slice tissue atlases.",
   "heading": "Current Research Interests",
   "introduction": "Modeling cellular responses, designing therapeutic interventions, and learning from scientific feedback.",
   "interests": [
     {
       "id": "virtual-cells",
-      "title": "Virtual Cells for Precision Medicine",
-      "description": "Modeling cellular states and responses across diverse biological and patient contexts to support precision medicine."
+      "title": "Virtual Cell Modeling",
+      "description": "Predicting cellular states and responses across diverse biological and patient contexts to support precision medicine."
     },
     {
       "id": "therapeutic-discovery",
-      "title": "AI for Therapeutic Discovery",
+      "title": "Therapeutic Intervention Design",
       "description": "Identifying therapeutic targets and designing interventions to steer disease-associated cells toward healthier states."
     },
     {
       "id": "closed-loop-science",
-      "title": "Closed-Loop AI for Science",
-      "description": "Exploring AI systems that connect hypothesis generation, experimental design, and learning from experimental feedback."
+      "title": "Closed-Loop Scientific Discovery",
+      "description": "Connecting hypothesis generation, experimental design, and model updates into a loop that learns from each round of experiments."
     }
   ],
   "phd": {
