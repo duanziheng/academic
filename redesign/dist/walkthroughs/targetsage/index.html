@@ -109,7 +109,7 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
 .stageWrap { background: var(--stage); }
 </style>
 
-<div class="wrap">
+<main class="wrap">
   <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/conference/targetsage/">TargetSage paper page</a></nav>
   <div class="top">
     <h1>TargetSage, step by step</h1>
@@ -155,12 +155,12 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
   </div>
 
   <div class="bar">
-    <button class="btn" id="bPrev" aria-label="Previous step">Back</button>
-    <button class="btn primary" id="bNext" aria-label="Next step">Next</button>
-    <button class="btn" id="bPlay" aria-pressed="false">Play all</button>
-    <button class="btn" id="bFull">Full screen</button>
+    <button type="button" class="btn" id="bPrev" aria-label="Back to the previous step">Back</button>
+    <button type="button" class="btn primary" id="bNext" aria-label="Next step">Next</button>
+    <button type="button" class="btn" id="bPlay" aria-pressed="false">Play all</button>
+    <button type="button" class="btn" id="bFull">Full screen</button>
     <span class="count" id="count" aria-live="polite"></span>
-    <div class="chips" id="chips" role="tablist" aria-label="Scenes"></div>
+    <div class="chips" id="chips" role="group" aria-label="Scenes"></div>
   </div>
 
   <section class="notes" aria-label="Narration">
@@ -168,7 +168,7 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
     <p id="note"></p>
   </section>
   <p class="keys"><kbd>→</kbd> <kbd>Space</kbd> or a click: next · <kbd>←</kbd>: back · <kbd>F</kbd>: full screen · <kbd>P</kbd>: play all · <kbd>Home</kbd>: start</p>
-</div>
+</main>
 
 <script id="toy" type="application/json">{"grid":{"nc":64,"nr":30,"known":[10,59,73,77,84,88,128,134,160,185,212,295,374,400,404,459,485,503,519,544,545,616,619,634,683,713,716,731,817,825,983,999,1022,1050,1054,1063,1071,1156,1164,1203,1230,1334,1360,1379,1381,1407,1411,1462,1471,1513,1545,1563,1567,1575,1576,1613,1647,1691,1718,1805,1873,1883],"upg":[62,350,531,741,1005,1077,1095,1391,1709],"perDot":9.9},"grpo":{"roll":[[0.93,0.12,0.82],[0.58,0.41,0.74],[0.21,0.86,0.69],[0.77,0.24,0.88]],"score":[0.405,0.123,0.026,0.282],"reward":[1.2376,1.157,1.1299,1.2023],"adv":[1.35,-0.6,-1.25,0.5],"static":[0.56,0.58,0.47],"p0":0.07,"base":1.1421,"n":600,"nP":30,"w":[1.45,0.37,3.85,-0.32,1.77]},"f1toy":{"n":40,"known":[3,11,22,31],"hidden":[7,18,35],"good":[0.05,0.07,0.18,0.86,0.05,0.11,0.12,0.71,0.17,0.05,0.1,0.74,0.11,0.14,0.17,0.21,0.08,0.15,0.63,0.09,0.03,0.21,0.91,0.09,0.2,0.14,0.12,0.18,0.04,0.16,0.1,0.68,0.16,0.21,0.07,0.8,0.09,0.17,0.17,0.07],"flat":[0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3],"perfect":[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"sGood":{"R":0.798,"pbar":0.235,"f1":2.71},"sFlat":{"R":0.3,"pbar":0.3,"f1":0.3},"sPerfect":{"R":1.0,"pbar":0.1,"f1":10.0}},"nnpu":{"zP":[[1.261,0.582],[1.094,0.311],[2.045,0.579],[1.484,0.153],[1.04,0.634],[1.1,0.745],[1.043,0.658],[1.156,0.457],[1.665,0.927],[0.992,0.889],[1.454,0.61],[0.869,0.402]],"zU":[[1.96,0.239],[1.028,0.658],[0.876,0.716],[1.181,0.871],[1.001,1.054],[1.273,1.368],[1.639,0.711],[0.634,0.605],[0.726,1.293],[1.116,0.483],[-1.152,-0.769],[0.302,-0.539],[0.457,-0.281],[-0.492,-1.594],[-0.449,-0.934],[0.02,-0.107],[-1.111,0.535],[-1.016,0.055],[-0.623,-0.392],[-1.16,0.684],[-0.122,-1.16],[-1.066,0.136],[-0.653,-0.152],[-0.21,-0.317],[-1.093,0.842],[0.243,0.19],[-0.741,-0.006],[-1.5,-0.025],[-1.107,0.295],[-1.066,-1.039],[-1.059,-0.455],[-1.993,0.437],[-0.323,1.199],[-0.698,-1.156],[0.171,-0.546],[-0.521,-0.258],[-0.124,-0.227],[-0.144,-0.782],[-0.372,-0.603],[-0.171,0.002],[0.334,-1.085],[-0.166,-0.544],[-0.203,-0.903],[0.033,-0.179],[-0.442,0.954],[0.1,-0.299],[0.162,-0.549],[-0.294,0.075],[0.917,1.133],[-0.162,0.156],[-1.461,-0.457],[-1.193,0.889],[-0.406,-0.841],[-0.24,0.717],[-0.322,-0.396],[0.289,0.007],[-0.564,-1.172],[-0.537,-0.322],[0.119,-0.349],[-0.564,0.023],[0.101,1.08],[-1.235,-0.732],[0.757,-0.276],[-0.972,0.003],[0.593,-0.012],[-0.336,0.004],[-0.699,-0.907],[0.938,-0.611],[-0.415,0.702],[-1.167,-0.74],[0.189,-0.263],[-0.227,-0.075],[1.017,-0.666],[-0.978,0.278],[0.302,-0.415],[-0.644,-1.564],[-1.06,-0.318],[-0.432,-0.321]],"w":[0.805,0.599,0.557,0.654,0.599,0.702,0.778,0.491,0.499,0.612,-0.393,0.068,0.277,-0.262,-0.301,-0.071,-0.251,-0.35,-0.39,-0.224,-0.192,-0.336,-0.385,-0.324,-0.181,0.436,-0.358,-0.365,-0.305,-0.375,-0.397,-0.319,0.096,-0.327,-0.022,-0.391,-0.301,-0.216,-0.323,-0.342,-0.024,-0.25,-0.23,-0.071,0.019,-0.014,-0.029,-0.295,0.57,-0.124,-0.396,-0.188,-0.3,0.069,-0.347,0.414,-0.303,-0.389,-0.012,-0.347,0.259,-0.396,0.374,-0.359,0.438,-0.347,-0.349,0.316,-0.023,-0.394,0.111,-0.38,0.326,-0.299,0.118,-0.289,-0.393,-0.381],"zbar":[1.267,0.579],"beta":0.6}}</script>
 <script>
@@ -895,6 +895,7 @@ function updateChrome() {
   $('note').textContent = S[cur].note;
   chipEls.forEach((c, j) => c.setAttribute('aria-current', j === S[cur].scene ? 'true' : 'false'));
   $('bNext').textContent = cur === N - 1 ? 'Restart' : 'Next';
+  $('bNext').setAttribute('aria-label', cur === N - 1 ? 'Restart from the first step' : 'Next step');
   // the address names the step (#step-N), so a step can be linked; not in an embedded copy
   if (!document.documentElement.classList.contains('embed') && (cur > 0 || /step-/.test(location.hash))) {
     const full = /(^#|&)full\b/.test(location.hash) ? '&full' : '';
@@ -968,7 +969,9 @@ document.addEventListener('keydown', ev => {
   else if (key === 'f' || key === 'F') { toggleFull(); }
   else if (key === 'p' || key === 'P') { setPlaying(!playing); }
 });
-window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
+window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go,
+  // the caption and controls of step k without drawing its slide, for measuring them (embed mode)
+  chrome: k => { finish(); cur = clamp(k, 0, N - 1); updateChrome(); } };
 const stepLink = /step-(\d+)/.exec(location.hash);   // #step-12 opens step 12
 go(stepLink ? clamp(+stepLink[1], 1, N) - 1 : 0, false);
 window.addEventListener('hashchange', () => { const m = /step-(\d+)/.exec(location.hash); if (m) go(clamp(+m[1], 1, N) - 1, false); });
@@ -988,7 +991,7 @@ window.addEventListener('hashchange', () => { const m = /step-(\d+)/.exec(locati
     if (M && w && w !== width) {  // hold the narration and the control row at their tallest step, so the frame does not jump
       width = w; const m = /^(\d+)/.exec(count.textContent), k = m ? +m[1] - 1 : 0;
       notes.style.minHeight = bar.style.minHeight = ''; let hn = 0, hb = 0;
-      for (let j = 0; j < M.N; j++) { M.go(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
+      for (let j = 0; j < M.N; j++) { (M.chrome || M.go)(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
       M.go(k, false); notes.style.minHeight = hn + 'px'; bar.style.minHeight = hb + 'px';
     }
     const h = Math.ceil(document.body.getBoundingClientRect().height);

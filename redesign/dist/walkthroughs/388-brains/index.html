@@ -109,7 +109,7 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
 .stageWrap { background: var(--stage); }
 </style>
 
-<div class="wrap">
+<main class="wrap">
   <nav class="crumbs" aria-label="Site"><a href="/">← Ziheng Duan</a><a href="/publication/journal/single-cell-genomics-and-regulatory-networks-for-388-human-brains/">388 brains paper page</a></nav>
   <div class="top">
     <h1>Single-cell genomics of 388 human brains, step by step</h1>
@@ -152,12 +152,12 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
   </div>
 
   <div class="bar">
-    <button class="btn" id="bPrev" aria-label="Previous step">Back</button>
-    <button class="btn primary" id="bNext" aria-label="Next step">Next</button>
-    <button class="btn" id="bPlay" aria-pressed="false">Play all</button>
-    <button class="btn" id="bFull">Full screen</button>
+    <button type="button" class="btn" id="bPrev" aria-label="Back to the previous step">Back</button>
+    <button type="button" class="btn primary" id="bNext" aria-label="Next step">Next</button>
+    <button type="button" class="btn" id="bPlay" aria-pressed="false">Play all</button>
+    <button type="button" class="btn" id="bFull">Full screen</button>
     <span class="count" id="count" aria-live="polite"></span>
-    <div class="chips" id="chips" role="tablist" aria-label="Scenes"></div>
+    <div class="chips" id="chips" role="group" aria-label="Scenes"></div>
   </div>
 
   <section class="notes" aria-label="Narration">
@@ -165,7 +165,7 @@ html.embed .notes, html.embed .bar { align-content: start; }  /* boxes are held 
     <p id="note"></p>
   </section>
   <p class="keys"><kbd>→</kbd> <kbd>Space</kbd> or a click: next · <kbd>←</kbd>: back · <kbd>F</kbd>: full screen · <kbd>P</kbd>: play all · <kbd>Home</kbd>: start</p>
-</div>
+</main>
 
 <script id="toy" type="application/json">{
   "source": "Numbers quoted from Emani et al., Science 384, eadi5199 (2024); this walkthrough uses no toy data. Drawings are schematic or labelled illustrations.",
@@ -739,6 +739,7 @@ function updateChrome() {
   $('note').textContent = S[cur].note;
   chipEls.forEach((c, j) => c.setAttribute('aria-current', j === S[cur].scene ? 'true' : 'false'));
   $('bNext').textContent = cur === N - 1 ? 'Restart' : 'Next';
+  $('bNext').setAttribute('aria-label', cur === N - 1 ? 'Restart from the first step' : 'Next step');
   // the address names the step (#step-N), so a step can be linked; not in an embedded copy
   if (!document.documentElement.classList.contains('embed') && (cur > 0 || /step-/.test(location.hash))) {
     const full = /(^#|&)full\b/.test(location.hash) ? '&full' : '';
@@ -812,7 +813,9 @@ document.addEventListener('keydown', ev => {
   else if (key === 'f' || key === 'F') { toggleFull(); }
   else if (key === 'p' || key === 'P') { setPlaying(!playing); }
 });
-window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go };
+window.__muse = { N, render, steps: S.map(s => ({ dur: s.st.dur, scene: s.scene })), go,
+  // the caption and controls of step k without drawing its slide, for measuring them (embed mode)
+  chrome: k => { finish(); cur = clamp(k, 0, N - 1); updateChrome(); } };
 const stepLink = /step-(\d+)/.exec(location.hash);   // #step-12 opens step 12
 go(stepLink ? clamp(+stepLink[1], 1, N) - 1 : 0, false);
 window.addEventListener('hashchange', () => { const m = /step-(\d+)/.exec(location.hash); if (m) go(clamp(+m[1], 1, N) - 1, false); });
@@ -832,7 +835,7 @@ window.addEventListener('hashchange', () => { const m = /step-(\d+)/.exec(locati
     if (M && w && w !== width) {  // hold the narration and the control row at their tallest step, so the frame does not jump
       width = w; const m = /^(\d+)/.exec(count.textContent), k = m ? +m[1] - 1 : 0;
       notes.style.minHeight = bar.style.minHeight = ''; let hn = 0, hb = 0;
-      for (let j = 0; j < M.N; j++) { M.go(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
+      for (let j = 0; j < M.N; j++) { (M.chrome || M.go)(j, false); hn = Math.max(hn, notes.offsetHeight); hb = Math.max(hb, bar.offsetHeight); }
       M.go(k, false); notes.style.minHeight = hn + 'px'; bar.style.minHeight = hb + 'px';
     }
     const h = Math.ceil(document.body.getBoundingClientRect().height);

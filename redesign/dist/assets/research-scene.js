@@ -199,17 +199,18 @@
     if (!Number.isInteger(next) || next < 0 || next >= labels.length) return;
     mode = next; title.textContent = labels[mode]; figure.dataset.scene = String(mode);
     cards.forEach((card, i) => { card.dataset.active = String(i === mode); });
-    cards.forEach((card, i) => card.setAttribute('aria-pressed', String(i === mode))); render();
+    // the toggle is the button in the card's heading (older markup made the whole card the button)
+    cards.forEach((card, i) => (card.querySelector('.interest-toggle') || card).setAttribute('aria-pressed', String(i === mode))); render();
   }
   cards.forEach((card, i) => {
     card.addEventListener('click', () => selectMode(i));
     card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
+      if (event.target === card && (event.key === 'Enter' || event.key === ' ')) {
         event.preventDefault();
         selectMode(i);
       }
     });
-    card.addEventListener('focus', () => selectMode(i));
+    card.addEventListener('focusin', () => selectMode(i));
     card.addEventListener('pointerenter', () => { if (fine.matches) selectMode(i); });
     card.addEventListener('pointermove', event => {
       if (!fine.matches || !moving()) return;

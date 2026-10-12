@@ -14,9 +14,9 @@ from pathlib import Path
 from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = '<link rel="stylesheet" href="/assets/research.css?v=20260930-mobile-phd-v6">'
+CSS = '<link rel="stylesheet" href="/assets/research.css?v=20261012-a11y">'
 VISUAL_CSS = '<link rel="stylesheet" href="/assets/noir.css?v=20260930-heritage-blue-v16">'
-VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20260930-yale-v10" defer></script>'
+VISUAL_SCRIPT = '<script src="/assets/research-scene.js?v=20261012-a11y" defer></script>'
 QUIET_CSS = '<link rel="stylesheet" href="/assets/quiet-controls.css?v=20260930-centered-v6">'
 OLD_BIO = (
     'My research integrates artificial intelligence with single-cell genomics '
@@ -91,13 +91,14 @@ def render(content: dict) -> str:
     cards = []
     for number, item in enumerate(content['interests'], 1):
         cards.append(
-            f'<div class="current-interest" id="{esc(item["id"])}" '
-            f'aria-labelledby="{esc(item["id"])}-heading" data-scene="{number - 1}" '
-            f'role="button" tabindex="0" aria-pressed="{str(number == 1).lower()}" '
-            f'aria-controls="cellular-model">'
+            # the heading holds the toggle button, which selects this direction's scene; its ::after covers
+            # the card, so the whole card stays clickable, while the heading and text stay readable on their own
+            f'<div class="current-interest" id="{esc(item["id"])}" data-scene="{number - 1}">'
             f'<span class="research-number" aria-hidden="true">{number}</span>'
-            f'<h3 id="{esc(item["id"])}-heading">{esc(item["title"])}</h3>'
-            f'<p>{esc(item["description"])}</p></div>'
+            f'<h3 id="{esc(item["id"])}-heading"><button type="button" class="interest-toggle" '
+            f'aria-pressed="{str(number == 1).lower()}" aria-controls="cellular-model" '
+            f'aria-describedby="{esc(item["id"])}-text">{esc(item["title"])}</button></h3>'
+            f'<p id="{esc(item["id"])}-text">{esc(item["description"])}</p></div>'
         )
     phd = content['phd']
     rows = []
